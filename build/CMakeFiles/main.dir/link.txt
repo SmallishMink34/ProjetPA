@@ -1,0 +1,1 @@
+/usr/bin/cc CMakeFiles/main.dir/addition.c.o CMakeFiles/main.dir/fonctions_SDL.c.o CMakeFiles/main.dir/main.c.o -o main  -lSDL2::Main -lSDL2::TTF 
