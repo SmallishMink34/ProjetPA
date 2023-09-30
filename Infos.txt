@@ -1,0 +1,21 @@
+http://turrier.fr/articles/ubuntu-sdl-c-gcc/programmer-en-c-avec-sdl2.php
+
+Conventions utilisés : 
+Type dans le nom ex : 
+    int i_indice
+    bool b_game
+
+Nom de Variabe dans les classes et strucs commence par m_
+    int m_vie;
+    bool m_isAlive
+
+library :
+SDL2
+SDL2_Image 
+tinyxml
+
+Info spécifique:
+Commandes tinytmx 
+LD_LIBRARY_PATH=/home/matt/tmxlite/build/
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/my_library/
+export LD_LIBRARY_PATH=/home/matt/tmxlite/build/libtmxlite.so
