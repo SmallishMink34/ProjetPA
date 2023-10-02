@@ -1,6 +1,7 @@
 #include "tmxlite/Map.hpp"
 #include "tmxlite/Layer.hpp"
 #include "tmxlite/TileLayer.hpp"
+#include "tmxlite/ObjectGroup.hpp"
 #include <iostream>
 #include <algorithm>
 #include "maps.hpp"
@@ -12,13 +13,44 @@ tile::tile(SDL_Texture* tset, int x, int y, int tx, int ty, int w, int h)
 
 }
 
-void tile::draw(SDL_Renderer* ren) {
+
+tmx::Object level::getObjectsByName(const std::string& Name){
+    // Load the TMX map from the file
+    tmx::Map map;
+    map.load(tmxFilePath);
+
+    // Iterate through all the layers in the map
+    for (const auto& layer : map.getLayers()) {
+        // Check if the layer is of type ObjectGroup
+        if (layer->getType() == tmx::Layer::Type::Object) {
+            const tmx::ObjectGroup* objectGroup = dynamic_cast<const tmx::ObjectGroup*>(layer.get());
+
+            // Iterate through the objects in the ObjectGroup
+            for (const auto& object : objectGroup->getObjects()) {
+                // Check if the name matches
+                if (object.getName() == Name) {
+                    return object;
+                }
+                std::cout << "Name: " << object.getName() << std::endl;
+                std::cout << "Type: " << object.getType() << std::endl;
+                std::cout << "Position: (" << object.getPosition().x << ", " << object.getPosition().y << ")" << std::endl;
+
+                // You can access other object properties here if needed
+                // For example: object.getProperties()
+
+                std::cout << std::endl;
+            }
+        }
+    } 
+}
+
+void tile::draw(SDL_Renderer* ren, int dx, int dy) {
     if (!ren || !sheet)
         return;
 
     SDL_Rect src;
-    src.x = tx;
-    src.y = ty;
+    src.x = tx + dx;
+    src.y = ty + dy;
     src.w = width;
     src.h = height;
 
@@ -39,7 +71,10 @@ level::level(const std::string& name)
 void level::load(const std::string& path, SDL_Renderer* ren) {
     // Load and parse the Tiled map with tmxlite
     tmx::Map tiled_map;
+    tmxFilePath = path;
     tiled_map.load(path);
+    this->MapWidth= tiled_map.getTileCount().x;
+    this->MapHeight= tiled_map.getTileCount().y;
 
     // We need to know the size of the map (in tiles)
     auto map_dimensions = tiled_map.getTileCount();
@@ -111,7 +146,10 @@ void level::load(const std::string& path, SDL_Renderer* ren) {
                 // does not belong to that tileset.
                 auto tset_gid = -1;
                 for (auto& ts : tilesets) {
-                    if (ts.first <= cur_gid) {
+                    // cast ts.first to unsigned int
+                    
+
+                    if (static_cast<unsigned int>(ts.first) <= cur_gid) {
                         tset_gid = ts.first;
                         break;
                     }
@@ -145,7 +183,7 @@ void level::load(const std::string& path, SDL_Renderer* ren) {
     }
 }
 
-void level::draw(SDL_Renderer* ren) {
+void level::draw(SDL_Renderer* ren, int dx, int dy) {
     // Vérifier si SDL_Renderer* est valide
     if (!ren) {
         std::cerr << "ERROR: SDL_Renderer* invalide dans level::draw()\n";
@@ -155,9 +193,16 @@ void level::draw(SDL_Renderer* ren) {
     for (auto& tile : tiles) {
         // Vérifier si la méthode draw de chaque tuile est valide
         if (tile.sheet) {
-            tile.draw(ren);
+            tile.draw(ren, dx, dy);
         } else {
             std::cerr << "ERROR: SDL_Texture* invalide dans level::draw()\n";
         }
     }
+}
+
+int level::getMapWidth(){
+    return this->MapWidth*this->tile_width;
+}
+int level::getMapHeight(){
+    return this->MapHeight*this->tile_height;
 }

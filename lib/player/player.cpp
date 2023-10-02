@@ -1,5 +1,5 @@
 #include "player.hpp"
-#include "../../Constante.cpp"
+#include "../../Constante.hpp"
 
 Player::Player(SDL_Renderer* Renderer){
     // Images, nom, vie, etc..
@@ -9,7 +9,8 @@ Player::Player(SDL_Renderer* Renderer){
     this->y = 60;
     this->speed = 5;
     
-    this->Image = Sprite("src/Images/Player/Player_default.png", this->x, this->y, 32, 64);
+    this->Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", this->x, this->y, 36, 64);
+    this->Image.setSrcRect(24, 180, 36, 64);
     this->Image.loadImage(Renderer);
 }
 
@@ -18,10 +19,10 @@ Player::~Player(){
 }
 
 void Player::Moveto(int x, int y){
-    if (this->y+64+Gravity<=Windows_H){
+    if (this->y+64+Gravity<=Real_H){
         this->y = y;
     }else{
-        this->y = Windows_H-64;
+        this->y = Real_H-64;
     }
     this->x = x;
     this->Image.Moveto(this->x, this->y);

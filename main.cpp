@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "Constante.hpp"
 #include "lib/world/world.hpp"
 #include "lib/display/display.hpp"
 
@@ -18,7 +19,7 @@ bool initSDL() {
         return false;
     }
 
-    gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, SDL_WINDOW_SHOWN);
+    gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_BORDERLESS );
     if (gWindow == nullptr) {
         std::cerr << "Erreur lors de la création de la fenêtre : " << SDL_GetError() << std::endl;
         return false;
@@ -63,18 +64,32 @@ void handleEvents(world* Monde) {
                 case SDLK_ESCAPE:
                     quit = true; // Quitte l'application si la touche Échap est enfoncée
                     break;
+                case SDLK_s:
+                    Monde->KeyPressed[3] = true;
+                    break;
+                case SDLK_z:
+                    Monde->KeyPressed[2] = true;
+                    break;
                 case SDLK_d:
                     Monde->KeyPressed[1] = true;
-
-                    std::cout << "Coords : "<< Monde->deltaTime << std::endl;
                     break;
                 case SDLK_q:
                     Monde->KeyPressed[0] = true;
                     break;
-                // Ajoutez d'autres cas pour d'autres touches selon vos besoins
+                
+                case SDLK_p:
+                    std::cout << "X : " << Monde->Joueur->getX() << " Y : " << Monde->Joueur->getY() << std::endl;
+                    std::cout << " MX : " << Monde->dx << " MY : " << Monde->dy << std::endl;
+                    break;
             }
         }else if(e.type == SDL_KEYUP){
             switch (e.key.keysym.sym) {
+                case SDLK_s:
+                    Monde->KeyPressed[3] = false;
+                    break;
+                case SDLK_z:
+                    Monde->KeyPressed[2] = false;
+                    break;
                 case SDLK_d:
                     Monde->KeyPressed[1] = false;
                     break;
@@ -102,22 +117,20 @@ int main(int argc, char* args[]) {
     if ( !init()){
         return 1;
     } 
-    Uint32 targetFPS = 144;
+    Uint32 targetFPS = fps;
     Uint32 frameDelay = 1000 / targetFPS;
     Uint32 frameStart, frameTime;
     Uint32 TestStart =SDL_GetTicks();
+    
     world *Monde = new world(gRenderer);
     
     Monde->InitMonde(gRenderer);
-
+    SDL_RenderSetScale(gRenderer, scale, scale); // Faire un zoom dans la fenetre
     while (!quit) {
         frameStart = SDL_GetTicks();
         
         handleEvents(Monde);
         Monde->UpdateAll();
-        if(Monde->Joueur->getX()>=1280){
-            quit = true;
-        }
         
         // Effacer l'écran
         SDL_RenderClear(gRenderer);
@@ -132,7 +145,6 @@ int main(int argc, char* args[]) {
             SDL_Delay(frameDelay - frameTime);
         }
     }
-    std::cout << "Temps d'execution : " << SDL_GetTicks() - TestStart << std::endl;
 
     closeSDL();
 
