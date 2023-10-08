@@ -81,3 +81,11 @@ void Sprite::setSrcRect(int x, int y, int w, int h){
     this->srcRect->w = w;
     this->srcRect->h = h;
 }
+
+int Sprite::getWidth(){
+    return this->w;
+}
+
+int Sprite::getHeight(){
+    return this->h;
+}

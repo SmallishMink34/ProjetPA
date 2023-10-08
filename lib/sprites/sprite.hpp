@@ -20,6 +20,8 @@ class Sprite{
         void selfDraw(SDL_Renderer* Renderer);
         void loadImage(SDL_Renderer *Renderer);
         void setSrcRect(int x, int y, int w, int h);
+        int getWidth();
+        int getHeight();
 
     private:
         // Variables

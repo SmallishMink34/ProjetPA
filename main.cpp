@@ -19,7 +19,7 @@ bool initSDL() {
         return false;
     }
 
-    gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_BORDERLESS );
+    gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_SHOWN );
     if (gWindow == nullptr) {
         std::cerr << "Erreur lors de la création de la fenêtre : " << SDL_GetError() << std::endl;
         return false;
@@ -77,9 +77,9 @@ void handleEvents(world* Monde) {
                     Monde->KeyPressed[0] = true;
                     break;
                 
-                case SDLK_p:
-                    std::cout << "X : " << Monde->Joueur->getX() << " Y : " << Monde->Joueur->getY() << std::endl;
-                    std::cout << " MX : " << Monde->dx << " MY : " << Monde->dy << std::endl;
+                case SDLK_p: 
+                    std::cout << "X1 : " << Monde->Joueur->getX() << " Y1 : " << Monde->Joueur->getY() << std::endl;
+                    std::cout << Monde->Joueur->toString() << std::endl;
                     break;
             }
         }else if(e.type == SDL_KEYUP){
@@ -120,12 +120,13 @@ int main(int argc, char* args[]) {
     Uint32 targetFPS = fps;
     Uint32 frameDelay = 1000 / targetFPS;
     Uint32 frameStart, frameTime;
-    Uint32 TestStart =SDL_GetTicks();
     
     world *Monde = new world(gRenderer);
     
     Monde->InitMonde(gRenderer);
     SDL_RenderSetScale(gRenderer, scale, scale); // Faire un zoom dans la fenetre
+    SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+
     while (!quit) {
         frameStart = SDL_GetTicks();
         

@@ -28,9 +28,11 @@ class level {
         level(const std::string& name);
         void load(const std::string& path, SDL_Renderer* ren);
         void draw(SDL_Renderer* ren, int dx, int dy);
-        tmx::Object getObjectsByName(const std::string& Name);
+        tmx::Object getObjectByName(const std::string& Name);
+        std::vector<tmx::Object> getObjectsByType(const std::string& Name);
         int getMapWidth();
         int getMapHeight();
+
     private:
         std::string name;
         std::string tmxFilePath;

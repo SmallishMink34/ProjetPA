@@ -14,6 +14,7 @@ class world
         Player* Joueur;
         Texture AllElements;
         level* Map;
+        std::vector<tmx::Object> Collisions;
         bool KeyPressed[4] = {false, false, false, false}; // 0 = left, 1 = right, 2 = up, 3 = down
 
         int dx; // Décalage X de la map par rapport au personnage.
@@ -28,7 +29,6 @@ class world
         void movePlayer();
         void UpdateAll();
         void moveCamera();
-        
         
 };  
 
