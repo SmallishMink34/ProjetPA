@@ -1,10 +1,11 @@
 #ifndef DefWorld
 #define DefWorld
 
-#include "../player/player.hpp"
 #include "../display/display.hpp"
 #include "../maps/maps.hpp"
+#include "../player/player.hpp"
 
+class Player;
 class world
 {
     public:

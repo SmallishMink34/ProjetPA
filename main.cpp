@@ -13,13 +13,13 @@ SDL_Renderer* gRenderer = nullptr;
 bool quit = false;
 
 // Fonction pour initialiser SDL
-bool initSDL() {
+bool initSDL() { 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "Erreur lors de l'initialisation de SDL : " << SDL_GetError() << std::endl;
         return false;
     }
 
-    gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_SHOWN );
+    gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_FULLSCREEN);
     if (gWindow == nullptr) {
         std::cerr << "Erreur lors de la création de la fenêtre : " << SDL_GetError() << std::endl;
         return false;

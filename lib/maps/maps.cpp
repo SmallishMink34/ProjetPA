@@ -115,7 +115,7 @@ void level::load(const std::string& path, SDL_Renderer* ren) {
             .load_texture(tset.getImagePath(), ren);
         tilesets.insert(std::pair<gid, SDL_Texture*>(tset.getFirstGID(), tex));
     }
-
+    
     // Move SDL_QueryTexture outside the loop
     int ts_width = 0, ts_height = 0;
     if (!map_tilesets.empty()) {
@@ -169,10 +169,9 @@ void level::load(const std::string& path, SDL_Renderer* ren) {
                 auto tset_gid = -1;
                 for (auto& ts : tilesets) {
                     // cast ts.first to unsigned int
-                    
-
                     if (static_cast<unsigned int>(ts.first) <= cur_gid) {
                         tset_gid = ts.first;
+                        
                         break;
                     }
                 }

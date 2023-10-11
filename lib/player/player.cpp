@@ -2,40 +2,51 @@
 #include "../../Constante.hpp"
 #include <iostream>
 
-Player::Player(SDL_Renderer* Renderer, level* Map){
-    // Images, nom, vie, etc..
+Player::Player(SDL_Renderer* Renderer){
+    vie = 3;
+    x = 60;
+    y = 60;
+    dy = 0;
+    Realx = 60;
+    Realy = 60;
+    speed = 5;
+    verticalVelocity = 0.0f;
+    jumpStrength = 20.0f;
+    Jumping = true;
+    hasJump = false;
+    OnGround = false;
     
-    this->vie = 3;
-    this->x = 60;
-    this->y = 60;
-    this->Realx = 60;
-    this->Realy = 60;
-    this->speed = 5;
-    this->Map = Map;
-    
-    this->Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", this->x, this->y, 36, 64);
-    this->Image.setSrcRect(24, 180, 36, 64);
-    this->Image.loadImage(Renderer);
+    Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 36, 64);
+    Image.setSrcRect(24, 180, 36, 64);
+    Image.loadImage(Renderer);
 }
 
-void Player::InitPlayer(std::vector<tmx::Object> Objects){
-    this->Collisions = Objects;
-    std::cout << "Collisions : " << this->Collisions.size() << std::endl;
+void Player::InitPlayer(std::vector<tmx::Object> Objects, world* Monde){
+    Collisions = Objects;
+    std::cout << "Collisions : " << Collisions.size() << std::endl;
+    Map = Monde->Map;
+    Mondee = Monde;
 }
 
 bool Player::isColliding(int x1, int y1){
-    for (long unsigned int i = 0; i < this->Collisions.size(); i++){
-        // Vérifier les collisions horizontales
+    for (long unsigned int i = 0; i < Collisions.size(); i++){
         for (const auto& collisionObject : Collisions) {
             if (x1 + getWidth() > collisionObject.getPosition().x &&
                 x1 < collisionObject.getPosition().x + collisionObject.getAABB().width &&
                 y1 + getHeight() > collisionObject.getPosition().y &&
                 y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) {
-                // Collision horizontale détectée
-                return true;
+                    AllMove(Realx, Realy, true);
+
+                    // touche le sol :
+                    if (y1 + getHeight() > collisionObject.getPosition().y){
+                        OnGround = true;
+                    }
+
+                    return true;
             }
         }
     }
+    OnGround = false;
     return false;
 }
 
@@ -45,70 +56,114 @@ Player::~Player(){
 
 void Player::Moveto(int x, int y){
 
-       
-    if (!(this->Realx > Real_W/2-this->speed && this->Realx-this->speed < this->Map->getMapWidth() - Real_W/2)){
-        this->x = x;
-    }else{
-        this->x = Real_W/2;
-    }
-    if (!(this->Realy > Real_H/2-this->speed && this->Realy-this->speed < this->Map->getMapHeight() - Real_H/2)){
-        this->y = y;
-    }else{
-        this->y = Real_H/2;
-    }
-    this->Image.Moveto(this->x, this->y);
+    x = Realx - Mondee->dx;
+    y = Realy - Mondee->dy;
+
+    Image.Moveto(x, y);
 }
 
 void Player::RealMoveto(int x, int y){
-    this->Realx = x;
-    this->Realy = y;
+    Realx = x;
+    Realy = y;
 }
 
 void Player::Move(int x1, int y1){
-    if (isColliding(this->Realx +x1, this->Realy +y1)){ // Modifier afin de faire coller les collisions au sprite
+    if (isColliding(Realx +x1, Realy +y1)){
         return;
     }
-    this->Moveto(this->x + x1, this->y + y1);
-    this->RealMoveto(this->Realx + x1, this->Realy + y1);
+    AllMove(x1, y1, false);
+
+}
+
+void Player::AllMove(int x1, int y1, bool Teleport){
+    if (!Teleport){
+        Moveto(x + x1, y + y1);
+        RealMoveto(Realx + x1, Realy + y1);
+    }else{
+        Moveto(x1, y1);
+        RealMoveto(x1, y1);
+    }
 }
 
 void Player::FixCamera(){
-    if (this->x > this->Map->getMapWidth() - Real_W/2){
-        int nombre = this->Map->getMapWidth()-Real_W;
-        this->x = this->x - nombre;
-        std::cout << "X : " << this->x << std::endl;
+    if (x > Map->getMapWidth() - Real_W/2){
+        int nombre = Map->getMapWidth()-Real_W;
+        x = x - nombre;
     }
-    if (this->y > this->Map->getMapHeight() - Real_H/2){
-        int nombre = this->Map->getMapHeight()-Real_H;
-        this->y = this->y - nombre;
+    if (y > Map->getMapHeight() - Real_H/2){
+        int nombre = Map->getMapHeight()-Real_H;
+        y = y - nombre;
     }
-    this->Image.Moveto(this->x, this->y);
+    Image.Moveto(x, y);
+}
+
+void Player::applyGravity(float deltaTime) {
+    dy = 0;
+    verticalVelocity += Gravity;
+    dy += verticalVelocity;
+
+    if (isOnGround()){ 
+        dy = 0;
+        verticalVelocity = 0;
+        setIsJumping(false);
+    }
+    if (hasJump){ 
+        verticalVelocity = -10; 
+    }
+    if (!isJumping()) hasJump = false;
+  
+
+    Move(0, dy * deltaTime); 
 }
 
 int Player::getX(){
-    return this->Realx;
+    return Realx;
 }
 
 int Player::getY(){
-    return this->Realy;
+    return Realy;
 }
 
 std::string Player::GetName(){
-    return this->Nom;
+    return Nom;
 }
 
 void Player::SetName(const std::string Name){
-    this->Nom = Name;
+    Nom = Name;
 }
 
 std::string Player::toString(){
-    return ("X : " + std::to_string(this->x) + " Y : " + std::to_string(this->y));
+    return ("X : " + std::to_string(x) + " Y : " + std::to_string(y));
 }
 
 int Player::getWidth(){
-    return this->Image.getWidth();
+    return Image.getWidth();
 }
 
 int Player::getHeight(){
-    return this->Image.getHeight();
+    return Image.getHeight();
+}
+
+
+bool Player::isOnGround(){
+    return OnGround;
+}
+
+void Player::jump() {
+    if (isOnGround()) {
+        hasJump = true;
+    }
+}
+
+float Player::getVerticalVelocity(){
+    return verticalVelocity;
+}
+
+bool Player::isJumping(){
+    return Jumping;
+}
+
+void Player::setIsJumping(bool Jump){
+    Jumping = Jump; 
+
 }

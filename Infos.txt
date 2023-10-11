@@ -19,3 +19,12 @@ Commandes tinytmx
 LD_LIBRARY_PATH=/home/matt/tmxlite/build/
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/my_library/
 export LD_LIBRARY_PATH=/home/matt/tmxlite/build/libtmxlite.so
+
+avec Cmake liens utiles :
+https://trenki2.github.io/blog/2017/07/04/using-sdl2-image-with-cmake/
+
+Commande a executer
+Dans le build/
+cmake ..
+make
+make run

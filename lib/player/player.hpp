@@ -1,13 +1,15 @@
 #ifndef DefPlayer
 #define DefPlayer
 #include <iostream>
+#include "../world/world.hpp"
 #include "../sprites/sprite.hpp"
 #include "../maps/maps.hpp"
 
+class world;
 class Player{
     public:
         // Constructeur
-        Player(SDL_Renderer* Renderer, level* Map);
+        Player(SDL_Renderer* Renderer);
 
         // Variables
         int vie;
@@ -26,19 +28,35 @@ class Player{
 
         bool isColliding(int x1, int y1);
         int getX();
+
         int getY();
         std::string toString();
-        void InitPlayer(std::vector<tmx::Object> Objects);
+        void InitPlayer(std::vector<tmx::Object> Objects, world* Monde);
         void FixCamera();
+        void AllMove(int x1, int y1, bool Teleport);
+        bool isOnGround();
+        float getVerticalVelocity();
+        void jump();
+        bool isJumping();
+        void setIsJumping(bool Jump);
+        void applyGravity(float deltaTime);
         ~Player();
 
     private:
         std::string Nom;
         int x;
-        int y;
+        int y; 
+        float dy;
         int Realx;
         int Realy;
+        bool OnGround;
+        bool Jumping;
+        bool hasJump;
+        float verticalVelocity;
+        float jumpStrength;
+        float jumpTime;
         level* Map; 
+        world* Mondee;
 };
 
 #endif
