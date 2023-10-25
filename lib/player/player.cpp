@@ -11,11 +11,10 @@ Player::Player(SDL_Renderer* Renderer){
     Realy = 60;
     speed = 5;
     verticalVelocity = 0.0f;
-    jumpStrength = 20.0f;
+    jumpStrength = 8.0f;
     Jumping = true;
     hasJump = false;
     OnGround = false;
-    
     Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 36, 64);
     Image.setSrcRect(24, 180, 36, 64);
     Image.loadImage(Renderer);
@@ -28,27 +27,36 @@ void Player::InitPlayer(std::vector<tmx::Object> Objects, world* Monde){
     Mondee = Monde;
 }
 
+
 bool Player::isColliding(int x1, int y1, int realx, int realy){
     for (long unsigned int i = 0; i < Collisions.size(); i++){
         for (const auto& collisionObject : Collisions) {
-            if (x1 + getWidth() > collisionObject.getPosition().x &&
-                x1 < collisionObject.getPosition().x + collisionObject.getAABB().width &&
-                y1 + getHeight() > collisionObject.getPosition().y &&
-                y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) {
-                    return false;
-            }
-        }
-    }
+            if (realx + getWidth() > collisionObject.getPosition().x &&
+                realx < collisionObject.getPosition().x + collisionObject.getAABB().width &&
+                realy+y1 + getHeight() > collisionObject.getPosition().y &&
+                realy+y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) 
+            {
+                if (y1 > 0){
+                    AllMove(realx, collisionObject.getPosition().y - getHeight(), true);
+                    OnGround = true;
+                    y1 = 0;
+                }
+                else if (y1 < 0){
+                    AllMove(realx, collisionObject.getPosition().y + collisionObject.getAABB().height, true);
+                    y1 = 0;
+                    verticalVelocity = 0;
+                }
 
-    return false;
-}
+                if (x1 > 0){
+                    AllMove(collisionObject.getPosition().x - getWidth(), realy, true);
+                    x1 = 0;
+                }
+                else if (x1 < 0){
+                    AllMove(collisionObject.getPosition().x + collisionObject.getAABB().width, realy, true);
+                    x1 = 0;
+                }
 
-bool Player::isCollidingBottom(int x1, int y1, int realx, int realy){
-    for (long unsigned int i = 0; i < Collisions.size(); i++){
-        for (const auto& collisionObject : Collisions) {
-            if (y1 + getHeight() > collisionObject.getPosition().y &&
-                y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) {
-                    return false;
+                return true;
             }
         }
     }
@@ -74,19 +82,14 @@ void Player::RealMoveto(int x, int y){
 }
 
 void Player::Move(int x1, int y1){ // Pas les coordonnées, seulement le vecteur de déplacements
-    if (y1 > 0){
-        if (isCollidingBottom(x1, y1, Realx, Realy)){
-            OnGround = true;
-            y1 = 0;
-        }else{
+    printf("x1 : %d, y1 : %d\n", x1, y1);
+    if (y1 > 0 || OnGround == true){
+        if (!isColliding(0, y1, Realx, Realy)){
             OnGround = false;
         }
     }
 
-
-    if (isColliding(x1, y1, Realx, Realy)){
-        return;
-    }
+    isColliding(x1, y1, Realx, Realy);
     AllMove(x1, y1, false);
 
 }
@@ -122,10 +125,11 @@ void Player::applyGravity(float deltaTime) {
         dy = 0;
         verticalVelocity = 0;
         setIsJumping(false);
+        if (hasJump){ // Seulement si il est sur le sol
+            verticalVelocity = -jumpStrength;; 
+        }
     }
-    if (hasJump){ 
-        verticalVelocity = -10; 
-    }
+    
     if (!isJumping()) hasJump = false;
     Move(0, dy * deltaTime); 
 }

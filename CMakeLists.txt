@@ -52,11 +52,6 @@ add_custom_target(run
     COMMENT "Lancement du programme"
 )
 
-add_custom_target(SDL2_INSTALL
-    COMMAND bash -c "sudo apt-get install libsdl2-dev"
-    COMMAND bash -c "sudo apt-get install libsdl2-image-dev"
-    DEPENDS tmxlite
-)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(SRCS main.cpp lib/world/world.cpp lib/player/player.cpp lib/display/display.cpp lib/sprites/sprite.cpp lib/maps/maps.cpp lib/maps/assets.cpp)
@@ -65,7 +60,6 @@ add_executable(mon_programme ${SRCS})
 
 # Assurez-vous que la cible de nettoyage est exécutée lors de la construction
 add_dependencies(mon_programme clean_tmxlite)
-add_dependencies(mon_programme SDL2_INSTALL)
 
 
 target_include_directories(mon_programme PUBLIC ${SOURCE_DIR}/tmxlite/include)

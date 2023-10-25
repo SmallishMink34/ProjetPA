@@ -27,7 +27,6 @@ class Player{
         int getHeight();
 
         bool isColliding(int x1, int y1, int realx, int realy);
-        bool isCollidingBottom(int x1, int y1, int realx, int realy);
         int getX();
 
         int getY();
