@@ -28,25 +28,31 @@ void Player::InitPlayer(std::vector<tmx::Object> Objects, world* Monde){
     Mondee = Monde;
 }
 
-bool Player::isColliding(int x1, int y1){
+bool Player::isColliding(int x1, int y1, int realx, int realy){
     for (long unsigned int i = 0; i < Collisions.size(); i++){
         for (const auto& collisionObject : Collisions) {
             if (x1 + getWidth() > collisionObject.getPosition().x &&
                 x1 < collisionObject.getPosition().x + collisionObject.getAABB().width &&
                 y1 + getHeight() > collisionObject.getPosition().y &&
                 y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) {
-                    AllMove(Realx, Realy, true);
-
-                    // touche le sol :
-                    if (y1 + getHeight() > collisionObject.getPosition().y){
-                        OnGround = true;
-                    }
-
-                    return true;
+                    return false;
             }
         }
     }
-    OnGround = false;
+
+    return false;
+}
+
+bool Player::isCollidingBottom(int x1, int y1, int realx, int realy){
+    for (long unsigned int i = 0; i < Collisions.size(); i++){
+        for (const auto& collisionObject : Collisions) {
+            if (y1 + getHeight() > collisionObject.getPosition().y &&
+                y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) {
+                    return false;
+            }
+        }
+    }
+
     return false;
 }
 
@@ -67,8 +73,18 @@ void Player::RealMoveto(int x, int y){
     Realy = y;
 }
 
-void Player::Move(int x1, int y1){
-    if (isColliding(Realx +x1, Realy +y1)){
+void Player::Move(int x1, int y1){ // Pas les coordonnées, seulement le vecteur de déplacements
+    if (y1 > 0){
+        if (isCollidingBottom(x1, y1, Realx, Realy)){
+            OnGround = true;
+            y1 = 0;
+        }else{
+            OnGround = false;
+        }
+    }
+
+
+    if (isColliding(x1, y1, Realx, Realy)){
         return;
     }
     AllMove(x1, y1, false);
@@ -111,8 +127,6 @@ void Player::applyGravity(float deltaTime) {
         verticalVelocity = -10; 
     }
     if (!isJumping()) hasJump = false;
-  
-
     Move(0, dy * deltaTime); 
 }
 

@@ -10,7 +10,7 @@ const float scale = Windows_W/1280.0-0.02; // Probleme tiles deplacements (pour 
 const int Real_W = Windows_W/scale;
 const int Real_H = Windows_H/scale;
 
-const int fps = 144;
+const int fps = 60;
 const float CameraSpeed = 0.1;
 
 #endif

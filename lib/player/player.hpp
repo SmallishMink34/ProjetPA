@@ -26,7 +26,8 @@ class Player{
         int getWidth();
         int getHeight();
 
-        bool isColliding(int x1, int y1);
+        bool isColliding(int x1, int y1, int realx, int realy);
+        bool isCollidingBottom(int x1, int y1, int realx, int realy);
         int getX();
 
         int getY();
@@ -58,5 +59,7 @@ class Player{
         level* Map; 
         world* Mondee;
 };
+
+
 
 #endif
