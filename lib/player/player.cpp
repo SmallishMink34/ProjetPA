@@ -4,17 +4,20 @@
 
 Player::Player(SDL_Renderer* Renderer){
     vie = 3;
-    x = 60;
+
+    x = 60; // Coordonnées sur l'interface
     y = 60;
-    dy = 0;
-    Realx = 60;
+    Realx = 60; // Coordonnées réels
     Realy = 60;
+
     speed = 5;
+    dy = 0;
     verticalVelocity = 0.0f;
     jumpStrength = 8.0f;
     Jumping = true;
     hasJump = false;
     OnGround = false;
+
     Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 36, 64);
     Image.setSrcRect(24, 180, 36, 64);
     Image.loadImage(Renderer);
@@ -27,80 +30,64 @@ void Player::InitPlayer(std::vector<tmx::Object> Objects, world* Monde){
     Mondee = Monde;
 }
 
-
-bool Player::isColliding(int x1, int y1, int realx, int realy){
-    for (long unsigned int i = 0; i < Collisions.size(); i++){
-        for (const auto& collisionObject : Collisions) {
-            if (realx + getWidth() > collisionObject.getPosition().x &&
-                realx < collisionObject.getPosition().x + collisionObject.getAABB().width &&
-                realy+y1 + getHeight() > collisionObject.getPosition().y &&
-                realy+y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) 
-            {
-                if (y1 > 0){
-                    AllMove(realx, collisionObject.getPosition().y - getHeight(), true);
-                    OnGround = true;
-                    y1 = 0;
-                }
-                else if (y1 < 0){
-                    AllMove(realx, collisionObject.getPosition().y + collisionObject.getAABB().height, true);
-                    y1 = 0;
-                    verticalVelocity = 0;
-                }
-
-                if (x1 > 0){
-                    AllMove(collisionObject.getPosition().x - getWidth(), realy, true);
-                    x1 = 0;
-                }
-                else if (x1 < 0){
-                    AllMove(collisionObject.getPosition().x + collisionObject.getAABB().width, realy, true);
-                    x1 = 0;
-                }
-
-                return true;
-            }
+tmx::Object* Player::isColliding(int x1, int y1, int realx, int realy){
+    for (auto& collisionObject : Collisions) {
+        if (realx + getWidth() + x1 > collisionObject.getPosition().x &&
+            realx + x1 < collisionObject.getPosition().x + collisionObject.getAABB().width &&
+            realy + y1 + getHeight() > collisionObject.getPosition().y &&
+            realy + y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) 
+        {   
+            return &collisionObject;
         }
     }
-
-    return false;
+    return nullptr;
 }
 
 Player::~Player(){
     
 }
 
-void Player::Moveto(int x, int y){
-
+void Player::Moveto(){
     x = Realx - Mondee->dx;
     y = Realy - Mondee->dy;
 
     Image.Moveto(x, y);
 }
 
-void Player::RealMoveto(int x, int y){
-    Realx = x;
-    Realy = y;
+void Player::RealMoveto(int x1, int y1){
+    Realx = x1;
+    Realy = y1;
 }
 
 void Player::Move(int x1, int y1){ // Pas les coordonnées, seulement le vecteur de déplacements
-    printf("x1 : %d, y1 : %d\n", x1, y1);
-    if (y1 > 0 || OnGround == true){
-        if (!isColliding(0, y1, Realx, Realy)){
-            OnGround = false;
+    tmx::Object* object = isColliding(x1, y1, Realx, Realy);
+    OnGround = false;
+    if (object != nullptr){
+        printf("Collision\n");
+        if (x1 > 0){
+            AllMove(object->getPosition().x - getWidth(), Realy, true);
+        }else if(x1 < 0){
+            AllMove(object->getPosition().x + object->getAABB().width+5, Realy, true);
         }
+        if (y1 > 0){
+            AllMove(Realx, object->getPosition().y - getHeight(), true);
+            OnGround = true;
+        }else if(y1 < 0){
+            AllMove(Realx, object->getPosition().y + object->getAABB().height, true);
+            verticalVelocity = 0;
+        }
+    }else{
+        AllMove(x1, y1, false);
     }
-
-    isColliding(x1, y1, Realx, Realy);
-    AllMove(x1, y1, false);
-
 }
 
 void Player::AllMove(int x1, int y1, bool Teleport){
     if (!Teleport){
-        Moveto(x + x1, y + y1);
         RealMoveto(Realx + x1, Realy + y1);
+        Moveto();
     }else{
-        Moveto(x1, y1);
         RealMoveto(x1, y1);
+        Moveto();
     }
 }
 
@@ -134,12 +121,20 @@ void Player::applyGravity(float deltaTime) {
     Move(0, dy * deltaTime); 
 }
 
-int Player::getX(){
+int Player::getRX(){
     return Realx;
 }
 
-int Player::getY(){
+int Player::getRY(){
     return Realy;
+}
+
+int Player::getX(){
+    return x;
+}
+
+int Player::getY(){
+    return y;
 }
 
 std::string Player::GetName(){
@@ -151,7 +146,7 @@ void Player::SetName(const std::string Name){
 }
 
 std::string Player::toString(){
-    return ("X : " + std::to_string(x) + " Y : " + std::to_string(y));
+    return ("X : " + std::to_string(getX()) + " Y : " + std::to_string(getY()));
 }
 
 int Player::getWidth(){

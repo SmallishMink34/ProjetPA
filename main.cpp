@@ -78,7 +78,7 @@ void handleEvents(world* Monde) {
                     break;
                 
                 case SDLK_p: 
-                    std::cout << "X1 : " << Monde->Joueur->getX() << " Y1 : " << Monde->Joueur->getY() << std::endl;
+                    std::cout << "RealX : " << Monde->Joueur->getRX() << " RealY : " << Monde->Joueur->getRY() << std::endl;
                     std::cout << Monde->Joueur->toString() << std::endl;
                     break;
             }
@@ -129,13 +129,12 @@ int main(int argc, char* args[]) {
 
     while (!quit) {
         frameStart = SDL_GetTicks();
-        
-        handleEvents(Monde);
-        Monde->UpdateAll();
-        
         // Effacer l'écran
         SDL_RenderClear(gRenderer);
 
+        handleEvents(Monde);
+        Monde->UpdateAll();
+        
         Monde->drawAll(gRenderer);
         
         // Mettre à jour l'affichage

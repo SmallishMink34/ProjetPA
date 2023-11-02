@@ -20,16 +20,18 @@ class Player{
         // Fonctions
         std::string GetName();
         void SetName(const std::string Name);
-        void Moveto(int x, int y);
+        void Moveto();
         void RealMoveto(int x, int y);
         void Move(int x, int y);
         int getWidth();
         int getHeight();
 
-        bool isColliding(int x1, int y1, int realx, int realy);
+        tmx::Object* isColliding(int x1, int y1, int realx, int realy);
+        int getRX();
+        int getRY();
         int getX();
-
         int getY();
+
         std::string toString();
         void InitPlayer(std::vector<tmx::Object> Objects, world* Monde);
         void FixCamera();
@@ -49,6 +51,9 @@ class Player{
         float dy;
         int Realx;
         int Realy;
+
+        int oldRealx;
+        int oldRealy;
         bool OnGround;
         bool Jumping;
         bool hasJump;
