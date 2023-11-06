@@ -1,6 +1,9 @@
 #include "player.hpp"
 #include "../../Constante.hpp"
 #include <iostream>
+#include <string>
+#include <vector>
+#include <utility> // Pour std::pair
 
 Player::Player(SDL_Renderer* Renderer){
     vie = 3;
@@ -17,9 +20,15 @@ Player::Player(SDL_Renderer* Renderer){
     Jumping = true;
     hasJump = false;
     OnGround = false;
+    etat = "Idle";
+
+    etats["Right"] = {{0, 913}, {82, 913}, {164, 913}, {246, 913}, {328, 913}, {410, 913}, {492, 913}, {574, 913}, {656, 913}};
+    etats["Left"] = {{0, 747}, {82, 747}, {164, 747}, {246, 747}, {328, 747}, {410, 747}, {492, 747}, {574, 747}, {656, 664}};
+    etats["Jump"] = {{0,9}};
+    etats["Idle"] = {{0,176}};
 
     Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 36, 64);
-    Image.setSrcRect(24, 180, 36, 64);
+    Image.setSrcRect(0+24,9+7, 36, 64);
     Image.loadImage(Renderer);
 }
 
@@ -80,6 +89,17 @@ void Player::Move(int x1, int y1){ // Pas les coordonnées, seulement le vecteur
         AllMove(x1, y1, false);
     }
 }
+
+void Player::AnimPlayer(){
+    for (int i = 0; i<etats[etat].size(); i++){
+        Image.setSrcRect(etats[etat][i].first+24, etats[etat][i].second+7, 36, 64);
+        printf("coord : %d %d\n", etats[etat][i].first, etats[etat][i].second);
+    }
+    printf("etat : %s\n", etat.c_str());
+
+}
+
+
 
 void Player::AllMove(int x1, int y1, bool Teleport){
     if (!Teleport){

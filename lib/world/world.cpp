@@ -52,23 +52,31 @@ void world::moveCamera() {
 void world::movePlayer() {
     // Appliquer la gravité
     this->Joueur->applyGravity(this->deltaTime);
-    printf("is on ground : %d\n", this->Joueur->isOnGround());
     // Gérer les mouvements verticaux (haut / bas)
     if (this->KeyPressed[2] && this->Joueur->isOnGround()) {
         this->Joueur->jump();
+        this->Joueur->etat = "Jump";
+        printf("etat : %s\n", this->Joueur->etat.c_str());
+        printf("etat : %d %d\n", this->Joueur->etats[this->Joueur->etat][0].first, this->Joueur->etats[this->Joueur->etat][0].second);
     }
     // Gérer les déplacements horizontaux
     if (this->KeyPressed[0]) {
         this->Joueur->Move(-(this->Joueur->speed) * this->deltaTime, 0);
+        this->Joueur->etat = "Left";
+        printf("etat : %s\n", this->Joueur->etat.c_str());
     }
     if (this->KeyPressed[1]) {
         this->Joueur->Move(this->Joueur->speed * this->deltaTime, 0);
+        this->Joueur->etat = "Right";
+        printf("etat : %s\n", this->Joueur->etat.c_str());
     }
 
     if (this->KeyPressed[3]) {
         this->Joueur->Move(0, this->Joueur->speed * this->deltaTime);
+        this->Joueur->etat = "Idle";
+        printf("etat : %s\n", this->Joueur->etat.c_str());
     }
-    
+    this->Joueur->AnimPlayer();
 }
 
 void world::InitMonde(SDL_Renderer* Renderer){

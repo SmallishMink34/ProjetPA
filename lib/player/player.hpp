@@ -4,6 +4,9 @@
 #include "../world/world.hpp"
 #include "../sprites/sprite.hpp"
 #include "../maps/maps.hpp"
+#include <string>
+#include <vector>
+#include <utility> // Pour std::pair
 
 class world;
 class Player{
@@ -15,6 +18,9 @@ class Player{
         int vie;
         Sprite Image;
         int speed;
+        //std::string etats[4] = {"Right", "Left", "Jump", "Idle"};
+        std::map<std::string, std::vector<std::pair<int, int>>> etats;
+        std::string etat;
         std::vector<tmx::Object> Collisions;
 
         // Fonctions
@@ -23,8 +29,10 @@ class Player{
         void Moveto();
         void RealMoveto(int x, int y);
         void Move(int x, int y);
+        void AnimPlayer();
         int getWidth();
         int getHeight();
+        
 
         tmx::Object* isColliding(int x1, int y1, int realx, int realy);
         int getRX();
