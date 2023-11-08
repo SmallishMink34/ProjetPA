@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <utility> // Pour std::pair
+#include <unistd.h>     
 
 class world;
 class Player{
@@ -29,7 +30,7 @@ class Player{
         void Moveto();
         void RealMoveto(int x, int y);
         void Move(int x, int y);
-        void AnimPlayer();
+        void AnimPlayer(int i);
         int getWidth();
         int getHeight();
         

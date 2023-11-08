@@ -24,6 +24,8 @@ class world
         Uint32 currentTime;
         double deltaTime;
         Uint32 previousTime;
+        Uint32 Animcpt;
+        Uint32 cptest;
         // Fonctions
         void InitMonde(SDL_Renderer* Renderer);
         void drawAll(SDL_Renderer* Renderer);

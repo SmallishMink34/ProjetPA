@@ -8,6 +8,8 @@ world::world(SDL_Renderer* Renderer){
     this->currentTime  = SDL_GetTicks();
     this->deltaTime = this->currentTime;
     this->previousTime = 0;
+    this->Animcpt = 0;
+    this->cptest = 0;
     this->dx = 0;
     this->dy = 0;
 }
@@ -19,6 +21,18 @@ void world::UpdateAll(){
     this->previousTime = this->currentTime;
     this->movePlayer();
     this->moveCamera();
+
+    
+    this->cptest++;
+    
+    if (cptest%10 == 0){
+        this->Animcpt++;
+        if (Animcpt > Joueur->etats[Joueur->etat].size()-1){
+            Animcpt = 0;
+        }
+        this->Joueur->AnimPlayer(Animcpt);
+    }
+
 }
  
 void world::moveCamera() {
@@ -56,27 +70,29 @@ void world::movePlayer() {
     if (this->KeyPressed[2] && this->Joueur->isOnGround()) {
         this->Joueur->jump();
         this->Joueur->etat = "Jump";
-        printf("etat : %s\n", this->Joueur->etat.c_str());
-        printf("etat : %d %d\n", this->Joueur->etats[this->Joueur->etat][0].first, this->Joueur->etats[this->Joueur->etat][0].second);
+        //printf("etat : %s\n", this->Joueur->etat.c_str());
+        //printf("etat : %d %d\n", this->Joueur->etats[this->Joueur->etat][0].first, this->Joueur->etats[this->Joueur->etat][0].second);
     }
     // Gérer les déplacements horizontaux
     if (this->KeyPressed[0]) {
         this->Joueur->Move(-(this->Joueur->speed) * this->deltaTime, 0);
         this->Joueur->etat = "Left";
-        printf("etat : %s\n", this->Joueur->etat.c_str());
+        //printf("etat : %s\n", this->Joueur->etat.c_str());
     }
     if (this->KeyPressed[1]) {
         this->Joueur->Move(this->Joueur->speed * this->deltaTime, 0);
         this->Joueur->etat = "Right";
-        printf("etat : %s\n", this->Joueur->etat.c_str());
+        //printf("etat : %s\n", this->Joueur->etat.c_str());
     }
 
     if (this->KeyPressed[3]) {
-        this->Joueur->Move(0, this->Joueur->speed * this->deltaTime);
-        this->Joueur->etat = "Idle";
-        printf("etat : %s\n", this->Joueur->etat.c_str());
+        if (this->Joueur->isOnGround()) {
+            this->Joueur->Move(0, this->Joueur->speed * this->deltaTime);
+            this->Joueur->etat = "Idle";
+        }
+        //printf("etat : %s\n", this->Joueur->etat.c_str());
     }
-    this->Joueur->AnimPlayer();
+    
 }
 
 void world::InitMonde(SDL_Renderer* Renderer){

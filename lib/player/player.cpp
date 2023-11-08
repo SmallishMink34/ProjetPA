@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <utility> // Pour std::pair
+#include <unistd.h>     
 
 Player::Player(SDL_Renderer* Renderer){
     vie = 3;
@@ -22,10 +23,10 @@ Player::Player(SDL_Renderer* Renderer){
     OnGround = false;
     etat = "Idle";
 
-    etats["Right"] = {{0, 913}, {82, 913}, {164, 913}, {246, 913}, {328, 913}, {410, 913}, {492, 913}, {574, 913}, {656, 913}};
-    etats["Left"] = {{0, 747}, {82, 747}, {164, 747}, {246, 747}, {328, 747}, {410, 747}, {492, 747}, {574, 747}, {656, 664}};
+    etats["Right"] = {{0, 910}, {82, 910}, {164, 910}, {246, 910}, {328, 910}, {410, 910}, {492, 910}, {574, 910}, {656, 910}};
+    etats["Left"] = {{0, 744}, {82, 744}, {164, 744}, {246, 744}, {328, 744}, {410, 744}, {492, 744}, {574, 744}, {656, 744}};
     etats["Jump"] = {{0,9}};
-    etats["Idle"] = {{0,176}};
+    etats["Idle"] = {{0,173}};
 
     Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 36, 64);
     Image.setSrcRect(0+24,9+7, 36, 64);
@@ -90,16 +91,11 @@ void Player::Move(int x1, int y1){ // Pas les coordonnées, seulement le vecteur
     }
 }
 
-void Player::AnimPlayer(){
-    for (int i = 0; i<etats[etat].size(); i++){
-        Image.setSrcRect(etats[etat][i].first+24, etats[etat][i].second+7, 36, 64);
-        printf("coord : %d %d\n", etats[etat][i].first, etats[etat][i].second);
-    }
-    printf("etat : %s\n", etat.c_str());
-
+void Player::AnimPlayer(int i){
+    Image.setSrcRect(etats[etat][i].first+24, etats[etat][i].second+7, 36, 64);
+    //printf("coord : %d %d\n", etats[etat][i].first, etats[etat][i].second);
+    //printf("etat : %s\n", etat.c_str());  
 }
-
-
 
 void Player::AllMove(int x1, int y1, bool Teleport){
     if (!Teleport){
@@ -128,12 +124,17 @@ void Player::applyGravity(float deltaTime) {
     verticalVelocity += Gravity;
     dy += verticalVelocity;
 
+    if (dy > 0.5 && !isOnGround()){
+        etat = "Idle";
+    }
+
     if (isOnGround()){ 
         dy = 0;
         verticalVelocity = 0;
         setIsJumping(false);
         if (hasJump){ // Seulement si il est sur le sol
             verticalVelocity = -jumpStrength;; 
+            etat = "Jump";
         }
     }
     
