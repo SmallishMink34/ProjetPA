@@ -45,6 +45,7 @@ void world::moveCamera() {
     // Appliquer l'interpolation pour déplacer progressivement la caméra
     dx += (targetCameraX - dx) * CameraSpeed;
     dy += (targetCameraY - dy) * CameraSpeed;
+
 }
 
 
