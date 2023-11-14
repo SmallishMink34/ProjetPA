@@ -3,18 +3,22 @@
 #include "../world/world.hpp"
 #include "jeu.hpp"
 
-Jeu::Jeu() {
-    gWindow = nullptr;
-    gRenderer = nullptr;
+Jeu::Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer) {
+    this->gWindow = gWindow;
+    this->gRenderer = gRenderer;
+    
     quit = false;
 }
 
 void Jeu::Init(){
+    
     Monde = new world(gRenderer);
+    
     Monde->InitMonde(gRenderer);
+    
 }
 
-void Jeu::handleEvents() {
+void Jeu::handleEvents(std::string * Gamemode) {
     SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
         if (e.type == SDL_QUIT) {

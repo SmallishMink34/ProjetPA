@@ -11,10 +11,11 @@ class Gamemode {
         SDL_Window* gWindow;
         SDL_Renderer* gRenderer;
         bool quit;
+        int phase;
         
         Gamemode();
 
-        virtual void handleEvents() = 0;
+        virtual void handleEvents(std::string * Gamemode) = 0;
         virtual void Init() = 0;
         virtual void render() = 0;
         virtual void update() = 0;

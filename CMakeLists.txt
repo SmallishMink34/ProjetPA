@@ -54,7 +54,7 @@ add_custom_target(run
 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
-set(SRCS main.cpp lib/world/world.cpp lib/player/player.cpp lib/display/display.cpp lib/sprites/sprite.cpp lib/maps/maps.cpp lib/maps/assets.cpp lib/jeu/jeu.cpp lib/menu/menu.cpp lib/gamemode/gamemode.cpp)
+set(SRCS main.cpp lib/world/world.cpp lib/player/player.cpp lib/display/display.cpp lib/sprites/sprite.cpp lib/maps/maps.cpp lib/maps/assets.cpp lib/jeu/jeu.cpp lib/menu/menu.cpp lib/gamemode/gamemode.cpp lib/button/button.cpp)
 
 add_executable(mon_programme ${SRCS})
 

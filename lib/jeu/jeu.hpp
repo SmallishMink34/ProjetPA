@@ -6,10 +6,10 @@
 
 class Jeu : public Gamemode {
     public:
-        Jeu();
+        Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer);
         void Init();
         world *Monde = new world(gRenderer);
-        void handleEvents();
+        void handleEvents(std::string * Gamemode);
         void render();
         void update();
 };
