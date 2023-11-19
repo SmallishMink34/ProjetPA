@@ -73,7 +73,7 @@ void Player::Move(int x1, int y1){ // Pas les coordonnées, seulement le vecteur
     tmx::Object* object = isColliding(x1, y1, Realx, Realy);
     OnGround = false;
     if (object != nullptr){
-        printf("Collision\n");
+        //printf("Collision\n");
         if (x1 > 0){
             AllMove(object->getPosition().x - getWidth(), Realy, true);
         }else if(x1 < 0){

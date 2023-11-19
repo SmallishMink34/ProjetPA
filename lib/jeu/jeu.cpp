@@ -6,7 +6,6 @@
 Jeu::Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer) {
     this->gWindow = gWindow;
     this->gRenderer = gRenderer;
-    
     quit = false;
 }
 
@@ -15,6 +14,11 @@ void Jeu::Init(){
     Monde = new world(gRenderer);
     
     Monde->InitMonde(gRenderer);
+    
+}
+
+void Jeu::Pause(){
+    printf("pause\n");
     
 }
 
@@ -28,7 +32,10 @@ void Jeu::handleEvents(std::string * Gamemode) {
             // Vérifiez quelle touche a été enfoncée
             switch (e.key.keysym.sym) {
                 case SDLK_ESCAPE:
-                    quit = true; // Quitte l'application si la touche Échap est enfoncée
+                    Pause(); // Quitte l'application si la touche Échap est enfoncée
+                    break;
+                case SDLK_RETURN:
+                    quit = true;
                     break;
                 case SDLK_s:
                     Monde->KeyPressed[3] = true;
@@ -41,6 +48,10 @@ void Jeu::handleEvents(std::string * Gamemode) {
                     break;
                 case SDLK_q:
                     Monde->KeyPressed[0] = true;
+                    break;
+
+                case SDLK_SPACE:
+                    Monde->KeyPressed[2] = true;
                     break;
                 
                 case SDLK_p: 
@@ -61,6 +72,9 @@ void Jeu::handleEvents(std::string * Gamemode) {
                     break;
                 case SDLK_q:
                     Monde->KeyPressed[0] = false;
+                    break;
+                case SDLK_SPACE:
+                    Monde->KeyPressed[2] = false;
                     break;
             }
         }
