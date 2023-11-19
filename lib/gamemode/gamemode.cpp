@@ -4,7 +4,6 @@ Gamemode::Gamemode() {
     gWindow = nullptr;
     gRenderer = nullptr;
     quit = false;
-    phase = 0;
 }
 
 

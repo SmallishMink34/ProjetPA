@@ -11,7 +11,7 @@ class Gamemode {
         SDL_Window* gWindow;
         SDL_Renderer* gRenderer;
         bool quit;
-        int phase;
+        bool var;
         
         Gamemode();
 

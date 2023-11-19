@@ -37,8 +37,9 @@ Sprite::Sprite(std::string lien, int x, int y, int w, int h){
 }
 
 
-void Sprite::loadImage(SDL_Renderer *Renderer){
-    SDL_Texture* texture = loadTexture(Renderer, this->lien);
+void Sprite::loadImage(SDL_Renderer* Renderer) {
+    // Implémentation de la fonction loadImage
+    SDL_Texture* texture = loadTexture(Renderer, lien);
     if (texture == nullptr) {
         std::cerr << "Échec du chargement de l'image." << std::endl;
     }

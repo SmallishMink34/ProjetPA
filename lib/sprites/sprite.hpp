@@ -18,7 +18,7 @@ class Sprite{
         SDL_Rect* getsrcRect();
         SDL_Texture* GetImg();
         void selfDraw(SDL_Renderer* Renderer);
-        void loadImage(SDL_Renderer *Renderer);
+        void loadImage(SDL_Renderer* Renderer);
         void setSrcRect(int x, int y, int w, int h);
         int getWidth();
         int getHeight();
