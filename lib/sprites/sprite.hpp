@@ -4,6 +4,8 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
+
+
 class Sprite{
     public:
         // Constructeur

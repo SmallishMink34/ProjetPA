@@ -1,9 +1,8 @@
 #include "world.hpp"
-#include "../../Constante.hpp"
 
-world::world(SDL_Renderer* Renderer, int Real_W, int Real_H){
+world::world(SDL_Renderer* Renderer, Variable* Var){
     this->Map = new level("map");
-    this->Joueur = new Player(Renderer);
+    this->Joueur = new Player(Renderer, Var);
     this->AllElements = Texture();
     this->currentTime  = SDL_GetTicks();
     this->deltaTime = this->currentTime;
@@ -12,8 +11,7 @@ world::world(SDL_Renderer* Renderer, int Real_W, int Real_H){
     this->cptest = 0;
     this->dx = 0;
     this->dy = 0;
-    this->Real_W = Real_W;
-    this->Real_H = Real_H;
+    this->Var = Var;
 }
 
 void world::UpdateAll(){
@@ -43,24 +41,24 @@ void world::moveCamera() {
     int playerY = Joueur->getRY();
 
     // Calculer le décalage horizontal et vertical de la caméra pour centrer le joueur
-    float targetCameraX = playerX - (Real_W / 2);
-    float targetCameraY = playerY - (Real_H / 2);
+    float targetCameraX = playerX - (Var->Real_W / 2);
+    float targetCameraY = playerY - (Var->Real_H / 2);
 
     if (targetCameraX < 0) {
         targetCameraX = 0;
-    } else if (targetCameraX > Map->getMapWidth() - Real_W) {
-        targetCameraX = Map->getMapWidth() - Real_W;
+    } else if (targetCameraX > Map->getMapWidth() - Var->Real_W) {
+        targetCameraX = Map->getMapWidth() - Var->Real_W;
     }
 
     if (targetCameraY < 0) {
         targetCameraY = 0;
-    } else if (targetCameraY > Map->getMapHeight() - Real_H) {
-        targetCameraY = Map->getMapHeight() - Real_H;
+    } else if (targetCameraY > Map->getMapHeight() - Var->Real_H) {
+        targetCameraY = Map->getMapHeight() - Var->Real_H;
     }
 
     // Appliquer l'interpolation pour déplacer progressivement la caméra
-    dx += (targetCameraX - dx) * CameraSpeed;
-    dy += (targetCameraY - dy) * CameraSpeed;
+    dx += (targetCameraX - dx) * Var->CameraSpeed;
+    dy += (targetCameraY - dy) * Var->CameraSpeed;
 }
 
 
@@ -107,7 +105,7 @@ void world::InitMonde(SDL_Renderer* Renderer){
     Collisions = this->Map->getObjectsByType("Collision");
     this->Joueur->InitPlayer(Collisions, this);
     this->Joueur->AllMove(object.getPosition().x, object.getPosition().y, true);
-    this->Joueur->FixCamera(int (this->Real_W), int (this->Real_H));
+    this->Joueur->FixCamera(int (Var->Real_W), int (Var->Real_H));
 }
 
 void world::drawAll(SDL_Renderer* Renderer){

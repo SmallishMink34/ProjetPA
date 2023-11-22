@@ -4,35 +4,34 @@
 //#include "../button/button.cpp"
 
 
-Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer){
+Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var){
     this->gWindow = gWindow;
     this->gRenderer = gRenderer;
     quit = false;
     isLoaded = false;
+    this->Var = Var;
+
     var = false;
-
-    scale = 1.0f;
-    Real_W =  Windows_W/scale;
-    Real_H =  Windows_H/scale;
-
-    this->Image = Sprite("src/Images/pause.png", 0, 0, Real_W, Real_H);
-    Image.loadImage(gRenderer);
-
-    //bouton play
-    this->play = Bouton(gRenderer, "src/Images/play.png", Real_W/2-135, Real_H/3, 256, 128);
-    this->play.setSurface(0, 0, 512, 256);
-    this->play.gererPlay(&evenement, gRenderer, &var);
-
-    //bouton exit
-    this->exit = Bouton(gRenderer, "src/Images/exit.png", Real_W/2-135, Real_H/1.6, 256, 128);
-    this->exit.setSurface(0, 256, 512, 256);
-    this->exit.gererFin(&evenement, gRenderer, &quit);
 }
 
 void Mpause::Init() {
     isLoaded = true;
-    SDL_RenderSetScale(this->gRenderer, scale, scale); // Faire un zoom dans la fenetre
+    Var->ChangeScale(1);
+    SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale); // Faire un zoom dans la fenetre
     SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
+    
+    this->Image = Sprite("src/Images/bg.jpg", 0, 0, Var->Real_W, Var->Real_H);
+    Image.loadImage(gRenderer);
+
+    //bouton play
+    this->play = Bouton(gRenderer, "src/Images/play.png", Var->Real_W/2-135, Var->Real_H/3, 256, 128);
+    this->play.setSurface(0, 0, 512, 256);
+    this->play.gererPlay(&evenement, gRenderer, &var);
+
+    //bouton exit
+    this->exit = Bouton(gRenderer, "src/Images/exit.png", Var->Real_W/2-135, Var->Real_H/1.6, 256, 128);
+    this->exit.setSurface(0, 256, 512, 256);
+    this->exit.gererFin(&evenement, gRenderer, &quit);
 }
 
 void Mpause::handleEvents(std::string* Gamemode) {
@@ -75,5 +74,7 @@ void Mpause::update() {
 }
 
 void Mpause::unpause() {
-    
+    Var->ChangeScale(1);
+    SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale); // Faire un zoom dans la fenetre
+    SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 }

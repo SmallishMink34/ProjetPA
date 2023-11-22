@@ -5,17 +5,15 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "../world/world.hpp"
+#include "../Variables/variables.hpp"
 
 class Gamemode {
     public:
         SDL_Window* gWindow;
         SDL_Renderer* gRenderer;
         bool quit;
-        bool var;
         bool isLoaded;
-        float scale;
-        int Real_W;
-        int Real_H;
+        Variable *Var;
         Gamemode();
 
         virtual void handleEvents(std::string * Gamemode) = 0;

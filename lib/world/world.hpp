@@ -4,13 +4,14 @@
 #include "../display/display.hpp"
 #include "../maps/maps.hpp"
 #include "../player/player.hpp"
+#include "../Variables/variables.hpp"
 
 class Player;
 class world
 {
     public:
         // Constucteur
-        world(SDL_Renderer* Renderer, int Real_W, int Real_H);
+        world(SDL_Renderer* Renderer, Variable* Var);
         // Variables
         Player* Joueur;
         Texture AllElements;
@@ -21,8 +22,7 @@ class world
         int dx; // Décalage X de la map par rapport au personnage.
         int dy;
 
-        int Real_W;
-        int Real_H;
+        Variable* Var;
 
         Uint32 currentTime;
         double deltaTime;

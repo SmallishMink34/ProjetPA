@@ -11,7 +11,7 @@ class menu : public Gamemode {
         Bouton play;
         Bouton exit;
         SDL_Event evenement;
-        menu(SDL_Window* gWindow, SDL_Renderer* gRenderer);
+        menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
         void Init();
         void handleEvents(std::string* Gamemode);
         void render();
@@ -19,6 +19,7 @@ class menu : public Gamemode {
         void unpause();
         int Real_W;
         int Real_H;
+        bool var;
 };
 
 #endif

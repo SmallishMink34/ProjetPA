@@ -3,20 +3,19 @@
 
 #include "../gamemode/gamemode.hpp"
 #include "../world/world.hpp"
+#include "../Variables/variables.hpp"
 
 
 class Jeu : public Gamemode {
     public:
-        Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer);
+        Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
         void Init();
         void Pause(std::string* Gamemode);
-        world *Monde = new world(gRenderer, Real_W, Real_H);
+        world *Monde = new world(gRenderer, Var);
         void handleEvents(std::string * Gamemode);
         void render();
         void update();
         void unpause();
-        int Real_W;
-        int Real_H;
 };
 
 #endif

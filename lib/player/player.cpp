@@ -1,18 +1,14 @@
 #include "player.hpp"
-#include "../../Constante.hpp"
-#include <iostream>
-#include <string>
-#include <vector>
-#include <utility> // Pour std::pair
-#include <unistd.h>     
 
-Player::Player(SDL_Renderer* Renderer){
+
+Player::Player(SDL_Renderer* Renderer, Variable* Var){
     vie = 3;
 
     x = 60; // Coordonnées sur l'interface
     y = 60;
     Realx = 60; // Coordonnées réels
     Realy = 60;
+    this->Var = Var;
 
     speed = 5;
     dy = 0;
@@ -121,7 +117,7 @@ void Player::FixCamera(int Real_W, int Real_H){
 
 void Player::applyGravity(float deltaTime) {
     dy = 0;
-    verticalVelocity += Gravity;
+    verticalVelocity += Var->Gravity;
     dy += verticalVelocity;
 
     if (dy > 0.5 && !isOnGround()){

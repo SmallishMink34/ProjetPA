@@ -1,26 +1,20 @@
-
-#include "../gamemode/gamemode.hpp"
-#include "../world/world.hpp"
-#include "../../Constante.hpp"
 #include "jeu.hpp"
 
-Jeu::Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer) {
+Jeu::Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
     this->gWindow = gWindow;
     this->gRenderer = gRenderer;
     quit = false;
     isLoaded = false;
-
-    scale = Windows_W/1280.0-0.02;
-    Real_W =  Windows_W/scale;
-    Real_H =  Windows_H/scale;
+    this->Var = Var;
 }
 
 void Jeu::Init(){
     isLoaded = true;
 
-    SDL_RenderSetScale(this->gRenderer, scale, scale); // Faire un zoom dans la fenetre
+    Var->ChangeScale(Var->Windows_W/1280.0-0.02);
+    SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale); // Faire un zoom dans la fenetre
     SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
-    Monde = new world(gRenderer, Real_W, Real_H);
+    Monde = new world(gRenderer, Var);
     
     Monde->InitMonde(gRenderer);
     
@@ -36,6 +30,9 @@ void Jeu::Pause(std::string* Gamemode)
 void Jeu::unpause()
 {
     this->Monde->previousTime = SDL_GetTicks();
+    this->Var->ChangeScale(Var->Windows_W/1280.0-0.02);
+    SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale); // Faire un zoom dans la fenetre
+    SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 }
 
 void Jeu::handleEvents(std::string * Gamemode) {

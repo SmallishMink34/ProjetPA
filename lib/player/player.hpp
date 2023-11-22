@@ -4,21 +4,25 @@
 #include "../world/world.hpp"
 #include "../sprites/sprite.hpp"
 #include "../maps/maps.hpp"
+#include <iostream>
 #include <string>
 #include <vector>
 #include <utility> // Pour std::pair
-#include <unistd.h>     
+#include <unistd.h>   
+#include "../Variables/variables.hpp"
 
 class world;
 class Player{
     public:
         // Constructeur
-        Player(SDL_Renderer* Renderer);
+        Player(SDL_Renderer* Renderer, Variable* Var);
 
         // Variables
         int vie;
         Sprite Image;
         int speed;
+        Variable* Var;
+
         //std::string etats[4] = {"Right", "Left", "Jump", "Idle"};
         std::map<std::string, std::vector<std::pair<int, int>>> etats;
         std::string etat;
