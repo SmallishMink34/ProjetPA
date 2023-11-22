@@ -1,20 +1,21 @@
-#include "menu.hpp"
+#include "pauses.hpp"
 #include "../gamemode/gamemode.hpp"
 #include "../../Constante.hpp"
 //#include "../button/button.cpp"
 
 
-menu::menu(SDL_Window* gWindow, SDL_Renderer* gRenderer){
+Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer){
     this->gWindow = gWindow;
     this->gRenderer = gRenderer;
     quit = false;
     isLoaded = false;
     var = false;
+
     scale = 1.0f;
     Real_W =  Windows_W/scale;
     Real_H =  Windows_H/scale;
-    std::cout << Real_W << Real_H << std::endl;
-    this->Image = Sprite("src/Images/bg.jpg", 0, 0, Real_W, Real_H);
+
+    this->Image = Sprite("src/Images/pause.png", 0, 0, Real_W, Real_H);
     Image.loadImage(gRenderer);
 
     //bouton play
@@ -28,20 +29,20 @@ menu::menu(SDL_Window* gWindow, SDL_Renderer* gRenderer){
     this->exit.gererFin(&evenement, gRenderer, &quit);
 }
 
-void menu::Init() {
+void Mpause::Init() {
     isLoaded = true;
-
-    SDL_RenderSetScale(this->gRenderer, 1, 1); // Faire un zoom dans la fenetre
+    SDL_RenderSetScale(this->gRenderer, scale, scale); // Faire un zoom dans la fenetre
     SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 }
 
-void menu::handleEvents(std::string* Gamemode) {
+void Mpause::handleEvents(std::string* Gamemode) {
     SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
         exit.gererFin(&e, this->gRenderer, &quit);
         play.gererPlay(&e, this->gRenderer, &var);
         if(var){
             *Gamemode = "jeu";
+            var = false;
         }
         if (e.type == SDL_QUIT) {
             quit = true;
@@ -59,7 +60,7 @@ void menu::handleEvents(std::string* Gamemode) {
     }
 }
 
-void menu::render() {
+void Mpause::render() {
     // Efface le renderer
     SDL_RenderClear(gRenderer);
     Image.selfDraw(gRenderer);
@@ -69,10 +70,10 @@ void menu::render() {
     SDL_RenderPresent(gRenderer);
 }
 
-void menu::update() {
+void Mpause::update() {
 
 }
 
-void menu::unpause() {
-
+void Mpause::unpause() {
+    
 }

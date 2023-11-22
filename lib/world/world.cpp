@@ -1,7 +1,7 @@
 #include "world.hpp"
 #include "../../Constante.hpp"
 
-world::world(SDL_Renderer* Renderer){
+world::world(SDL_Renderer* Renderer, int Real_W, int Real_H){
     this->Map = new level("map");
     this->Joueur = new Player(Renderer);
     this->AllElements = Texture();
@@ -12,10 +12,12 @@ world::world(SDL_Renderer* Renderer){
     this->cptest = 0;
     this->dx = 0;
     this->dy = 0;
+    this->Real_W = Real_W;
+    this->Real_H = Real_H;
 }
 
 void world::UpdateAll(){
-    this->currentTime  = SDL_GetTicks();
+    this->currentTime = SDL_GetTicks();
     this->deltaTime = (this->currentTime - this->previousTime)/10.0;
     // affichage du temps
     this->previousTime = this->currentTime;
@@ -105,7 +107,7 @@ void world::InitMonde(SDL_Renderer* Renderer){
     Collisions = this->Map->getObjectsByType("Collision");
     this->Joueur->InitPlayer(Collisions, this);
     this->Joueur->AllMove(object.getPosition().x, object.getPosition().y, true);
-    this->Joueur->FixCamera();
+    this->Joueur->FixCamera(int (this->Real_W), int (this->Real_H));
 }
 
 void world::drawAll(SDL_Renderer* Renderer){

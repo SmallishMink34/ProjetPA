@@ -10,7 +10,7 @@ class world
 {
     public:
         // Constucteur
-        world(SDL_Renderer* Renderer);
+        world(SDL_Renderer* Renderer, int Real_W, int Real_H);
         // Variables
         Player* Joueur;
         Texture AllElements;
@@ -20,6 +20,9 @@ class world
 
         int dx; // Décalage X de la map par rapport au personnage.
         int dy;
+
+        int Real_W;
+        int Real_H;
 
         Uint32 currentTime;
         double deltaTime;

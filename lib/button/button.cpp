@@ -63,7 +63,7 @@ void Bouton::gererFin(SDL_Event* evenement, SDL_Renderer* rendu, bool* quit) {
 
     if (isColliding(mouseX, mouseY)) {
         if (evenement->type == SDL_MOUSEMOTION) {
-            this->setSurface(0, 0, 512, 256);
+            this->setSurface(0, 16, 512, 256);
         } else if (evenement->type == SDL_MOUSEBUTTONDOWN && evenement->button.button == SDL_BUTTON_LEFT) {
             printf("fin\n");
             *quit = true;

@@ -43,7 +43,7 @@ class Player{
 
         std::string toString();
         void InitPlayer(std::vector<tmx::Object> Objects, world* Monde);
-        void FixCamera();
+        void FixCamera(int Real_W, int Real_H);
         void AllMove(int x1, int y1, bool Teleport);
         bool isOnGround();
         float getVerticalVelocity();

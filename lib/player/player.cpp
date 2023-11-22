@@ -107,7 +107,7 @@ void Player::AllMove(int x1, int y1, bool Teleport){
     }
 }
 
-void Player::FixCamera(){
+void Player::FixCamera(int Real_W, int Real_H){
     if (x > Map->getMapWidth() - Real_W/2){
         int nombre = Map->getMapWidth()-Real_W;
         x = x - nombre;

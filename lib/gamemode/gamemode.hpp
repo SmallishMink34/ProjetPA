@@ -12,13 +12,17 @@ class Gamemode {
         SDL_Renderer* gRenderer;
         bool quit;
         bool var;
-        
+        bool isLoaded;
+        float scale;
+        int Real_W;
+        int Real_H;
         Gamemode();
 
         virtual void handleEvents(std::string * Gamemode) = 0;
         virtual void Init() = 0;
         virtual void render() = 0;
         virtual void update() = 0;
+        virtual void unpause() = 0;
         ~Gamemode();
 };
 

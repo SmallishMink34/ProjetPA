@@ -6,6 +6,7 @@
 #include "lib/display/display.hpp"
 #include "lib/jeu/jeu.hpp"
 #include "lib/menu/menu.hpp"
+#include "lib/pause/pauses.hpp"
 #include <map>
 
 SDL_Renderer* gRenderer = nullptr;
@@ -76,15 +77,14 @@ int main(int argc, char* args[]) {
 
     Gamemodes["jeu"] = new Jeu(gWindow, gRenderer);
     Gamemodes["menu"] = new menu(gWindow, gRenderer);
-    
+    Gamemodes["pause"] = new Mpause(gWindow, gRenderer);    
     
     Gamemodes[currentGamemode]->Init();
     Uint32 targetFPS = fps;
     Uint32 frameDelay = 1000 / targetFPS;
     Uint32 frameStart, frameTime;
     
-    SDL_RenderSetScale(Gamemodes[currentGamemode]->gRenderer, scale, scale); // Faire un zoom dans la fenetre
-    SDL_SetRenderDrawBlendMode(Gamemodes[currentGamemode]->gRenderer, SDL_BLENDMODE_BLEND);
+    
     
     while (!Gamemodes[currentGamemode]->quit) {
         
@@ -92,11 +92,13 @@ int main(int argc, char* args[]) {
         
         oldGamemode = currentGamemode;
         Gamemodes[currentGamemode]->handleEvents(&currentGamemode);
-        
-        if (currentGamemode != oldGamemode){
+        if (currentGamemode != oldGamemode && !Gamemodes[currentGamemode]->isLoaded){
             Gamemodes[currentGamemode]->Init();
-            
+        }else if (currentGamemode != oldGamemode && Gamemodes[currentGamemode]->isLoaded){
+            // Un pause
+            Gamemodes[currentGamemode]->unpause();
         }
+        
         Gamemodes[currentGamemode]->update();
         
         Gamemodes[currentGamemode]->render();
