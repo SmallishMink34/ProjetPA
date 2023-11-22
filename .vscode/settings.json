@@ -118,7 +118,12 @@
     "list": "cpp",
     "fstream": "cpp",
     "iomanip": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "charconv": "cpp",
+    "optional": "cpp",
+    "format": "cpp",
+    "span": "cpp",
+    "variant": "cpp"
   },
   "workbench.colorCustomizations": {
     "activityBar.activeBackground": "#1a4427",
