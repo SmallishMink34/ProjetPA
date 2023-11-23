@@ -1,5 +1,6 @@
 #include "world.hpp"
 #include "../../Constante.hpp"
+#include "../donjon/donjon.hpp"
 
 world::world(SDL_Renderer* Renderer){
     this->Map = new level("map");
@@ -53,7 +54,6 @@ void world::moveCamera() {
 void world::movePlayer() {
     // Appliquer la gravité
     this->Joueur->applyGravity(this->deltaTime);
-    printf("is on ground : %d\n", this->Joueur->isOnGround());
     // Gérer les mouvements verticaux (haut / bas)
     if (this->KeyPressed[2] && this->Joueur->isOnGround()) {
         this->Joueur->jump();
@@ -91,4 +91,13 @@ void world::drawAll(SDL_Renderer* Renderer){
     this->Joueur->Image.selfDraw(Renderer);
     
 
+}
+
+void world::newDonjon(){
+    this->Donjon = new donjon(30, 0);
+    this->Donjon->create_tree(30);
+    this->Donjon->drawDungeon(this->Donjon->initial_Node);
+    this->Donjon->save_rooms_to_file(this->Donjon->initial_Node);
+    this->Donjon->save_path_to_file(this->Donjon->initial_Node);
+    
 }

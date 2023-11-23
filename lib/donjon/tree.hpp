@@ -24,10 +24,10 @@ class rooms{
         int getY();
         int getTall();
         int getType();
-        int setX(int x);
-        int setY(int y);
+        void setX(int x);
+        void setY(int y);
 
-        std::vector<std::pair<int, int>> rooms::coordsarround();
+        std::vector<std::pair<int, int>> coordsarround();
 };
 
 class Node{
@@ -40,6 +40,7 @@ class Node{
         int length();
         rooms getRoom();
         char getValue();
+        std::string getAllChildValues();
 
     private:
         rooms room;

@@ -1,8 +1,11 @@
+#ifndef DONJON_HPP
+#define DONJON_HPP
+
 #include <iostream>
 #include <vector>
 #include <random>
 #include <algorithm>
-#include <tree.hpp>
+#include "tree.hpp"
 
 class donjon {
     private:
@@ -16,12 +19,14 @@ class donjon {
         std::vector<std::string> dirrectionCopy;
         int seed;
         int specialRooms;
-        Node* initial_Node;
+        
         int remaining_count;
         std::vector<Node*> celibNode;
 
     public:
         donjon(int nbnoeuds, int seed);
+        
+        Node* initial_Node;
         char addletter();
         Node* searchNode(int x, int y, Node* node);
         Node* create_tree(int node_count);
@@ -44,4 +49,7 @@ class donjon {
         void load_rooms_from_file();
         // void drawDungeon()
         void draw_tree(Node* node, int x, int y, int level);
+        void drawDungeon(Node* node);
 };
+
+#endif

@@ -4,6 +4,7 @@
 #include "../display/display.hpp"
 #include "../maps/maps.hpp"
 #include "../player/player.hpp"
+#include "../donjon/donjon.hpp"
 
 class Player;
 class world
@@ -20,6 +21,7 @@ class world
 
         int dx; // Décalage X de la map par rapport au personnage.
         int dy;
+        donjon* Donjon;
 
         Uint32 currentTime;
         double deltaTime;
@@ -30,6 +32,7 @@ class world
         void movePlayer();
         void UpdateAll();
         void moveCamera();
+        void newDonjon();
         
 };  
 

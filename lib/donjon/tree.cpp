@@ -47,24 +47,25 @@ int rooms::getY(){
     return this->y;
 }
 
-int rooms::setX(int x){
+void rooms::setX(int x){
     this->x = x;
 }
 
-int rooms::setY(int y){
+void rooms::setY(int y){
     this->y = y;
 }
 
 std::vector<std::pair<int, int>> rooms::coordsarround(){
     std::vector<std::pair<int, int>> coords;
     if (getTall() == 2){
-        coords.push_back(std::pair(getX()+1,getY()));
-        coords.push_back(std::pair(getX()-1,getY()));
-        coords.push_back(std::pair(getX()+1,getY()+1));
-        coords.push_back(std::pair(getX()-1,getY()+1));
+
+        coords.push_back(std::pair<int, int> (getX()+1,getY()));
+        coords.push_back(std::pair<int, int> (getX()-1,getY()));
+        coords.push_back(std::pair<int, int> (getX()+1,getY()+1));
+        coords.push_back(std::pair<int, int> (getX()-1,getY()+1));
     }else{
-        coords.push_back(std::pair(getX()+1,getY()));
-        coords.push_back(std::pair(getX()-1,getY()+1));
+        coords.push_back(std::pair<int, int> (getX()+1,getY()));
+        coords.push_back(std::pair<int, int> (getX()-1,getY()+1));
     }
 
     return coords;
@@ -93,6 +94,15 @@ Node::Node(rooms room, char value){
 std::vector<Node*> Node::getChildren(){
     return children;
 }
+
+std::string Node::getAllChildValues() {
+    std::string result;
+    for (Node* child : getChildren()) {
+        result += child->getValue();
+    }
+    return result;
+}
+
 
 char Node::getChildValue(int index){
     if(index >= 0 && index < children.size()){

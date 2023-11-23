@@ -1,16 +1,19 @@
 #include "donjon.hpp"
 #include "tree.hpp"
 #include <fstream>
+
+
 donjon::donjon(int nbnoeuds, int seed = 1) : noeuds(nbnoeuds), max_noeuds(nbnoeuds), max_children(3), max_depth(10), seed(seed), specialRooms(3), remaining_count(nbnoeuds) {
         letter = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
         dirrection = {"bas", "haut"};
         dirrectionCopy = dirrection;
         std::random_device rd;
         std::mt19937 g(rd());
-        std::shuffle(letter.begin(), letter.end(), g);
-        std::shuffle(dirrection.begin(), dirrection.end(), g);
-        std::shuffle(dirrectionCopy.begin(), dirrectionCopy.end(), g);
+        // std::shuffle(letter.begin(), letter.end(), g);
+        // std::shuffle(dirrection.begin(), dirrection.end(), g);
+        // std::shuffle(dirrectionCopy.begin(), dirrectionCopy.end(), g);
         initial_Node = nullptr;
+        
     }
 
 char donjon::addletter() {
@@ -20,7 +23,7 @@ char donjon::addletter() {
 }
 
 Node* donjon::searchNode(int x, int y, Node* node) {
-    if (node->getRoom().getX() == x && (node->getRoom().getY() == y  || node->getRoom().getY() == y-1) && node->getRoom().getTall() == 2) {
+    if (node->getRoom().getX() == x && (node->getRoom().getY() == y  || node->getRoom().getY() == y-1)) {
         return node;
     }
     for (Node* child : node->getChildren()) {
@@ -29,6 +32,7 @@ Node* donjon::searchNode(int x, int y, Node* node) {
             return result;
         }
     }
+    
     return nullptr;
 }
 
@@ -36,7 +40,7 @@ Node* donjon::create_tree(int node_count) {
     char root_value = addletter();
     Node* root = new Node(rooms(0, 0, 32, 32, 2, 2), root_value);
     initial_Node = root;
-    add_children(root, node_count);
+    add_children(root, true, true, 0);
     return root;
 }
 
@@ -74,7 +78,7 @@ std::vector<std::pair<int, int>> donjon::checks_valids(rooms room) {
     return valid;
 }
 
-bool donjon::checkTallRoom(int x, int y, std::string dirr = "bas") {
+bool donjon::checkTallRoom(int x, int y, std::string dirr) {
     return (std::find(CoordUse.begin(), CoordUse.end(), std::make_pair(x, y + (dirr == "bas" ? 1 : -1))) == CoordUse.end());
 }
 
@@ -136,7 +140,8 @@ void donjon::add_children(Node* node, bool CanBeTall = true, bool Continuer = tr
         Continuer = false;
     }
 
-    num_children = std::min(remaining_count, static_cast<int>(checks_valids(node->getRoom()).size()), num_children);
+    num_children = std::min(remaining_count, static_cast<int>(checks_valids(node->getRoom()).size()));
+    num_children = std::min(num_children, max_children);
     if (depth >= max_depth) {
         num_children = 0;
     }
@@ -201,6 +206,7 @@ void donjon::save_rooms_to_file(Node* node) {
             for (int x = minX(); x <= maxX(); x++) {
                 if (std::find(CoordUse.begin(), CoordUse.end(), std::make_pair(x, y)) != CoordUse.end()) {
                     Node* searchnode = searchNode(x, y, node);
+                    std::cout << searchnode->getValue() << "  aaaaaaaaaaaaaaaaaaaaa" << std::endl;
                     file << searchnode->getValue();
                 }
                 else {
@@ -291,14 +297,14 @@ void donjon::load_rooms_from_file() {
     file.close();
 }
 
-// void drawDungeon(Display& display, Node* node) {
-//     if (node != nullptr) {
-//         node->room.draw(display, node->value);
-//         for (Node* i : node->getchild()) {
-//             drawDungeon(display, i);
-//         }
-//     }
-// }
+void donjon::drawDungeon(Node* node) {
+    if (node != nullptr) {
+        std::cout << node->getValue() << " " << node->getAllChildValues() << std::endl;
+        for (Node* i : node->getChildren()) {
+            drawDungeon(i);
+        }
+    }
+}
 
 // void donjon::draw_tree(Node* node, int x, int y, int level) {
 //     if (node != nullptr) {

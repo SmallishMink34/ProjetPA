@@ -81,6 +81,10 @@ void handleEvents(world* Monde) {
                     std::cout << "RealX : " << Monde->Joueur->getRX() << " RealY : " << Monde->Joueur->getRY() << std::endl;
                     std::cout << Monde->Joueur->toString() << std::endl;
                     break;
+                
+                case SDLK_o:
+                    Monde->newDonjon();
+                    break;
             }
         }else if(e.type == SDL_KEYUP){
             switch (e.key.keysym.sym) {
