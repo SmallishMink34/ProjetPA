@@ -1,31 +1,30 @@
-A B45
+A B34
 B C
-C D3
+C DO
 D E
-E FY
-F GQ
+E FN
+F G
 G H
-H IM
+H I
 I J
-J KL
+J KLM
 K 
 L 
-M N
-N OP
-O 
-P 
-Q R
-R SX
-S TV
-T U
-U 
-V W
-W 
+M 
+N 
+O P
+P Q
+Q R12
+R S
+S T
+T UWY
+U V
+V 
+W X
 X 
 Y Z
-Z 1
-1 2
+Z 
+1 
 2 
 3 
 4 
-5 

@@ -1,0 +1,14 @@
+BasedOnStyle: Google
+Language: Cpp
+ColumnLimit: 180
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterFunction : false
+
+SpaceBeforeSquareBrackets : false
+SpaceInEmptyBlock : false
+
+SpaceBeforeCpp11BracedList : false
+SpaceBeforeInheritanceColon : false
+SpaceBeforeParens : Never

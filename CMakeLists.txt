@@ -3,12 +3,21 @@ project(mon_programme)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2")
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
+# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/CMakeModules")
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
+# find_package(SDL2 REQUIRED)
+# find_package(SDL2_image REQUIRED)
+# find_package(SDL2_TTF REQUIRED)
+# find_package(SDL2_mixer REQUIRED)
 
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
+INCLUDE(FindPkgConfig)
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+PKG_SEARCH_MODULE(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
+PKG_SEARCH_MODULE(SDL2TTF REQUIRED SDL2_ttf>=2.0.0)
+PKG_SEARCH_MODULE(SDL2MIXER REQUIRED SDL2_mixer>=2.0.0)
+
+include_directories(${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS})
+
 
 
 include(ExternalProject)
@@ -20,17 +29,15 @@ ExternalProject_Add(
     GIT_TAG master
     UPDATE_DISCONNECTED TRUE
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
-    CONFIGURE_COMMAND ""  # Supprime la configuration du projet, car vous n'en avez pas besoin
-    BUILD_COMMAND ""  # Supprime la phase de construction, car vous n'en avez pas besoin
-    INSTALL_COMMAND ""  # Supprime la phase d'installation, car vous n'en avez pas besoin
-    LOG_DOWNLOAD ON  # Active les journaux de téléchargement
+    CONFIGURE_COMMAND "" 
+    BUILD_COMMAND ""  
+    INSTALL_COMMAND "" 
+    LOG_DOWNLOAD ON 
 )
 
-# Obtenez le répertoire d'installation généré par ExternalProject_Add
 ExternalProject_Get_Property(tmxlite SOURCE_DIR)
 
 
-# Ajoutez une cible pour exécuter la commande de nettoyage après le téléchargement
 add_custom_target(clean_tmxlite
     COMMAND bash -c "find ${SOURCE_DIR} -mindepth 1 -maxdepth 1 ! -name 'tmxlite' -exec rm -rf {} +"
     DEPENDS tmxlite
@@ -58,11 +65,17 @@ set(SRCS main.cpp lib/world/world.cpp lib/player/player.cpp lib/display/display.
 
 add_executable(mon_programme ${SRCS})
 
-# Assurez-vous que la cible de nettoyage est exécutée lors de la construction
 add_dependencies(mon_programme clean_tmxlite)
 
+target_include_directories(mon_programme PUBLIC ${SOURCE_DIR}/tmxlite/include )
 
-target_include_directories(mon_programme PUBLIC ${SOURCE_DIR}/tmxlite/include)
-target_link_libraries(mon_programme ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${CMAKE_BINARY_DIR}/third-party/src/tmxlite/tmxlite/build/libtmxlite.so)
+# Link SDL2, SDL2_ttf, SDL2_mixer, and tmxlite to your target
+target_link_libraries(mon_programme 
+    ${SDL2_LIBRARIES}
+    ${SDL2IMAGE_LIBRARIES}
+    ${SDL2TTF_LIBRARIES}
+    ${SDL2MIXER_LIBRARIES}
+    ${CMAKE_BINARY_DIR}/third-party/src/tmxlite/tmxlite/build/libtmxlite.so
+)
 
 add_dependencies(mon_programme build_tmxlite)
