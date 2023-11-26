@@ -44,8 +44,23 @@ tmx::Object *Player::isColliding(int x1, int y1, int realx, int realy) {
   return nullptr;
 }
 
-bool isInBox(int x, int y, tmx::Object object) {
+bool isPointInBox(int x, int y, tmx::Object object) {
   if(x > object.getPosition().x && x < object.getPosition().x + object.getAABB().width && y > object.getPosition().y && y < object.getPosition().y + object.getAABB().height) {
+    return true;
+  }
+  return false;
+}
+
+bool isBoxInBox(tmx::Object object1, tmx::Object object2) {
+  if(object1.getPosition().x < object2.getPosition().x + object2.getAABB().width && object1.getPosition().x + object1.getAABB().width > object2.getPosition().x &&
+     object1.getPosition().y < object2.getPosition().y + object2.getAABB().height && object1.getPosition().y + object1.getAABB().height > object2.getPosition().y) {
+    return true;
+  }
+  return false;
+}
+
+bool isBoxInBox(int x, int y, tmx::Object object) {
+  if(x < object.getPosition().x + object.getAABB().width && x > object.getPosition().x && y < object.getPosition().y + object.getAABB().height && y > object.getPosition().y) {
     return true;
   }
   return false;
@@ -54,20 +69,21 @@ bool isInBox(int x, int y, tmx::Object object) {
 std::vector<std::pair<tmx::Object, std::string>> Player::isColliding(int realx, int realy) {
   std::vector<std::pair<tmx::Object, std::string>> CollidePairs;
   for(auto &collisionObject : Collisions) {
-    if(isInBox(realx + speed, realy + getHeight() + 2, collisionObject) || (isInBox(realx + getWidth() - speed, realy + getHeight() + 2, collisionObject))) {
+    if(isPointInBox(realx + speed, realy + getHeight() + 2, collisionObject) || (isPointInBox(realx + getWidth() - speed, realy + getHeight() + 2, collisionObject))) {
       CollidePairs.push_back(std::make_pair(collisionObject, "Down"));
     }
-    if(isInBox(realx + getWidth() + speed, realy + getHeight() / 4, collisionObject) || (isInBox(realx + getWidth() + speed, realy + 3 * getHeight() / 4, collisionObject))) {
+    if(isPointInBox(realx + getWidth() + speed, realy + getHeight() / 4, collisionObject) ||
+       (isPointInBox(realx + getWidth() + speed, realy + 3 * getHeight() / 4, collisionObject))) {
       if(collisionObject.getName() == "") {
         CollidePairs.push_back(std::make_pair(collisionObject, "Right"));
       }
     }
-    if(isInBox(realx - speed, realy + getHeight() / 4, collisionObject) || (isInBox(realx - speed, realy + 3 * getHeight() / 4, collisionObject))) {
+    if(isPointInBox(realx - speed, realy + getHeight() / 4, collisionObject) || (isPointInBox(realx - speed, realy + 3 * getHeight() / 4, collisionObject))) {
       if(collisionObject.getName() == "") {
         CollidePairs.push_back(std::make_pair(collisionObject, "Left"));
       }
     }
-    if(isInBox(realx + speed, realy, collisionObject) || (isInBox(realx - speed + getWidth(), realy, collisionObject))) {
+    if(isPointInBox(realx + speed, realy, collisionObject) || (isPointInBox(realx - speed + getWidth(), realy, collisionObject))) {
       if(collisionObject.getName() == "") {
         CollidePairs.push_back(std::make_pair(collisionObject, "Up"));
       }
@@ -109,41 +125,42 @@ bool isEmpty(std::pair<tmx::Object, std::string> pair) {
 void Player::Move(int x1, int y1) {  // Pas les coordonnées, seulement le vecteur de déplacements
   std::vector<std::pair<tmx::Object, std::string>> result = isColliding(Realx, Realy);
 
-  std::cout << "Dy : " << dy << std::endl;
-
   if(dy <= 0) {
     if(isEmpty(isInList(result, "Down"))) {
       OnGround = false;
       jumpStrength = JumpStrength;
     }
   }
+  std::pair<tmx::Object, std::string> Down = isInList(result, "Down");
+  std::pair<tmx::Object, std::string> Up = isInList(result, "Up");
+  std::pair<tmx::Object, std::string> Left = isInList(result, "Left");
+  std::pair<tmx::Object, std::string> Right = isInList(result, "Right");
 
-  if(!isEmpty(isInList(result, "Left"))) {
-    AllMove(isInList(result, "Left").first.getPosition().x + isInList(result, "Left").first.getAABB().width + 2, Realy, true);
+  if(!isEmpty(Left)) {
+    AllMove(Left.first.getPosition().x + Left.first.getAABB().width + 2, Realy, true);
     if(x1 < 0) {
       x1 = 0;
     }
-  } else if(!isEmpty(isInList(result, "Right"))) {
-    AllMove(isInList(result, "Right").first.getPosition().x - getWidth() - 2, Realy, true);
+  } else if(!isEmpty(Right)) {
+    AllMove(Right.first.getPosition().x - getWidth() - 2, Realy, true);
     if(x1 > 0) {
       x1 = 0;
     }
   }
-  if(!isEmpty(isInList(result, "Down")) && dy >= 0) {
-    AllMove(Realx, isInList(result, "Down").first.getPosition().y - getHeight(), true);
-
-    if(isInList(result, "Down").first.getName() == "Jump") {
-      jumpStrength = (float)isInList(result, "Down").first.getProperties().front().getIntValue();
+  if(!isEmpty(Down) && dy >= 0) {
+    AllMove(Realx, Down.first.getPosition().y - getHeight(), true);
+    if(Down.first.getName() == "Jump") {
+      jumpStrength = (float)Down.first.getProperties().front().getIntValue();
       jump();
     }
 
-    if(y1 > 0 && isInList(result, "Down").first.getName() == "Platform") {
-      AllMove(Realx, Realy + isInList(result, "Down").first.getAABB().height, true);
+    if(y1 > 0 && Down.first.getName() == "Platform") {
+      AllMove(Realx, Realy + Down.first.getAABB().height, true);
     }
 
     OnGround = true;
-  } else if(!isEmpty(isInList(result, "Up"))) {
-    AllMove(Realx, isInList(result, "Up").first.getPosition().y + isInList(result, "Up").first.getAABB().height + 2, true);
+  } else if(!isEmpty(Up)) {
+    AllMove(Realx, Up.first.getPosition().y + Up.first.getAABB().height + 2, true);
     verticalVelocity = 0;
   }
   AllMove(x1, y1, false);

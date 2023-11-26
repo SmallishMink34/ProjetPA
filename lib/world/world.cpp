@@ -93,6 +93,7 @@ void world::drawAll(SDL_Renderer *Renderer) {
   this->Map->draw(Renderer, dx, dy);
   // this->AllElements.drawElements(Renderer);
   this->Joueur->Image.selfDraw(Renderer);
+
   drawMap(Renderer);
 }
 

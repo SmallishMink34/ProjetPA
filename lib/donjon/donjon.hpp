@@ -50,8 +50,6 @@ class donjon {
   int HeightLoad(std::ifstream& file);
   std::pair<int, int> SearchFromOrigin(char letter, int x, int y);
   void load_rooms_from_file();
-  // void drawDungeon()
-  void draw_tree(Node* node, int x, int y, int level);
   void drawDungeon(Node* node);
   std::vector<char> donjongetChildFromFile(std::ifstream& file, char letter);
   void addChildFromFile(Node* node, std::ifstream& file, std::ifstream& file2, std::pair<int, int> origin);
