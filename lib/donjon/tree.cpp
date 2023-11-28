@@ -99,7 +99,8 @@ int rooms::getType() { return this->type; }
 
 void rooms::setValue(char value) { this->value = value; }
 
-rooms::~rooms() { TTF_CloseFont(font); }
+rooms::~rooms() {  // TTF_CloseFont(font);
+}
 
 // |---------------------- NODE ----------------------|
 

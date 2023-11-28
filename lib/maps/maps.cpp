@@ -101,7 +101,7 @@ void level::load(const std::string& path, SDL_Renderer* ren) {
   tile_width = tilesize.x;
   tile_height = tilesize.y;
 
-  background = Sprite(imagePath.substr(5), 0, 0, 200, 200);
+  background = Sprite(imagePath.substr(5), 0, 0, 512, 512);
   background.loadImage(ren);
 
   // Load all of the tilesets and store them in a data structure.

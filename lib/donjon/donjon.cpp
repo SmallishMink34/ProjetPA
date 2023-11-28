@@ -25,7 +25,7 @@ char donjon::addletter() {
 }
 
 Node *donjon::searchNode(int x, int y, Node *node) {
-  if(node->getRoom()->getX() == x && (node->getRoom()->getY() == y || node->getRoom()->getY() == y - 1)) {
+  if(node->getRoom()->getX() == x && (node->getRoom()->getY() == y || (node->getRoom()->getY() == y - 1 && node->getRoom()->getTall() == 2))) {
     return node;
   }
   for(Node *child : node->getChildren()) {
@@ -92,10 +92,6 @@ bool donjon::checkTallRoom(int x, int y, std::string dirr) {
 }
 
 void donjon::add_children(Node *node, bool CanBeTall, bool Continuer, int depth) {
-  if(!Continuer) {
-    return;
-  }
-
   // Choix du nombre d'enfants
   int num_children;
 
@@ -160,6 +156,10 @@ void donjon::add_children(Node *node, bool CanBeTall, bool Continuer, int depth)
   }
 
   remaining_count -= num_children;
+
+  if(!Continuer) {
+    return;
+  }
 
   if(remaining_count <= 0) {
     Continuer = false;
@@ -230,7 +230,7 @@ void donjon::save_rooms_to_file(Node *node) {
 }
 
 void donjon::parcours_iteratif_write(Node *node, std::ofstream &txt) {
-  txt << node->getValue() << " ";
+  txt << node->getValue() << node->getRoom()->getTall() << node->getRoom()->getType();
   for(Node *i : node->getChildren()) {
     txt << i->getValue();
   }
@@ -270,23 +270,39 @@ int donjon::HeightLoad(std::ifstream &file) {
   return count;
 }
 
-std::vector<char> donjon::donjongetChildFromFile(std::ifstream &file, char letter) {
+std::vector<char> donjon::getChildFromMapPath(char letter) {
   std::vector<char> child;
+  std::ifstream file("mapPath.txt");
   std::string line;
   while(std::getline(file, line)) {
     if(line[0] == letter) {
-      for(int i = 0; i < 4; i++) {
-        if(line[i + 2] != ' ') {
-          child.push_back(line[i + 2]);
-        }
+      int i = 3;
+      while(line[i] != '\0' && line[i] != '\n' && line[i] != '\r' && line[i] != ' ') {
+        child.push_back(line[i]);
+        i++;
       }
       break;
     }
   }
+  file.close();
   return child;
 }
 
-std::pair<int, int> donjon::SearchFromOrigin(char letter, int x, int y) {
+char donjon::getTallTypeFromMapPath(char letter, int wyw) {
+  char tall;
+  std::ifstream file("mapPath.txt");
+  std::string line;
+  while(std::getline(file, line)) {
+    if(line[0] == letter) {
+      tall = line[wyw];
+      break;
+    }
+  }
+  file.close();
+  return tall;
+}
+
+std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int y) {
   int oldx = 0;
   int oldy = 0;
   std::ifstream file("map.txt");
@@ -303,7 +319,9 @@ std::pair<int, int> donjon::SearchFromOrigin(char letter, int x, int y) {
     oldx = 0;
   }
   file.close();
-  return std::make_pair(-1, -1);
+  std::cout << "Letter " << letter << " not found in map " << std::endl;
+
+  return std::make_pair(NULL, NULL);
 }
 
 void donjon::load_rooms_from_file() {
@@ -311,30 +329,35 @@ void donjon::load_rooms_from_file() {
   std::ifstream file2("mapPath.txt");
   std::string line;
 
-  std::pair<int, int> origin = SearchFromOrigin('A', 0, 0);
-  Node *initial_Node = new Node(new rooms(0, 0), 'A');
+  std::pair<int, int> origin = SearchLetterInMapFromOrigin('A', 0, 0);
 
-  for(char c : donjongetChildFromFile(file2, 'A')) {
-    std::pair<int, int> coords = SearchFromOrigin(c, origin.first, origin.second);
-    Node *child = new Node(new rooms(coords.first, coords.second), c);
-    initial_Node->addChild(child);
-    addChildFromFile(child, file, file2, origin);
-  }
+  initial_Node = new Node(new rooms(0, 0, 32, 32, 2, 2), 'A');
+  std::cout << origin.first << " " << origin.second << std::endl;
 
-  drawDungeon(initial_Node);
+  addChildFromFile(initial_Node);
   file2.close();
   file.close();
 }
 
-void donjon::addChildFromFile(Node *node, std::ifstream &file, std::ifstream &file2, std::pair<int, int> origin) {
-  for(char c : donjongetChildFromFile(file2, node->getValue())) {
-    std::pair<int, int> coords = SearchFromOrigin(c, origin.first, origin.second);
-    Node *child = new Node(new rooms(coords.first, coords.second), c);
-    node->addChild(child);
-    addChildFromFile(child, file, file2, origin);
+void donjon::addChildFromFile(Node *node) {
+  if(node != nullptr) {
+    for(char c : getChildFromMapPath(node->getValue())) {
+      std::pair<int, int> NewNode = SearchLetterInMapFromOrigin(c, 7, 1);
+      if(NewNode.first == NULL && NewNode.second == NULL) {
+        continue;
+      }
+
+      int tall = getTallTypeFromMapPath(c, 1) - '0';
+      std::cout << c << " " << tall << std::endl;
+      if(tall > 2 || tall < 1) {
+        tall = 2;
+      }
+      Node *child = new Node(new rooms(NewNode.first, NewNode.second, 32, 32, getTallTypeFromMapPath(c, 2), tall), c);
+      node->addChild(child);
+      addChildFromFile(child);
+    }
   }
 }
-
 void donjon::drawDungeon(Node *node) {
   if(node != nullptr) {
     std::cout << node->getValue() << "\t" << node->getRoom()->getX() << "/" << node->getRoom()->getY() << "\t" << node->getAllChildValues()

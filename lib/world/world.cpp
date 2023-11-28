@@ -103,6 +103,11 @@ void world::newDonjon() {
 
   // this->Donjon->save_rooms_to_file(this->Donjon->initial_Node);
   this->Donjon->load_rooms_from_file();
+
+  for(int i = 0; i < this->Donjon->CoordUse.size(); i++) {
+    std::cout << this->Donjon->CoordUse[i].first << "/" << this->Donjon->CoordUse[i].first << std::endl;
+  }
+
   this->Donjon->drawDungeon(this->Donjon->initial_Node);
   this->seeMap = true;
 }
