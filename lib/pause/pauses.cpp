@@ -49,7 +49,8 @@ void Mpause::handleEvents(std::string* Gamemode) {
             // Vérifiez quelle touche a été enfoncée
             switch (e.key.keysym.sym) {
                 case SDLK_ESCAPE:
-                    quit = true; // Quitte l'application si la touche Échap est enfoncée
+                    *Gamemode = "jeu";
+                    var = false;
                     break;
             }
         }

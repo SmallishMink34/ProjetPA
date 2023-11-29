@@ -20,6 +20,7 @@ class Player{
         // Variables
         int vie;
         Sprite Image;
+        Sprite hp;
         int speed;
         Variable* Var;
 

@@ -8,6 +8,7 @@
 class menu : public Gamemode {
     public:
         Sprite Image;
+        Sprite titre;
         Bouton play;
         Bouton exit;
         SDL_Event evenement;

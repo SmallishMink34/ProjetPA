@@ -27,6 +27,9 @@ Player::Player(SDL_Renderer* Renderer, Variable* Var){
     Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 36, 64);
     Image.setSrcRect(0+24,9+7, 36, 64);
     Image.loadImage(Renderer);
+
+    hp = Sprite("src/Images/coeur.png", 0, 0, 36, 36);
+    hp.loadImage(Renderer);
 }
 
 void Player::InitPlayer(std::vector<tmx::Object> Objects, world* Monde){

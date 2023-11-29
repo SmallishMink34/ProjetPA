@@ -20,13 +20,17 @@ void menu::Init() {
     this->Image = Sprite("src/Images/bg.jpg", 0, 0, Var->Real_W, Var->Real_H);
     Image.loadImage(gRenderer);
 
+    this->titre = Sprite("src/Images/titre.png", Var->Real_W/3, Var->Real_H/10, Var->Real_W/3, Var->Real_H/3);
+    this->titre.setSrcRect(0, 0, Var->Real_W, Var->Real_H);
+    titre.loadImage(gRenderer);
+
     //bouton play
-    this->play = Bouton(gRenderer, "src/Images/play.png", Var->Real_W/2-135, Var->Real_H/3, 256, 128);
+    this->play = Bouton(gRenderer, "src/Images/play.png", Var->Real_W/3.6, Var->Real_H/1.7, 256, 128);
     this->play.setSurface(0, 0, 512, 256);
     this->play.gererPlay(&evenement, gRenderer, &var);
 
     //bouton exit
-    this->exit = Bouton(gRenderer, "src/Images/exit.png", Var->Real_W/2-135, Var->Real_H/1.6, 256, 128);
+    this->exit = Bouton(gRenderer, "src/Images/exit.png", Var->Real_W/1.66, Var->Real_H/1.7, 256, 128);
     this->exit.setSurface(0, 256, 512, 256);
     this->exit.gererFin(&evenement, gRenderer, &quit);
 }
@@ -59,6 +63,7 @@ void menu::render() {
     // Efface le renderer
     SDL_RenderClear(gRenderer);
     Image.selfDraw(gRenderer);
+    titre.selfDraw(gRenderer);
     exit.selfDraw(gRenderer);
     play.selfDraw(gRenderer);
     // Met à jour le renderer
