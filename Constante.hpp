@@ -13,6 +13,5 @@ const int Real_H = Windows_H / scale;
 
 const int fps = 60;
 const float CameraSpeed = 0.1;
-const float JumpStrength = 8.0f;
 
 #endif

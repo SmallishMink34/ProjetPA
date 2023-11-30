@@ -2,23 +2,28 @@
 
 #include <iostream>
 
-#include "../../Constante.hpp"
-
-Player::Player(SDL_Renderer *Renderer) {
+Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   vie = 3;
 
   x = 60;  // Coordonnées sur l'interface
   y = 60;
   Realx = 60;  // Coordonnées réels
   Realy = 60;
+  this->Var = Var;
 
   speed = 5;
   dy = 0;
   verticalVelocity = 0.0f;
-  jumpStrength = JumpStrength;
+  jumpStrength = 8.0f;
   Jumping = true;
   hasJump = false;
   OnGround = false;
+  etat = "Idle";
+
+  etats["Right"] = {{0, 910}, {82, 910}, {164, 910}, {246, 910}, {328, 910}, {410, 910}, {492, 910}, {574, 910}, {656, 910}};
+  etats["Left"] = {{0, 744}, {82, 744}, {164, 744}, {246, 744}, {328, 744}, {410, 744}, {492, 744}, {574, 744}, {656, 744}};
+  etats["Jump"] = {{0, 9}};
+  etats["Idle"] = {{0, 173}};
 
   Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 54, 96);
   Image.setSrcRect(24, 180, 36, 64);
@@ -166,6 +171,18 @@ void Player::Move(int x1, int y1) {  // Pas les coordonnées, seulement le vecte
   AllMove(x1, y1, false);
 }
 
+void Player::AnimPlayer(int i) {
+  Image.setSrcRect(etats[etat][i].first + 24, etats[etat][i].second + 7, 36, 64);
+  // printf("coord : %d %d\n", etats[etat][i].first, etats[etat][i].second);
+  // printf("etat : %s\n", etat.c_str());
+}
+
+void Player::AnimPlayer(int i) {
+  Image.setSrcRect(etats[etat][i].first + 24, etats[etat][i].second + 7, 36, 64);
+  // printf("coord : %d %d\n", etats[etat][i].first, etats[etat][i].second);
+  // printf("etat : %s\n", etat.c_str());
+}
+
 void Player::AllMove(int x1, int y1, bool Teleport) {
   if(!Teleport) {
     RealMoveto(Realx + x1, Realy + y1);
@@ -176,7 +193,7 @@ void Player::AllMove(int x1, int y1, bool Teleport) {
   }
 }
 
-void Player::FixCamera() {
+void Player::FixCamera(int Real_W, int Real_H) {
   if(x > Map->getMapWidth() - Real_W / 2) {
     int nombre = Map->getMapWidth() - Real_W;
     x = x - nombre;
@@ -190,8 +207,12 @@ void Player::FixCamera() {
 
 void Player::applyGravity(float deltaTime) {
   dy = 0;
-  verticalVelocity += Gravity;
+  verticalVelocity += Var->Gravity;
   dy += verticalVelocity;
+
+  if(dy > 0.5 && !isOnGround()) {
+    etat = "Idle";
+  }
 
   if(isOnGround()) {
     dy = 0;
@@ -200,6 +221,7 @@ void Player::applyGravity(float deltaTime) {
     if(hasJump) {  // Seulement si il est sur le sol
       verticalVelocity = -jumpStrength;
       dy += verticalVelocity;
+      etat = "Jump";
     }
   }
 

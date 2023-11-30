@@ -1,6 +1,7 @@
 #ifndef DefWorld
 #define DefWorld
 
+#include "../Variables/variables.hpp"
 #include "../display/display.hpp"
 #include "../donjon/donjon.hpp"
 #include "../maps/maps.hpp"
@@ -10,7 +11,7 @@ class Player;
 class world {
  public:
   // Constucteur
-  world(SDL_Renderer* Renderer);
+  world(SDL_Renderer* Renderer, Variable* Var);
   // Variables
   Player* Joueur;
   Texture AllElements;
@@ -21,12 +22,16 @@ class world {
 
   int dx;  // Décalage X de la map par rapport au personnage.
   int dy;
+
+  Variable* Var;
   donjon* Donjon;
   bool seeMap;
 
   Uint32 currentTime;
   double deltaTime;
   Uint32 previousTime;
+  Uint32 Animcpt;
+  Uint32 cptest;
   // Fonctions
   void InitMonde(SDL_Renderer* Renderer);
   void drawAll(SDL_Renderer* Renderer);

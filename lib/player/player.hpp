@@ -1,7 +1,13 @@
 #ifndef DefPlayer
 #define DefPlayer
-#include <iostream>
+#include <unistd.h>
 
+#include <iostream>
+#include <string>
+#include <utility>  // Pour std::pair
+#include <vector>
+
+#include "../Variables/variables.hpp"
 #include "../maps/maps.hpp"
 #include "../sprites/sprite.hpp"
 #include "../world/world.hpp"
@@ -10,12 +16,18 @@ class world;
 class Player {
  public:
   // Constructeur
-  Player(SDL_Renderer* Renderer);
+  Player(SDL_Renderer* Renderer, Variable* Var);
 
   // Variables
   int vie;
   Sprite Image;
+  Sprite hp;
   int speed;
+  Variable* Var;
+
+  // std::string etats[4] = {"Right", "Left", "Jump", "Idle"};
+  std::map<std::string, std::vector<std::pair<int, int>>> etats;
+  std::string etat;
   std::vector<tmx::Object> Collisions;
 
   // Fonctions
@@ -36,7 +48,7 @@ class Player {
 
   std::string toString();
   void InitPlayer(std::vector<tmx::Object> Objects, world* Monde);
-  void FixCamera();
+  void FixCamera(int Real_W, int Real_H);
   void AllMove(int x1, int y1, bool Teleport);
   bool isOnGround();
   float getVerticalVelocity();

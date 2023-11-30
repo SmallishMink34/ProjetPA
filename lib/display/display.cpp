@@ -1,12 +1,11 @@
 #include "display.hpp"
-#include <SDL2/SDL_image.h>
+
 
 Texture::Texture(){
 }
 
 
 void Texture::addElements(SDL_Renderer* Renderer,Sprite Element){
-    std::cout << "ZBZBZ" << std::endl;
     this->Elements.push_back(Element);
     SDL_Texture* texture = loadTexture(Renderer, this->Elements[this->Elements.size()-1].Getlink());
     if (texture == nullptr) {

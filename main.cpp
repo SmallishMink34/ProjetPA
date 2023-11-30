@@ -2,25 +2,26 @@
 #include <SDL2/SDL_image.h>
 
 #include <iostream>
+#include <map>
 
 #include "Constante.hpp"
+#include "lib/Variables/variables.hpp"
 #include "lib/display/display.hpp"
-#include "lib/world/world.hpp"
+#include "lib/menu/menu.hpp"
+#include "lib/pause/pauses.hpp"
+#include "lib/world/world.hpp" #include "lib/jeu/jeu.hpp"
 
-// Fenêtre et rendu
-SDL_Window* gWindow = nullptr;
-SDL_Renderer* gRenderer = nullptr;
-// Gestion des événements
-bool quit = false;
+SDL_Renderer *gRenderer = nullptr;
+SDL_Window *gWindow = nullptr;
 
 // Fonction pour initialiser SDL
-bool initSDL() {
+bool initSDL(Gamemode *Monde) {
   if(SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "Erreur lors de l'initialisation de SDL : " << SDL_GetError() << std::endl;
     return false;
   }
 
-  gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_RESIZABLE);
+  gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_FULLSCREEN);
   if(gWindow == nullptr) {
     std::cerr << "Erreur lors de la création de la fenêtre : " << SDL_GetError() << std::endl;
     return false;
@@ -48,8 +49,8 @@ bool initSDL() {
   return true;
 }
 
-bool init() {
-  if(!initSDL()) {
+bool init(Gamemode *Monde) {
+  if(!initSDL(Monde)) {
     std::cerr << "Échec de l'initialisation de SDL." << std::endl;
     return false;
   }
@@ -58,103 +59,67 @@ bool init() {
 }
 
 // Fonction pour gérer les événements
-void handleEvents(world* Monde) {
-  SDL_Event e;
-  while(SDL_PollEvent(&e) != 0) {
-    if(e.type == SDL_QUIT) {
-      quit = true;
-    } else if(e.type == SDL_KEYDOWN) {
-      // Vérifiez quelle touche a été enfoncée
-      switch(e.key.keysym.sym) {
-        case SDLK_ESCAPE:
-          quit = true;  // Quitte l'application si la touche Échap est enfoncée
-          break;
-        case SDLK_s:
-          Monde->KeyPressed[3] = true;
-          break;
-        case SDLK_z:
-          Monde->KeyPressed[2] = true;
-          break;
-        case SDLK_d:
-          Monde->KeyPressed[1] = true;
-          break;
-        case SDLK_q:
-          Monde->KeyPressed[0] = true;
-          break;
-
-        case SDLK_p:
-          std::cout << "RealX : " << Monde->Joueur->getRX() << " RealY : " << Monde->Joueur->getRY() << std::endl;
-          std::cout << Monde->Joueur->toString() << std::endl;
-          break;
-
-        case SDLK_o:
-          Monde->newDonjon();
-          break;
-      }
-    } else if(e.type == SDL_KEYUP) {
-      switch(e.key.keysym.sym) {
-        case SDLK_s:
-          Monde->KeyPressed[3] = false;
-          break;
-        case SDLK_z:
-          Monde->KeyPressed[2] = false;
-          break;
-        case SDLK_d:
-          Monde->KeyPressed[1] = false;
-          break;
-        case SDLK_q:
-          Monde->KeyPressed[0] = false;
-          break;
-      }
-    }
-  }
-}
 
 // Fonction pour libérer les ressources et quitter SDL
-void closeSDL() {
+void closeSDL(Gamemode *Monde) {
   SDL_DestroyRenderer(gRenderer);
-  SDL_DestroyWindow(gWindow);
-  gWindow = nullptr;
-  gRenderer = nullptr;
+  SDL_DestroyWindow(Monde->gWindow);
 
   IMG_Quit();
+  TTF_Quit();
   SDL_Quit();
 }
 
-int main(int argc, char* args[]) {
-  if(!init()) {
+int main(int argc, char *args[]) {
+  std::map<std::string, Gamemode *> Gamemodes;
+
+  std::string currentGamemode = "menu";
+  std::string oldGamemode = currentGamemode;
+
+  if(!init(Gamemodes[currentGamemode])) {
     return 1;
   }
+
+  Variable *Var = new Variable();
+
+  Gamemodes["jeu"] = new Jeu(gWindow, gRenderer, Var);
+  Gamemodes["menu"] = new menu(gWindow, gRenderer, Var);
+  Gamemodes["pause"] = new Mpause(gWindow, gRenderer, Var);
+
+  Gamemodes[currentGamemode]->Init();
   Uint32 targetFPS = fps;
   Uint32 frameDelay = 1000 / targetFPS;
   Uint32 frameStart, frameTime;
 
-  world* Monde = new world(gRenderer);
-
-  Monde->InitMonde(gRenderer);
-  SDL_RenderSetScale(gRenderer, scale, scale);  // Faire un zoom dans la fenetre
-  SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
-
-  while(!quit) {
+  while(!Gamemodes[currentGamemode]->quit) {
     frameStart = SDL_GetTicks();
-    // Effacer l'écran
-    SDL_RenderClear(gRenderer);
 
-    handleEvents(Monde);
-    Monde->UpdateAll();
+    oldGamemode = currentGamemode;
+    Gamemodes[currentGamemode]->handleEvents(&currentGamemode);
 
-    Monde->drawAll(gRenderer);
+    if(currentGamemode != oldGamemode && !Gamemodes[currentGamemode]->isLoaded) {
+      Gamemodes[currentGamemode]->Init();
+    } else if(currentGamemode != oldGamemode && Gamemodes[currentGamemode]->isLoaded) {
+      Gamemodes[currentGamemode]->unpause();
+    }
 
-    // Mettre à jour l'affichage
-    SDL_RenderPresent(gRenderer);
+    Gamemodes[currentGamemode]->update();
+
+    Gamemodes[currentGamemode]->render();
 
     frameTime = SDL_GetTicks() - frameStart;
     if(frameTime < frameDelay) {
       SDL_Delay(frameDelay - frameTime);
     }
   }
+  frameTime = SDL_GetTicks() - frameStart;
+  if(frameTime < frameDelay) {
+    SDL_Delay(frameDelay - frameTime);
+  }
+}
 
-  closeSDL();
+closeSDL();
+closeSDL(Gamemodes[currentGamemode]);
 
-  return 0;
+return 0;
 }
