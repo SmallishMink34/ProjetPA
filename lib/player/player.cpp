@@ -22,11 +22,11 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
 
   etats["Right"] = {{0, 910}, {82, 910}, {164, 910}, {246, 910}, {328, 910}, {410, 910}, {492, 910}, {574, 910}, {656, 910}};
   etats["Left"] = {{0, 744}, {82, 744}, {164, 744}, {246, 744}, {328, 744}, {410, 744}, {492, 744}, {574, 744}, {656, 744}};
-  etats["Jump"] = {{0, 9}};
+  etats["Jump"] = {{246, 175}, {328, 175}, {410, 175}, {492, 175}, {410, 175}, {328, 175}};
   etats["Idle"] = {{0, 173}};
 
-  Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 54, 96);
-  Image.setSrcRect(24, 180, 36, 64);
+  Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 96, 96);
+  Image.setSrcRect(0, 180, 64, 64);
   Image.loadImage(Renderer);
 }
 
@@ -167,7 +167,7 @@ void Player::Move(int x1, int y1) {  // Pas les coordonnées, seulement le vecte
   AllMove(x1, y1, false);
 }
 
-void Player::AnimPlayer(int i) { Image.setSrcRect(etats[etat][i].first + 24, etats[etat][i].second + 7, 36, 64); }
+void Player::AnimPlayer(int i) { Image.setSrcRect(etats[etat][i].first , etats[etat][i].second , 70, 70); }
 
 void Player::AllMove(int x1, int y1, bool Teleport) {
   if(!Teleport) {
@@ -196,10 +196,9 @@ void Player::applyGravity(float deltaTime) {
   verticalVelocity += Var->Gravity;
   dy += verticalVelocity;
 
-  if(dy > 0.5 && !isOnGround()) {
-    etat = "Idle";
-  }
-
+  // if(dy > 0.5 && !isOnGround()) {
+  //   etat = "Idle";
+  // }
   if(isOnGround()) {
     dy = 0;
     verticalVelocity = 0;

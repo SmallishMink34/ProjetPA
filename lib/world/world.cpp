@@ -99,17 +99,20 @@ void world::movePlayer() {
 
   int moveX = 0;
   int moveY = 0;
-  this->Joueur->etat = "Idle";
+
   // Gérer les mouvements verticaux (haut / bas)
   if(this->KeyPressed[2] && this->Joueur->isOnGround()) {
     this->Joueur->jump();
     this->Joueur->etat = "Jump";
+  }else if (this->Joueur->isOnGround()){
+    this->Joueur->etat = "Idle";
   }
   // Gérer les déplacements horizontaux
   if(this->KeyPressed[0]) {
     moveX = -this->Joueur->speed;
     this->Joueur->etat = "Left";
-  }
+  } 
+
   if(this->KeyPressed[1]) {
     moveX = this->Joueur->speed;
     this->Joueur->etat = "Right";
