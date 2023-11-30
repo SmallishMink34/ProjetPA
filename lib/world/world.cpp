@@ -3,9 +3,11 @@
 #include "../donjon/donjon.hpp"
 
 world::world(SDL_Renderer* Renderer, Variable* Var) {
-  this->Map = new level("map");
-  this->Joueur = new Player(Renderer);
+  this->Map = new allMaps(Renderer);
+
+  this->Joueur = new Player(Renderer, Var);
   this->AllElements = Texture();
+
   this->currentTime = SDL_GetTicks();
   this->deltaTime = this->currentTime;
   this->previousTime = 0;
@@ -15,6 +17,7 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->dx = 0;
   this->dy = 0;
   this->Var = Var;
+  this->seeMap = false;
 }
 
 void world::UpdateAll() {
@@ -22,7 +25,19 @@ void world::UpdateAll() {
   this->deltaTime = (this->currentTime - this->previousTime) / 10.0;
   // affichage du temps
   this->previousTime = this->currentTime;
+
   this->movePlayer();
+
+  tmx::Object collision = isColliding(this->Joueur, this->Map->getElements());
+  std::string collisionType = collision.getType();
+
+  if(collisionType == "tp") {
+    std::string mapName = collision.getName();
+    this->Map->changeMap("1", this->Joueur, this);
+  } else {
+    // Handle other collision types
+  }
+
   this->moveCamera();
 
   this->cptest++;
@@ -47,8 +62,8 @@ void world::moveCamera() {
 
   if(targetCameraX < 0) {
     targetCameraX = 0;
-  } else if(targetCameraX > Map->getMapWidth() - Real_W) {
-    targetCameraX = Map->getMapWidth() - Real_W;
+  } else if(targetCameraX > Map->getMapWidth() - Var->Real_W) {
+    targetCameraX = Map->getMapWidth() - Var->Real_W;
   }
   if(targetCameraX < 0) {
     targetCameraX = 0;
@@ -66,13 +81,25 @@ void world::moveCamera() {
   dx += (targetCameraX - dx) * Var->CameraSpeed;
   dy += (targetCameraY - dy) * Var->CameraSpeed;
 }
+tmx::Object world::isColliding(Player* Joueur, std::vector<tmx::Object> Collisions) {
+  tmx::Object Collision;
+  for(long unsigned int i = 0; i < Collisions.size(); i++) {
+    if(Joueur->isColliding(Collisions[i].getPosition().x, Collisions[i].getPosition().y, Collisions[i].getAABB().width, Collisions[i].getAABB().height)) {
+      Collision = Collisions[i];
+      break;
+    }
+  }
+  return Collision;
+}
 
 void world::movePlayer() {
   // Appliquer la gravité
+
   this->Joueur->applyGravity(this->deltaTime);
 
   int moveX = 0;
   int moveY = 0;
+  this->Joueur->etat = "Idle";
   // Gérer les mouvements verticaux (haut / bas)
   if(this->KeyPressed[2] && this->Joueur->isOnGround()) {
     this->Joueur->jump();
@@ -91,7 +118,6 @@ void world::movePlayer() {
   if(this->KeyPressed[3]) {
     if(this->Joueur->isOnGround()) {
       moveY = this->Joueur->speed;
-      this->Joueur->etat = "Idle";
     }
   }
   this->Joueur->Move(moveX * this->deltaTime, moveY);
@@ -99,18 +125,12 @@ void world::movePlayer() {
 
 void world::InitMonde(SDL_Renderer* Renderer) {
   this->AllElements.addElements(Renderer, Sprite("src/Images/image.jpg", 0, 420, 1280, 720));
-
-  this->Map->load("Maps/Map2.tmx", Renderer);
-
-  tmx::Object object = this->Map->getObjectByName("Spawn");
-  Collisions = this->Map->getObjectsByType("Collision");
-  this->Joueur->InitPlayer(Collisions, this);
-  this->Joueur->AllMove(object.getPosition().x, object.getPosition().y, true);
-  this->Joueur->FixCamera(int(Var->Real_W), int(Var->Real_H));
+  Map->InitializeRoom(this->Joueur, this);
 }
 
 void world::drawAll(SDL_Renderer* Renderer) {
-  this->Map->draw(Renderer, dx, dy);
+  this->Map->drawMap(Renderer, dx, dy);
+
   // this->AllElements.drawElements(Renderer);
   this->Joueur->Image.selfDraw(Renderer);
 
@@ -118,13 +138,13 @@ void world::drawAll(SDL_Renderer* Renderer) {
 }
 
 void world::newDonjon() {
-  this->Donjon = new donjon(30, 0);
+  this->Donjon = new donjon(30, 5);
   // this->Donjon->create_tree();
 
   // this->Donjon->save_rooms_to_file(this->Donjon->initial_Node);
   this->Donjon->load_rooms_from_file();
 
-  for(int i = 0; i < this->Donjon->CoordUse.size(); i++) {
+  for(long unsigned int i = 0; i < this->Donjon->CoordUse.size(); i++) {
     std::cout << this->Donjon->CoordUse[i].first << "/" << this->Donjon->CoordUse[i].first << std::endl;
   }
 

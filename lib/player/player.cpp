@@ -30,32 +30,6 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   Image.loadImage(Renderer);
 }
 
-void Player::InitPlayer(std::vector<tmx::Object> Objects, world *Monde) {
-  Collisions = Objects;
-  Map = Monde->Map;
-  Mondee = Monde;
-}
-
-tmx::Object *Player::isColliding(int x1, int y1, int realx, int realy) {
-  for(auto &collisionObject : Collisions) {
-    if(realx + getWidth() + x1 > collisionObject.getPosition().x && realx + x1 < collisionObject.getPosition().x + collisionObject.getAABB().width &&
-       realy + y1 + getHeight() > collisionObject.getPosition().y && realy + y1 < collisionObject.getPosition().y + collisionObject.getAABB().height) {
-      if(collisionObject.getType() == "Platform") {
-      } else if(collisionObject.getType() == "Collision") {
-        return &collisionObject;
-      }
-    }
-  }
-  return nullptr;
-}
-
-bool isPointInBox(int x, int y, tmx::Object object) {
-  if(x > object.getPosition().x && x < object.getPosition().x + object.getAABB().width && y > object.getPosition().y && y < object.getPosition().y + object.getAABB().height) {
-    return true;
-  }
-  return false;
-}
-
 bool isBoxInBox(tmx::Object object1, tmx::Object object2) {
   if(object1.getPosition().x < object2.getPosition().x + object2.getAABB().width && object1.getPosition().x + object1.getAABB().width > object2.getPosition().x &&
      object1.getPosition().y < object2.getPosition().y + object2.getAABB().height && object1.getPosition().y + object1.getAABB().height > object2.getPosition().y) {
@@ -66,6 +40,26 @@ bool isBoxInBox(tmx::Object object1, tmx::Object object2) {
 
 bool isBoxInBox(int x, int y, tmx::Object object) {
   if(x < object.getPosition().x + object.getAABB().width && x > object.getPosition().x && y < object.getPosition().y + object.getAABB().height && y > object.getPosition().y) {
+    return true;
+  }
+  return false;
+}
+
+void Player::InitPlayer(std::vector<tmx::Object> Objects, world *Monde) {
+  Collisions = Objects;
+  Map = Monde->Map;
+  Mondee = Monde;
+}
+
+bool Player::isColliding(int x1, int y1, int w, int h) {
+  if(getRX() > x1 && getRX() < x1 + w && getRY() > y1 && getRY() < y1 + h) {
+    return true;
+  }
+  return false;
+}
+
+bool isPointInBox(int x, int y, tmx::Object object) {
+  if(x > object.getPosition().x && x < object.getPosition().x + object.getAABB().width && y > object.getPosition().y && y < object.getPosition().y + object.getAABB().height) {
     return true;
   }
   return false;
@@ -133,9 +127,10 @@ void Player::Move(int x1, int y1) {  // Pas les coordonnées, seulement le vecte
   if(dy <= 0) {
     if(isEmpty(isInList(result, "Down"))) {
       OnGround = false;
-      jumpStrength = JumpStrength;
+      jumpStrength = Var->JumpStrength;
     }
   }
+
   std::pair<tmx::Object, std::string> Down = isInList(result, "Down");
   std::pair<tmx::Object, std::string> Up = isInList(result, "Up");
   std::pair<tmx::Object, std::string> Left = isInList(result, "Left");
@@ -168,20 +163,11 @@ void Player::Move(int x1, int y1) {  // Pas les coordonnées, seulement le vecte
     AllMove(Realx, Up.first.getPosition().y + Up.first.getAABB().height + 2, true);
     verticalVelocity = 0;
   }
+
   AllMove(x1, y1, false);
 }
 
-void Player::AnimPlayer(int i) {
-  Image.setSrcRect(etats[etat][i].first + 24, etats[etat][i].second + 7, 36, 64);
-  // printf("coord : %d %d\n", etats[etat][i].first, etats[etat][i].second);
-  // printf("etat : %s\n", etat.c_str());
-}
-
-void Player::AnimPlayer(int i) {
-  Image.setSrcRect(etats[etat][i].first + 24, etats[etat][i].second + 7, 36, 64);
-  // printf("coord : %d %d\n", etats[etat][i].first, etats[etat][i].second);
-  // printf("etat : %s\n", etat.c_str());
-}
+void Player::AnimPlayer(int i) { Image.setSrcRect(etats[etat][i].first + 24, etats[etat][i].second + 7, 36, 64); }
 
 void Player::AllMove(int x1, int y1, bool Teleport) {
   if(!Teleport) {
@@ -193,13 +179,13 @@ void Player::AllMove(int x1, int y1, bool Teleport) {
   }
 }
 
-void Player::FixCamera(int Real_W, int Real_H) {
-  if(x > Map->getMapWidth() - Real_W / 2) {
-    int nombre = Map->getMapWidth() - Real_W;
+void Player::FixCamera() {
+  if(x > Map->getMapWidth() - Var->Real_W / 2) {
+    int nombre = Map->getMapWidth() - Var->Real_W;
     x = x - nombre;
   }
-  if(y > Map->getMapHeight() - Real_H / 2) {
-    int nombre = Map->getMapHeight() - Real_H;
+  if(y > Map->getMapHeight() - Var->Real_H / 2) {
+    int nombre = Map->getMapHeight() - Var->Real_H;
     y = y - nombre;
   }
   Image.Moveto(x, y);
@@ -226,6 +212,7 @@ void Player::applyGravity(float deltaTime) {
   }
 
   if(!isJumping()) hasJump = false;
+
   Move(0, dy * deltaTime);
 }
 

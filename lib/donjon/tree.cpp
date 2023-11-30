@@ -2,8 +2,6 @@
 
 #include <SDL2/SDL_ttf.h>
 
-#include "../../Constante.hpp"
-
 rooms::rooms() {
   this->x = 0;
   this->y = 0;

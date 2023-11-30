@@ -4,24 +4,24 @@
 #include <iostream>
 #include <map>
 
-#include "Constante.hpp"
 #include "lib/Variables/variables.hpp"
 #include "lib/display/display.hpp"
+#include "lib/jeu/jeu.hpp"
 #include "lib/menu/menu.hpp"
 #include "lib/pause/pauses.hpp"
-#include "lib/world/world.hpp" #include "lib/jeu/jeu.hpp"
+#include "lib/world/world.hpp"
 
 SDL_Renderer *gRenderer = nullptr;
 SDL_Window *gWindow = nullptr;
 
 // Fonction pour initialiser SDL
-bool initSDL(Gamemode *Monde) {
+bool initSDL(Variable *Var) {
   if(SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "Erreur lors de l'initialisation de SDL : " << SDL_GetError() << std::endl;
     return false;
   }
 
-  gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_FULLSCREEN);
+  gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Var->Windows_W, Var->Windows_H, SDL_WINDOW_FULLSCREEN);
   if(gWindow == nullptr) {
     std::cerr << "Erreur lors de la création de la fenêtre : " << SDL_GetError() << std::endl;
     return false;
@@ -49,8 +49,8 @@ bool initSDL(Gamemode *Monde) {
   return true;
 }
 
-bool init(Gamemode *Monde) {
-  if(!initSDL(Monde)) {
+bool init(Variable *Var) {
+  if(!initSDL(Var)) {
     std::cerr << "Échec de l'initialisation de SDL." << std::endl;
     return false;
   }
@@ -63,7 +63,7 @@ bool init(Gamemode *Monde) {
 // Fonction pour libérer les ressources et quitter SDL
 void closeSDL(Gamemode *Monde) {
   SDL_DestroyRenderer(gRenderer);
-  SDL_DestroyWindow(Monde->gWindow);
+  SDL_DestroyWindow(gWindow);
 
   IMG_Quit();
   TTF_Quit();
@@ -75,19 +75,19 @@ int main(int argc, char *args[]) {
 
   std::string currentGamemode = "menu";
   std::string oldGamemode = currentGamemode;
+  Variable *Var = new Variable();
 
-  if(!init(Gamemodes[currentGamemode])) {
+  if(!init(Var)) {
     return 1;
   }
-
-  Variable *Var = new Variable();
 
   Gamemodes["jeu"] = new Jeu(gWindow, gRenderer, Var);
   Gamemodes["menu"] = new menu(gWindow, gRenderer, Var);
   Gamemodes["pause"] = new Mpause(gWindow, gRenderer, Var);
 
   Gamemodes[currentGamemode]->Init();
-  Uint32 targetFPS = fps;
+
+  Uint32 targetFPS = Var->fps;
   Uint32 frameDelay = 1000 / targetFPS;
   Uint32 frameStart, frameTime;
 
@@ -112,14 +112,8 @@ int main(int argc, char *args[]) {
       SDL_Delay(frameDelay - frameTime);
     }
   }
-  frameTime = SDL_GetTicks() - frameStart;
-  if(frameTime < frameDelay) {
-    SDL_Delay(frameDelay - frameTime);
-  }
-}
 
-closeSDL();
-closeSDL(Gamemodes[currentGamemode]);
+  closeSDL(Gamemodes[currentGamemode]);
 
-return 0;
+  return 0;
 }

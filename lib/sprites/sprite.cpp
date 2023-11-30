@@ -86,3 +86,10 @@ void Sprite::setSrcRect(int x, int y, int w, int h) {
 int Sprite::getWidth() { return this->w; }
 
 int Sprite::getHeight() { return this->h; }
+
+bool Sprite::isColliding(int x, int y, int w, int h) {
+  if((this->x < x + w) && (this->x + this->w > x) && (this->y < y + h) && (this->y + this->h > y)) {
+    return true;
+  }
+  return false;
+}

@@ -7,12 +7,15 @@
 #include <utility>  // Pour std::pair
 #include <vector>
 
+#include "../Cartes/cartes.hpp"
 #include "../Variables/variables.hpp"
 #include "../maps/maps.hpp"
 #include "../sprites/sprite.hpp"
 #include "../world/world.hpp"
 
 class world;
+
+class allMaps;
 class Player {
  public:
   // Constructeur
@@ -36,10 +39,11 @@ class Player {
   void Moveto();
   void RealMoveto(int x, int y);
   void Move(int x, int y);
+  void AnimPlayer(int i);
   int getWidth();
   int getHeight();
 
-  tmx::Object* isColliding(int x1, int y1, int realx, int realy);
+  bool isColliding(int x1, int y1, int realx, int realy);
   std::vector<std::pair<tmx::Object, std::string>> isColliding(int realx, int realy);
   int getRX();
   int getRY();
@@ -48,7 +52,7 @@ class Player {
 
   std::string toString();
   void InitPlayer(std::vector<tmx::Object> Objects, world* Monde);
-  void FixCamera(int Real_W, int Real_H);
+  void FixCamera();
   void AllMove(int x1, int y1, bool Teleport);
   bool isOnGround();
   float getVerticalVelocity();
@@ -75,7 +79,7 @@ class Player {
   float verticalVelocity;
   float jumpStrength;
   float jumpTime;
-  level* Map;
+  allMaps* Map;
   world* Mondee;
 };
 

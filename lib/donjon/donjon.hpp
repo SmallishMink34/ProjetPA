@@ -25,6 +25,7 @@ class donjon {
 
   int remaining_count;
   std::vector<Node*> celibNode;
+  std::vector<char> letterAlreadyUsed;
 
  public:
   donjon(int nbnoeuds, int seed);
@@ -55,6 +56,7 @@ class donjon {
   ////////////// Chargement du donjon ///////////////////////
   std::pair<int, int> SearchLetterInMapFromOrigin(char letter, int x, int y);
   void load_rooms_from_file();
+  std::vector<char> getAdjacentLetterFromMap(char letter);
   std::vector<char> getChildFromMapPath(char letter);
 
   /**

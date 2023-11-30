@@ -1,6 +1,7 @@
 #ifndef DefWorld
 #define DefWorld
 
+#include "../Cartes/cartes.hpp"
 #include "../Variables/variables.hpp"
 #include "../display/display.hpp"
 #include "../donjon/donjon.hpp"
@@ -8,6 +9,7 @@
 #include "../player/player.hpp"
 
 class Player;
+class allMaps;
 class world {
  public:
   // Constucteur
@@ -15,9 +17,7 @@ class world {
   // Variables
   Player* Joueur;
   Texture AllElements;
-  level* Map;
-  std::vector<tmx::Object> Collisions;
-  std::vector<tmx::Object> Platforme;
+  allMaps* Map;
   bool KeyPressed[4] = {false, false, false, false};  // 0 = left, 1 = right, 2 = up, 3 = down
 
   int dx;  // Décalage X de la map par rapport au personnage.
@@ -40,6 +40,7 @@ class world {
   void moveCamera();
   void newDonjon();
   void drawMap(SDL_Renderer* Renderer);
+  tmx::Object isColliding(Player* Joueur, std::vector<tmx::Object> Collisions);
 };
 
 #endif

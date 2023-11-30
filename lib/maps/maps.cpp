@@ -60,7 +60,28 @@ std::vector<tmx::Object> level::getObjectsByType(const std::string& Name) {
 
   return objectsFound;  // Retournez le vecteur d'objets trouvés
 }
+std::vector<tmx::Object> level::getObjects() {
+  std::vector<tmx::Object> objectsFound;  // Initialisez un vecteur pour stocker les objets trouvés
 
+  // Load the TMX map from the file
+  tmx::Map map;
+  map.load(tmxFilePath);
+
+  // Iterate through all the layers in the map
+  for(const auto& layer : map.getLayers()) {
+    // Check if the layer is of type ObjectGroup
+    if(layer->getType() == tmx::Layer::Type::Object) {
+      const tmx::ObjectGroup* objectGroup = dynamic_cast<const tmx::ObjectGroup*>(layer.get());
+
+      // Iterate through the objects in the ObjectGroup
+      for(const auto& object : objectGroup->getObjects()) {
+        objectsFound.push_back(object);
+      }
+    }
+  }
+
+  return objectsFound;  // Retournez le vecteur d'objets trouvés
+}
 void tile::draw(SDL_Renderer* ren, int dx, int dy) {
   if(!ren || !sheet) return;
 
@@ -86,6 +107,7 @@ void level::load(const std::string& path, SDL_Renderer* ren) {
   tmx::Map tiled_map;
   tmxFilePath = path;
   tiled_map.load(path);
+
   this->MapWidth = tiled_map.getTileCount().x;
   this->MapHeight = tiled_map.getTileCount().y;
 

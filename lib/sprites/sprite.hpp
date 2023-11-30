@@ -46,6 +46,7 @@ class Sprite {
   void setSrcRect(int x, int y, int w, int h);
   int getWidth();
   int getHeight();
+  bool isColliding(int x, int y, int w, int h);
 
  private:
   // Variables
