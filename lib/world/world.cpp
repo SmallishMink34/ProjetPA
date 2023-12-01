@@ -104,14 +104,14 @@ void world::movePlayer() {
   if(this->KeyPressed[2] && this->Joueur->isOnGround()) {
     this->Joueur->jump();
     this->Joueur->etat = "Jump";
-  }else if (this->Joueur->isOnGround()){
+  } else if(this->Joueur->isOnGround()) {
     this->Joueur->etat = "Idle";
   }
   // Gérer les déplacements horizontaux
   if(this->KeyPressed[0]) {
     moveX = -this->Joueur->speed;
     this->Joueur->etat = "Left";
-  } 
+  }
 
   if(this->KeyPressed[1]) {
     moveX = this->Joueur->speed;
@@ -147,9 +147,9 @@ void world::newDonjon() {
   // this->Donjon->save_rooms_to_file(this->Donjon->initial_Node);
   this->Donjon->load_rooms_from_file();
 
-  for(long unsigned int i = 0; i < this->Donjon->CoordUse.size(); i++) {
-    std::cout << this->Donjon->CoordUse[i].first << "/" << this->Donjon->CoordUse[i].first << std::endl;
-  }
+  // for(long unsigned int i = 0; i < this->Donjon->CoordUse.size(); i++) {
+  //   std::cout << this->Donjon->CoordUse[i].first << "/" << this->Donjon->CoordUse[i].first << std::endl;
+  // }
 
   this->Donjon->drawDungeon(this->Donjon->initial_Node);
   this->seeMap = true;

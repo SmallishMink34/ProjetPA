@@ -1,8 +1,10 @@
 #include "donjon.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <vector>
 
+#include "../utility/utility.hpp"
 #include "tree.hpp"
 
 donjon::donjon(int nbnoeuds, int seed = 1) : noeuds(nbnoeuds), max_noeuds(nbnoeuds), max_children(3), max_depth(10), seed(seed), specialRooms(3), remaining_count(nbnoeuds) {
@@ -99,7 +101,6 @@ void donjon::add_children(Node *node, bool CanBeTall, bool Continuer, int depth)
 
   node->getRoom()->setTall(2);
 
-  std::cout << node->getValue() << " " << node->getRoom()->getTall() << " " << node->getRoom()->getX() << "/" << node->getRoom()->getY() << std::endl;
   // On regarde si la salle peut être placé en grande
   if(checkTallRoom(node->getRoom()->getX(), node->getRoom()->getY(), "bas")) {
     dirrectionUsed[0] = true;
@@ -109,8 +110,6 @@ void donjon::add_children(Node *node, bool CanBeTall, bool Continuer, int depth)
   } else {
     node->getRoom()->setTall(1);
   }
-
-  std::cout << dirrectionUsed[0] << " " << dirrectionUsed[1] << std::endl;
 
   // On met la salle en grande par défaut
   std::vector<std::pair<int, int>> valids = checks_valids(*node->getRoom());  // On regarde les salles autour de la salle actuelle
@@ -270,38 +269,6 @@ int donjon::HeightLoad(std::ifstream &file) {
   return count;
 }
 
-std::vector<char> donjon::getChildFromMapPath(char letter) {
-  std::vector<char> child;
-  std::ifstream file("mapPath.txt");
-  std::string line;
-  while(std::getline(file, line)) {
-    if(line[0] == letter) {
-      int i = 3;
-      while(line[i] != '\0' && line[i] != '\n' && line[i] != '\r' && line[i] != ' ') {
-        child.push_back(line[i]);
-        i++;
-      }
-      break;
-    }
-  }
-  file.close();
-  return child;
-}
-
-char donjon::getTallTypeFromMapPath(char letter, int wyw) {
-  char tall;
-  std::ifstream file("mapPath.txt");
-  std::string line;
-  while(std::getline(file, line)) {
-    if(line[0] == letter) {
-      tall = line[wyw];
-      break;
-    }
-  }
-  file.close();
-  return tall;
-}
-
 std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int y) {
   int oldx = 0;
   int oldy = 0;
@@ -326,35 +293,79 @@ std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int 
 
 void donjon::load_rooms_from_file() {
   std::ifstream file("map.txt");
-  std::ifstream file2("mapPath.txt");
   std::string line;
 
   std::pair<int, int> origin = SearchLetterInMapFromOrigin('A', 0, 0);
 
   initial_Node = new Node(new rooms(0, 0, 32, 32, 2, 2), 'A');
-  std::cout << origin.first << " " << origin.second << std::endl;
 
-  addChildFromFile(initial_Node);
-  file2.close();
+  addChildFromFile(initial_Node, origin.first, origin.second);
   file.close();
 }
 
-void donjon::addChildFromFile(Node *node) {
+std::vector<char> donjon::getLetterAt(std::ifstream &file, int x, int y) {
+  std::vector<char> letter;
+  std::string line;
+  int count = 0;
+  while(std::getline(file, line)) {
+    if(count == y - 1) {
+      for(int i = 0; i < line.length(); i++) {
+        if(i == x - 1) {
+          letter.push_back(line[i]);
+        }
+      }
+      break;
+    }
+    count++;
+  }
+  file.clear();
+  file.seekg(0, std::ios::beg);
+  return letter;
+}
+
+std::vector<char> donjon::getAdjacentLetterFromMap(char letter, int *tall) {
+  std::vector<char> adjacentLetter;
+  std::ifstream file("map.txt");
+  std::vector<std::vector<char>> list = getListOfFile(file);
+  std::pair<int, int> origin = SearchLetterInMapFromOrigin(letter, 0, 0);
+
+  letterAlreadyUsed.push_back(letter);
+  char a = getCharAt(list, origin.first, origin.second + 1);  // Bas
+  std::vector<std::pair<int, int>> coords;
+  if(a == letter) {
+    *tall = 2;
+    coords = {{1, 0}, {1, 1}, {-1, 1}, {-1, 0}};
+  } else {
+    coords = {{1, 0}, {-1, 0}};
+    *tall = 1;
+  }
+
+  for(std::pair<int, int> coord : coords) {
+    char a = getCharAt(list, origin.first + coord.first, origin.second + coord.second);
+    if(a != '#' && findInVector(letterAlreadyUsed, a) == -1) adjacentLetter.push_back(a);
+  }
+
+  std::cout << "Letter : " << letter << " tall : " << *tall << std::endl;
+  file.close();
+  return adjacentLetter;
+}
+
+void donjon::addChildFromFile(Node *node, int originx, int originy) {
   if(node != nullptr) {
-    for(char c : getChildFromMapPath(node->getValue())) {
-      std::pair<int, int> NewNode = SearchLetterInMapFromOrigin(c, 7, 1);
+    int tall = 1;
+    int type = 1;
+    std::vector<char> letters = getAdjacentLetterFromMap(node->getValue(), &tall);
+    node->getRoom()->setTall(tall);
+    node->getRoom()->setType(type);
+    for(char c : letters) {
+      std::pair<int, int> NewNode = SearchLetterInMapFromOrigin(c, originx, originy);
       if(NewNode.first == NULL && NewNode.second == NULL) {
         continue;
       }
 
-      int tall = getTallTypeFromMapPath(c, 1) - '0';
-      std::cout << c << " " << tall << std::endl;
-      if(tall > 2 || tall < 1) {
-        tall = 2;
-      }
-      Node *child = new Node(new rooms(NewNode.first, NewNode.second, 32, 32, getTallTypeFromMapPath(c, 2), tall), c);
+      Node *child = new Node(new rooms(NewNode.first, NewNode.second), c);
       node->addChild(child);
-      addChildFromFile(child);
+      addChildFromFile(child, originx, originy);
     }
   }
 }

@@ -56,16 +56,10 @@ class donjon {
   ////////////// Chargement du donjon ///////////////////////
   std::pair<int, int> SearchLetterInMapFromOrigin(char letter, int x, int y);
   void load_rooms_from_file();
-  std::vector<char> getAdjacentLetterFromMap(char letter);
-  std::vector<char> getChildFromMapPath(char letter);
+  std::vector<char> getAdjacentLetterFromMap(char letter, int* tall);
+  std::vector<char> getLetterAt(std::ifstream& file, int x, int y);
 
-  /**
-   * @brief Get the Tall Type From Map Path object
-   * @param letter Search the letter in the paht
-   * @param wyw 1 = Tall, 2 = Type
-   */
-  char getTallTypeFromMapPath(char letter, int wyw);
-  void addChildFromFile(Node* node);
+  void addChildFromFile(Node* node, int originx, int originy);
 
   ////////////// Dessin du donjon ///////////////////////
   void draw_tree(SDL_Renderer* Renderer, Node* node);
