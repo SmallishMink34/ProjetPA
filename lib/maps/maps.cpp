@@ -13,45 +13,53 @@
 tile::tile(SDL_Texture* tset, int x, int y, int tx, int ty, int w, int h) : sheet(tset), x(x), y(y), tx(tx), ty(ty), width(w), height(h) {}
 
 tmx::Object level::getObjectByName(const std::string& Name) {
-  // Load the TMX map from the file
   tmx::Map map;
   map.load(tmxFilePath);
 
-  // Iterate through all the layers in the map
   for(const auto& layer : map.getLayers()) {
-    // Check if the layer is of type ObjectGroup
     if(layer->getType() == tmx::Layer::Type::Object) {
       const tmx::ObjectGroup* objectGroup = dynamic_cast<const tmx::ObjectGroup*>(layer.get());
 
-      // Iterate through the objects in the ObjectGroup
       for(const auto& object : objectGroup->getObjects()) {
-        // Check if the name matches
         if(object.getName() == Name) {
           return object;
         }
       }
     }
   }
+  return tmx::Object();
 }
 
-std::vector<tmx::Object> level::getObjectsByType(const std::string& Name) {
-  std::vector<tmx::Object> objectsFound;  // Initialisez un vecteur pour stocker les objets trouvés
-
-  // Load the TMX map from the file
+tmx::Object level::getObjectByNameAndType(const std::string& Name, const std::string& Type) {
   tmx::Map map;
   map.load(tmxFilePath);
 
-  // Iterate through all the layers in the map
   for(const auto& layer : map.getLayers()) {
-    // Check if the layer is of type ObjectGroup
     if(layer->getType() == tmx::Layer::Type::Object) {
       const tmx::ObjectGroup* objectGroup = dynamic_cast<const tmx::ObjectGroup*>(layer.get());
 
-      // Iterate through the objects in the ObjectGroup
       for(const auto& object : objectGroup->getObjects()) {
-        // Check if the name matches
+        if(object.getName() == Name && object.getType() == Type) {
+          return object;
+        }
+      }
+    }
+  }
+  return tmx::Object();
+}
+
+std::vector<tmx::Object> level::getObjectsByType(const std::string& Name) {
+  std::vector<tmx::Object> objectsFound;
+
+  tmx::Map map;
+  map.load(tmxFilePath);
+
+  for(const auto& layer : map.getLayers()) {
+    if(layer->getType() == tmx::Layer::Type::Object) {
+      const tmx::ObjectGroup* objectGroup = dynamic_cast<const tmx::ObjectGroup*>(layer.get());
+
+      for(const auto& object : objectGroup->getObjects()) {
         if(object.getType() == Name) {
-          // Ajoutez l'objet trouvé au vecteur
           objectsFound.push_back(object);
         }
       }

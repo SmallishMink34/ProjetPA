@@ -18,7 +18,7 @@ class Cartes {
   std::string file;
   level* Map;
   std::vector<tmx::Object> Collisions;
-  tmx::Object Spawn;
+  std::map<std::string, tmx::Object> Spawn;
   std::vector<tmx::Object> Elements;
 
  public:
@@ -28,30 +28,32 @@ class Cartes {
   void draw(SDL_Renderer* Renderer, int dx, int dy);
   std::vector<tmx::Object> getCollisions();
   std::vector<tmx::Object> getElements();
-  tmx::Object getSpawn();
+  tmx::Object getSpawn(std::string a);
 };
 
 class allMaps {
  private:
   donjon* Donjon;
-  std::map<std::string, Cartes*> cartesMap;
+  std::map<char, Cartes*> cartesMap;
   SDL_Renderer* Renderer;
-  std::string currentMap;
+  Node* currentMap;
 
  public:
-  allMaps(SDL_Renderer* Renderer);
+  allMaps(SDL_Renderer* Renderer, donjon* Don);
   ~allMaps();
-  void InitializeRoom(Player* player, world* Monde);
-  Cartes* getMap(std::string i);
+  void InitializeRoom(Player* player, world* Monde, std::string SpawnType);
+  Cartes* getMap(char i);
   int getMapsSize();
   void InitializeLevel();
   void drawMap(SDL_Renderer* Renderer, int dx, int dy);
   int getMapWidth();
   int getMapHeight();
+  Node* getCurrentMap();
   std::vector<tmx::Object> getCollisions();
   std::vector<tmx::Object> getElements();
+  void InitializeAllMap(Node* node);
 
-  void changeMap(std::string map, Player* player, world* Monde);
+  void changeMap(std::string, Player* player, world* Monde);
 };
 
 #endif

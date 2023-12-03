@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="10" tilewidth="64" tileheight="64" infinite="0" nextlayerid="7" nextobjectid="3">
+<map version="1.10" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="10" tilewidth="64" tileheight="64" infinite="0" nextlayerid="7" nextobjectid="5">
  <tileset firstgid="1" source="Base.tsx"/>
  <objectgroup id="5" name="Objects" offsetx="3.0303" offsety="0">
-  <object id="2" name="Spawn" x="50.7121" y="565.968">
+  <object id="2" name="Spawn" x="38.7121" y="455.301">
    <point/>
   </object>
+  <object id="3" name="TL" type="tp" x="-4.66667" y="447.333" width="25.3333" height="128.667"/>
+  <object id="4" name="TR" type="tp" x="1885.22" y="253.333" width="31.5" height="132"/>
  </objectgroup>
  <imagelayer id="4" name="Calque d'Images 1" visible="0" offsetx="166" offsety="956">
   <image source="../src/Images/image.jpg" width="1920" height="1080"/>

@@ -1,9 +1,11 @@
 #include "world.hpp"
 
 #include "../donjon/donjon.hpp"
+#include "../donjon/tree.hpp"
 
 world::world(SDL_Renderer* Renderer, Variable* Var) {
-  this->Map = new allMaps(Renderer);
+  this->Donjon = new donjon(30, 5);
+  this->Map = new allMaps(Renderer, this->Donjon);
 
   this->Joueur = new Player(Renderer, Var);
   this->AllElements = Texture();
@@ -32,14 +34,18 @@ void world::UpdateAll() {
   std::string collisionType = collision.getType();
 
   if(collisionType == "tp") {
-    std::string mapName = collision.getName();
-    this->Map->changeMap("1", this->Joueur, this);
-  } else {
-    // Handle other collision types
+    std::string whatDoor = collision.getName();
+    if(whatDoor == "Spawn") {
+      this->Map->InitializeLevel();
+      this->seeMap = true;
+    }
+    Var->CameraSpeed = 1;
+    this->Joueur->setVerticalVelocity(0);
+    this->Map->changeMap(whatDoor, this->Joueur, this);
   }
 
   this->moveCamera();
-
+  Var->CameraSpeed = Var->DefaultCameraSpeed;
   this->cptest++;
 
   if(cptest % 10 == 0) {
@@ -77,10 +83,11 @@ void world::moveCamera() {
     targetCameraY = Map->getMapHeight() - Var->Real_H;
   }
 
-  // Appliquer l'interpolation pour déplacer progressivement la caméra
+  // Appliquer l'interpolation pour déplacé progressivement la caméra
   dx += (targetCameraX - dx) * Var->CameraSpeed;
   dy += (targetCameraY - dy) * Var->CameraSpeed;
 }
+
 tmx::Object world::isColliding(Player* Joueur, std::vector<tmx::Object> Collisions) {
   tmx::Object Collision;
   for(long unsigned int i = 0; i < Collisions.size(); i++) {
@@ -128,7 +135,7 @@ void world::movePlayer() {
 
 void world::InitMonde(SDL_Renderer* Renderer) {
   this->AllElements.addElements(Renderer, Sprite("src/Images/image.jpg", 0, 420, 1280, 720));
-  Map->InitializeRoom(this->Joueur, this);
+  Map->InitializeRoom(this->Joueur, this, "Spawn");
 }
 
 void world::drawAll(SDL_Renderer* Renderer) {
@@ -138,21 +145,6 @@ void world::drawAll(SDL_Renderer* Renderer) {
   this->Joueur->Image.selfDraw(Renderer);
 
   drawMap(Renderer);
-}
-
-void world::newDonjon() {
-  this->Donjon = new donjon(30, 5);
-  // this->Donjon->create_tree();
-
-  // this->Donjon->save_rooms_to_file(this->Donjon->initial_Node);
-  this->Donjon->load_rooms_from_file();
-
-  // for(long unsigned int i = 0; i < this->Donjon->CoordUse.size(); i++) {
-  //   std::cout << this->Donjon->CoordUse[i].first << "/" << this->Donjon->CoordUse[i].first << std::endl;
-  // }
-
-  this->Donjon->drawDungeon(this->Donjon->initial_Node);
-  this->seeMap = true;
 }
 
 void world::drawMap(SDL_Renderer* Renderer) {

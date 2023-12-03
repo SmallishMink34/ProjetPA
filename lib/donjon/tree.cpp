@@ -35,9 +35,26 @@ rooms::rooms(int x, int y, int w, int h, int type, int tall) {
   this->font = TTF_OpenFont("src/font/Misty Style.otf", 24);
 }
 
-void rooms::setTall(int tall) { this->tall = tall; }
+void rooms::setTall(int tall) {
+  this->tall = tall;
+  if(this->tall == 1) {
+    this->color = {0, 255, 255};
+    this->defaultColor = {0, 255, 255};
+  } else {
+    this->color = {255, 0, 255};
+    this->defaultColor = {255, 0, 255};
+  }
+}
 
 void rooms::setType(int type) { this->type = type; }
+
+void rooms::setColor(SDL_Color color) { this->color = color; }
+
+void rooms::setColor(int r, int g, int b) {
+  this->color.r = r;
+  this->color.g = g;
+  this->color.b = b;
+}
 
 int rooms::getX() { return this->x; }
 
@@ -47,6 +64,8 @@ void rooms::setX(int x) { this->x = x; }
 
 void rooms::setY(int y) { this->y = y; }
 
+SDL_Color rooms::getDefaultColor() { return this->defaultColor; }
+
 void rooms::drawRoom(SDL_Renderer *Renderer) {
   SDL_Rect rect;
   rect.x = 320 + this->x * 32;
@@ -54,26 +73,13 @@ void rooms::drawRoom(SDL_Renderer *Renderer) {
   rect.w = 32;
   rect.h = 32;
   if(this->tall == 1) {
-    SDL_SetRenderDrawColor(Renderer, 0, 0, 255, 255);
+    SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, 255);
   } else {
-    SDL_SetRenderDrawColor(Renderer, 255, 0, 255, 255);
+    SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, 255);
     rect.h *= 2;
   }
 
   SDL_RenderFillRect(Renderer, &rect);
-
-  // Draw the value
-  SDL_Color textColor = {0, 0, 0};
-  SDL_Surface *textSurface = TTF_RenderText_Solid(font, this->value.c_str(), textColor);
-  SDL_Texture *textTexture = SDL_CreateTextureFromSurface(Renderer, textSurface);
-
-  SDL_Rect textRect;
-  textRect.x = rect.x + rect.w / 2 - textSurface->w / 2;
-  textRect.y = rect.y + rect.h / 2 - textSurface->h / 2;
-  textRect.w = textSurface->w;
-  textRect.h = textSurface->h;
-  SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
-  SDL_RenderCopy(Renderer, textTexture, NULL, &textRect);
 }
 
 std::vector<std::pair<int, int>> rooms::coordsarround() {
@@ -106,37 +112,49 @@ Node::Node() {
   this->room = new rooms();
   this->value = '0';
   this->room->setValue('0');
+  this->Map = "0";
 }
 
-Node::Node(rooms *room, char value) {
+Node::Node(rooms *room, char value, std::string NodePlacement) {
   this->room = room;
   this->value = value;
   this->room->setValue(value);
+  this->Map = "0";
 }
 
-std::vector<Node *> Node::getChildren() { return children; }
+std::vector<std::pair<Node *, std::string>> Node::getChildren() { return children; }
+
+std::vector<std::pair<Node *, std::string>> Node::getChildAndParent() { return childAndParent; }
 
 std::string Node::getAllChildValues() {
   std::string result;
-  for(Node *child : getChildren()) {
-    result += child->getValue();
+  for(std::pair<Node *, std::string> child : getChildren()) {
+    result += child.first->getValue();
   }
   return result;
 }
 
 char Node::getChildValue(int index) {
   if(index >= 0 && index < (int)children.size()) {
-    return children[index]->value;
+    return children[index].first->value;
   }
   return '\0';  // Return null character instead of nullptr
 }
 
-void Node::addChild(Node *child) { this->children.push_back(child); }
+void Node::addChild(Node *child, std::string NodePlacement) {
+  children.push_back(std::pair<Node *, std::string>(child, NodePlacement));
+  childAndParent.push_back(std::pair<Node *, std::string>(child, NodePlacement));
+}
+
+void Node::addParent(Node *parent, std::string NodePlacement) { childAndParent.push_back(std::pair<Node *, std::string>(parent, NodePlacement)); }
 
 int Node::length() { return this->children.size(); }
 
 rooms *Node::getRoom() { return room; }
 
 char Node::getValue() { return value; }
+
+void Node::setMap(std::string Map) { this->Map = Map; }
+std::string Node::getMap() { return this->Map; }
 
 Node::~Node() { delete room; }

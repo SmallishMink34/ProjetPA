@@ -38,7 +38,6 @@ class world {
   void movePlayer();
   void UpdateAll();
   void moveCamera();
-  void newDonjon();
   void drawMap(SDL_Renderer* Renderer);
   tmx::Object isColliding(Player* Joueur, std::vector<tmx::Object> Collisions);
 };

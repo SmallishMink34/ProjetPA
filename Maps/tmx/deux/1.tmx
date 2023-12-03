@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="64" tileheight="64" infinite="0" nextlayerid="5" nextobjectid="16">
+<map version="1.10" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="64" tileheight="64" infinite="0" nextlayerid="5" nextobjectid="20">
  <tileset firstgid="1" source="../../Base.tsx"/>
+ <imagelayer id="4" name="background">
+  <image source="../../../src/Images/Tiled/stone_bricks.png" width="512" height="512"/>
+ </imagelayer>
  <layer id="2" name="Noires" width="30" height="20">
   <data encoding="csv">
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
@@ -60,14 +63,19 @@
   <object id="8" type="Collision" x="0" y="1088" width="576" height="64"/>
   <object id="9" type="Collision" x="320" y="704" width="64" height="64"/>
   <object id="10" type="Collision" x="704" y="704" width="64" height="64"/>
-  <object id="11" name="Platforme" x="384" y="704" width="321.333" height="18"/>
+  <object id="11" name="Platforme" type="Collision" x="384" y="704" width="321.333" height="18"/>
   <object id="12" type="Collision" x="-64" y="896" width="64" height="192"/>
   <object id="13" type="Collision" x="1920" y="640" width="64" height="192"/>
-  <object id="15" name="Spawn" type="Spawn" x="64" y="960">
+  <object id="15" name="Spawn" type="Spawn" x="960" y="832">
+   <point/>
+  </object>
+  <object id="16" name="TR" type="tp" x="1856" y="640" width="64.75" height="192"/>
+  <object id="17" name="TL" type="tp" x="0" y="896" width="31.5" height="192"/>
+  <object id="18" name="TL" type="Spawn" x="64" y="960">
+   <point/>
+  </object>
+  <object id="19" name="TR" type="Spawn" x="1792" y="704">
    <point/>
   </object>
  </objectgroup>
- <imagelayer id="4" name="background">
-  <image source="../../../src/Images/Tiled/stone_bricks.png" width="512" height="512"/>
- </imagelayer>
 </map>

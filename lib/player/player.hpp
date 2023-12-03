@@ -60,6 +60,7 @@ class Player {
   bool isJumping();
   void setIsJumping(bool Jump);
   void applyGravity(float deltaTime);
+  void setVerticalVelocity(float velocity);
   ~Player();
   float dy;
 
@@ -71,8 +72,9 @@ class Player {
   int Realx;
   int Realy;
 
-  int oldRealx;
-  int oldRealy;
+  int width;
+  int height;
+
   bool OnGround;
   bool Jumping;
   bool hasJump;

@@ -11,6 +11,8 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   Realy = 60;
   this->Var = Var;
 
+  width = 36;
+  height = 96;
   speed = 5;
   dy = 0;
   verticalVelocity = 0.0f;
@@ -97,7 +99,7 @@ void Player::Moveto() {
   x = Realx - Mondee->dx;
   y = Realy - Mondee->dy;
 
-  Image.Moveto(x, y);
+  Image.Moveto(x - getWidth(), y);
 }
 
 void Player::RealMoveto(int x1, int y1) {
@@ -167,7 +169,7 @@ void Player::Move(int x1, int y1) {  // Pas les coordonnées, seulement le vecte
   AllMove(x1, y1, false);
 }
 
-void Player::AnimPlayer(int i) { Image.setSrcRect(etats[etat][i].first , etats[etat][i].second , 70, 70); }
+void Player::AnimPlayer(int i) { Image.setSrcRect(etats[etat][i].first, etats[etat][i].second, 70, 70); }
 
 void Player::AllMove(int x1, int y1, bool Teleport) {
   if(!Teleport) {
@@ -195,6 +197,7 @@ void Player::applyGravity(float deltaTime) {
   dy = 0;
   verticalVelocity += Var->Gravity;
   dy += verticalVelocity;
+  if(verticalVelocity > maxSpeed) verticalVelocity = maxSpeed;
 
   // if(dy > 0.5 && !isOnGround()) {
   //   etat = "Idle";
@@ -229,9 +232,9 @@ void Player::SetName(const std::string Name) { Nom = Name; }
 
 std::string Player::toString() { return ("X : " + std::to_string(getX()) + " Y : " + std::to_string(getY())); }
 
-int Player::getWidth() { return Image.getWidth(); }
+int Player::getWidth() { return width; }
 
-int Player::getHeight() { return Image.getHeight(); }
+int Player::getHeight() { return height; }
 
 bool Player::isOnGround() { return OnGround; }
 
@@ -246,3 +249,5 @@ float Player::getVerticalVelocity() { return verticalVelocity; }
 bool Player::isJumping() { return Jumping; }
 
 void Player::setIsJumping(bool Jump) { Jumping = Jump; }
+
+void Player::setVerticalVelocity(float velocity) { verticalVelocity = velocity; }

@@ -26,6 +26,8 @@ class donjon {
   int remaining_count;
   std::vector<Node*> celibNode;
   std::vector<char> letterAlreadyUsed;
+  std::vector<std::string> TwoTallMaps;
+  std::vector<std::string> OneTallMaps;
 
  public:
   donjon(int nbnoeuds, int seed);
@@ -49,17 +51,20 @@ class donjon {
   ////////////// Sauvegarde du donjon ///////////////////////
   void save_rooms_to_file(Node* node);
   void parcours_iteratif_write(Node* node, std::ofstream& file);
-  void save_path_to_file(Node* node);
   int WidthLoad(std::ifstream& file);
   int HeightLoad(std::ifstream& file);
 
   ////////////// Chargement du donjon ///////////////////////
   std::pair<int, int> SearchLetterInMapFromOrigin(char letter, int x, int y);
   void load_rooms_from_file();
-  std::vector<char> getAdjacentLetterFromMap(char letter, int* tall);
-  std::vector<char> getLetterAt(std::ifstream& file, int x, int y);
+  std::vector<std::pair<char, std::string>> getAdjacentLetterFromMap(char letter, int* tall);
+  std::string getAdjacentTypeFromNode(Node* node1, Node* node2);
 
-  void addChildFromFile(Node* node, int originx, int originy);
+  std::vector<char> getLetterAt(std::ifstream& file, int x, int y);
+  void addChildFromFile(Node* node, int originx, int originy, char letter);
+
+  Node* SearchNodeFromValue(char value, Node* node);
+  Node* getElementInChildFromPlacement(std::string placement, Node* node);
 
   ////////////// Dessin du donjon ///////////////////////
   void draw_tree(SDL_Renderer* Renderer, Node* node);

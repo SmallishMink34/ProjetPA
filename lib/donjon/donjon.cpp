@@ -4,19 +4,27 @@
 #include <fstream>
 #include <vector>
 
+#include "../Variables/variables.hpp"
 #include "../utility/utility.hpp"
 #include "tree.hpp"
 
 donjon::donjon(int nbnoeuds, int seed = 1) : noeuds(nbnoeuds), max_noeuds(nbnoeuds), max_children(3), max_depth(10), seed(seed), specialRooms(3), remaining_count(nbnoeuds) {
   letter = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5',
             '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+
   dirrection = {"bas", "haut"};
   dirrectionCopy = dirrection;
   std::random_device rd;
-  std::mt19937 g(rd());
-  // std::shuffle(letter.begin(), letter.end(), g);
-  // std::shuffle(dirrection.begin(), dirrection.end(), g);
-  // std::shuffle(dirrectionCopy.begin(), dirrectionCopy.end(), g);
+  std::mt19937 g(seed);
+
+  for(int i = 1; i <= nbTwoTallMaps; i++) {
+    TwoTallMaps.push_back(std::to_string(i));
+  }
+
+  for(int i = 1; i <= nbOneTallMaps; i++) {
+    OneTallMaps.push_back(std::to_string(i));
+  }
+
   initial_Node = nullptr;
 }
 
@@ -30,8 +38,8 @@ Node *donjon::searchNode(int x, int y, Node *node) {
   if(node->getRoom()->getX() == x && (node->getRoom()->getY() == y || (node->getRoom()->getY() == y - 1 && node->getRoom()->getTall() == 2))) {
     return node;
   }
-  for(Node *child : node->getChildren()) {
-    Node *result = searchNode(x, y, child);
+  for(std::pair<Node *, std::string> child : node->getChildren()) {
+    Node *result = searchNode(x, y, child.first);
     if(result != nullptr) {
       return result;
     }
@@ -42,7 +50,8 @@ Node *donjon::searchNode(int x, int y, Node *node) {
 
 Node *donjon::create_tree() {
   char root_value = addletter();
-  Node *root = new Node(new rooms(0, 0, 32, 32, 2, 2), root_value);
+  Node *root = new Node(new rooms(0, 0, 32, 32, 2, 2), root_value, "None");
+  root->setMap("1");
   initial_Node = root;
   add_children(root, true, true, 0);
   return root;
@@ -173,8 +182,8 @@ void donjon::add_children(Node *node, bool CanBeTall, bool Continuer, int depth)
     char child_value = addletter();
     std::pair<int, int> coords = valids[std::rand() % valids.size()];
     std::remove(valids.begin(), valids.end(), coords);
-    Node *child = new Node(new rooms(coords.first, coords.second), child_value);
-    node->addChild(child);
+    Node *child = new Node(new rooms(coords.first, coords.second), child_value, "None");
+    node->addChild(child, "None");
 
     if(node->getRoom()->getTall() == 2) {
       CanBeTall = false;
@@ -190,8 +199,8 @@ void donjon::SearchCelibRooms(Node *node) {
     if(node->getChildren().empty() && node->getRoom()->getTall() == 1) {
       celibNode.push_back(node);
     } else {
-      for(Node *i : node->getChildren()) {
-        SearchCelibRooms(i);
+      for(std::pair<Node *, std::string> i : node->getChildren()) {
+        SearchCelibRooms(i.first);
       }
     }
   }
@@ -210,7 +219,7 @@ void donjon::addSpecialRooms(Node *node) {
 }
 
 void donjon::save_rooms_to_file(Node *node) {
-  std::ofstream file("map.txt");
+  std::ofstream file(MAP);
   if(file.is_open()) {
     for(int y = minY() - 1; y <= maxY() + 1; y++) {
       for(int x = minX() - 1; x <= maxX() + 1; x++) {
@@ -224,25 +233,18 @@ void donjon::save_rooms_to_file(Node *node) {
       file << "\n";
     }
     file.close();
-    save_path_to_file(node);
   }
 }
 
 void donjon::parcours_iteratif_write(Node *node, std::ofstream &txt) {
   txt << node->getValue() << node->getRoom()->getTall() << node->getRoom()->getType();
-  for(Node *i : node->getChildren()) {
-    txt << i->getValue();
+  for(std::pair<Node *, std::string> i : node->getChildren()) {
+    txt << i.first->getValue();
   }
   txt << "\n";
-  for(Node *i2 : node->getChildren()) {
-    parcours_iteratif_write(i2, txt);
+  for(std::pair<Node *, std::string> i2 : node->getChildren()) {
+    parcours_iteratif_write(i2.first, txt);
   }
-}
-
-void donjon::save_path_to_file(Node *node) {
-  std::ofstream file("mapPath.txt");
-  parcours_iteratif_write(node, file);
-  file.close();
 }
 
 int donjon::WidthLoad(std::ifstream &file) {
@@ -272,7 +274,7 @@ int donjon::HeightLoad(std::ifstream &file) {
 std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int y) {
   int oldx = 0;
   int oldy = 0;
-  std::ifstream file("map.txt");
+  std::ifstream file(MAP);
   std::string line;
 
   while(std::getline(file, line)) {
@@ -292,14 +294,15 @@ std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int 
 }
 
 void donjon::load_rooms_from_file() {
-  std::ifstream file("map.txt");
+  std::ifstream file(MAP);
   std::string line;
 
   std::pair<int, int> origin = SearchLetterInMapFromOrigin('A', 0, 0);
 
-  initial_Node = new Node(new rooms(0, 0, 32, 32, 2, 2), 'A');
+  initial_Node = new Node(new rooms(0, 0, 32, 32, 2, 2), 'A', "None");
+  initial_Node->setMap("1");
 
-  addChildFromFile(initial_Node, origin.first, origin.second);
+  addChildFromFile(initial_Node, origin.first, origin.second, 'A');
   file.close();
 }
 
@@ -323,58 +326,65 @@ std::vector<char> donjon::getLetterAt(std::ifstream &file, int x, int y) {
   return letter;
 }
 
-std::vector<char> donjon::getAdjacentLetterFromMap(char letter, int *tall) {
-  std::vector<char> adjacentLetter;
-  std::ifstream file("map.txt");
+std::vector<std::pair<char, std::string>> donjon::getAdjacentLetterFromMap(char letter, int *tall) {
+  std::vector<std::pair<char, std::string>> adjacentLetter;
+  std::ifstream file(MAP);
   std::vector<std::vector<char>> list = getListOfFile(file);
   std::pair<int, int> origin = SearchLetterInMapFromOrigin(letter, 0, 0);
 
   letterAlreadyUsed.push_back(letter);
   char a = getCharAt(list, origin.first, origin.second + 1);  // Bas
-  std::vector<std::pair<int, int>> coords;
+  std::vector<std::tuple<int, int, std::string>> coords;
   if(a == letter) {
     *tall = 2;
-    coords = {{1, 0}, {1, 1}, {-1, 1}, {-1, 0}};
+    coords = {{1, 0, "TR"}, {1, 1, "DR"}, {-1, 1, "DL"}, {-1, 0, "TL"}};
   } else {
-    coords = {{1, 0}, {-1, 0}};
+    coords = {{1, 0, "TR"}, {-1, 0, "TL"}};
     *tall = 1;
   }
 
-  for(std::pair<int, int> coord : coords) {
-    char a = getCharAt(list, origin.first + coord.first, origin.second + coord.second);
-    if(a != '#' && findInVector(letterAlreadyUsed, a) == -1) adjacentLetter.push_back(a);
+  for(std::tuple<int, int, std::string> coord : coords) {
+    char a = getCharAt(list, origin.first + std::get<0>(coord), origin.second + std::get<1>(coord));
+    if(a != '#') adjacentLetter.push_back({a, std::get<2>(coord)});
   }
 
-  std::cout << "Letter : " << letter << " tall : " << *tall << std::endl;
   file.close();
   return adjacentLetter;
 }
 
-void donjon::addChildFromFile(Node *node, int originx, int originy) {
+void donjon::addChildFromFile(Node *node, int originx, int originy, char letter) {
   if(node != nullptr) {
     int tall = 1;
     int type = 1;
-    std::vector<char> letters = getAdjacentLetterFromMap(node->getValue(), &tall);
+    std::vector<std::pair<char, std::string>> letters = getAdjacentLetterFromMap(node->getValue(), &tall);
     node->getRoom()->setTall(tall);
     node->getRoom()->setType(type);
-    for(char c : letters) {
-      std::pair<int, int> NewNode = SearchLetterInMapFromOrigin(c, originx, originy);
-      if(NewNode.first == NULL && NewNode.second == NULL) {
-        continue;
-      }
+    if(tall == 2) {
+      node->setMap(getRandomElement(TwoTallMaps));
+    } else {
+      node->setMap(getRandomElement(OneTallMaps));
+    }
 
-      Node *child = new Node(new rooms(NewNode.first, NewNode.second), c);
-      node->addChild(child);
-      addChildFromFile(child, originx, originy);
+    for(std::pair<char, std::string> c : letters) {
+      if(findInVector(letterAlreadyUsed, c.first) == -1) {
+        std::pair<int, int> NewNode = SearchLetterInMapFromOrigin(c.first, originx, originy);
+        Node *child = new Node(new rooms(NewNode.first, NewNode.second), c.first, c.second);
+        node->addChild(child, c.second);
+        addChildFromFile(child, originx, originy, node->getValue());
+      } else if(c.first == letter) {
+        Node *child = SearchNodeFromValue(c.first, initial_Node);
+        node->addParent(child, c.second);
+      }
     }
   }
 }
+
 void donjon::drawDungeon(Node *node) {
   if(node != nullptr) {
     std::cout << node->getValue() << "\t" << node->getRoom()->getX() << "/" << node->getRoom()->getY() << "\t" << node->getAllChildValues()
               << "\ttall : " << node->getRoom()->getTall() << std::endl;
-    for(Node *i : node->getChildren()) {
-      drawDungeon(i);
+    for(std::pair<Node *, std::string> i : node->getChildren()) {
+      drawDungeon(i.first);
     }
   }
 }
@@ -382,19 +392,67 @@ void donjon::drawDungeon(Node *node) {
 void donjon::draw_tree(SDL_Renderer *Renderer, Node *node) {
   if(node != nullptr) {
     node->getRoom()->drawRoom(Renderer);
-    for(Node *i : node->getChildren()) {
-      draw_tree(Renderer, i);
+    for(std::pair<Node *, std::string> i : node->getChildren()) {
+      draw_tree(Renderer, i.first);
     }
   }
 }
 
+Node *donjon::getElementInChildFromPlacement(std::string placement, Node *node) {
+  if(node != nullptr) {
+    for(std::pair<Node *, std::string> i : node->getChildAndParent()) {
+      if(i.second == placement) {
+        return i.first;
+      }
+    }
+  }
+  return nullptr;
+}
+
 void removeNode(Node *node) {
   if(node != nullptr) {
-    for(Node *i : node->getChildren()) {
-      removeNode(i);
+    for(std::pair<Node *, std::string> i : node->getChildren()) {
+      removeNode(i.first);
     }
     delete node;
   }
+}
+
+Node *donjon::SearchNodeFromValue(char value, Node *node) {
+  if(node->getValue() == value) {
+    return node;
+  }
+  for(std::pair<Node *, std::string> child : node->getChildren()) {
+    Node *result = SearchNodeFromValue(value, child.first);
+    if(result != nullptr) {
+      return result;
+    }
+  }
+
+  return nullptr;
+}
+
+std::string donjon::getAdjacentTypeFromNode(Node *node1, Node *node2) {
+  std::vector<std::pair<char, std::string>> adjacentLetter;
+  std::ifstream file(MAP);
+  std::vector<std::vector<char>> list = getListOfFile(file);
+  std::pair<int, int> origin = SearchLetterInMapFromOrigin(node1->getValue(), 0, 0);
+
+  char a = getCharAt(list, origin.first, origin.second + 1);  // Bas
+  std::vector<std::tuple<int, int, std::string>> coords;
+  if(a == node1->getValue()) {
+    coords = {{1, 0, "TR"}, {1, 1, "DR"}, {-1, 1, "DL"}, {-1, 0, "TL"}};
+  } else {
+    coords = {{1, 0, "TR"}, {-1, 0, "TL"}};
+  }
+
+  for(std::tuple<int, int, std::string> coord : coords) {
+    if(getCharAt(list, origin.first + std::get<0>(coord), origin.second + std::get<1>(coord)) == node2->getValue()) {
+      return std::get<2>(coord);
+    }
+  }
+
+  return "None";
 }
 
 donjon::~donjon() { removeNode(initial_Node); }

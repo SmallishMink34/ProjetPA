@@ -33,6 +33,8 @@ class level {
   tmx::Object getObjectByName(const std::string& Name);
   std::vector<tmx::Object> getObjects();
   std::vector<tmx::Object> getObjectsByType(const std::string& Name);
+
+  tmx::Object getObjectByNameAndType(const std::string& Name, const std::string& Type);
   int getMapWidth();
   int getMapHeight();
 

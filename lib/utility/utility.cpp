@@ -40,3 +40,18 @@ char getCharAt(std::vector<std::vector<char>> list, int x, int y) {
   }
   return list[y][x];
 }
+
+std::string getRandomElement(std::vector<std::string> vec) {
+  int random = rand() % vec.size();
+  return vec[random];
+}
+
+int getNumverInList(std::vector<char> vec) {
+  int number = 0;
+  for(int i = 0; i < vec.size(); i++) {
+    if(vec[i] >= '0' && vec[i] <= '9') {
+      number = number * 10 + (vec[i] - '0');
+    }
+  }
+  return number;
+}
