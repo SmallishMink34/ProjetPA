@@ -62,9 +62,9 @@ void allMaps::InitializeLevel() {
 void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType) {
   tmx::Object object = cartesMap[this->currentMap->getValue()]->getSpawn(SpawnType);
 
-  player->InitPlayer(getCollisions(), Monde);
+  player->InitPlayer(getCollisions());
   player->AllMove(object.getPosition().x, object.getPosition().y, true);
-  player->FixCamera();
+  Monde->FixCamera();
 }
 
 allMaps::~allMaps() {

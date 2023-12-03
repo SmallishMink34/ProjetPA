@@ -21,7 +21,7 @@ bool initSDL(Variable *Var) {
     return false;
   }
 
-  gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Var->Windows_W, Var->Windows_H, SDL_WINDOW_BORDERLESS);
+  gWindow = SDL_CreateWindow("Exemple SDL", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Windows_W, Windows_H, SDL_WINDOW_BORDERLESS);
   if(gWindow == nullptr) {
     std::cerr << "Erreur lors de la création de la fenêtre : " << SDL_GetError() << std::endl;
     return false;

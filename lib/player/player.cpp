@@ -22,6 +22,9 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   OnGround = false;
   etat = "Idle";
 
+  mapDX = 0;
+  mapDY = 0;
+
   etats["Right"] = {{0, 910}, {82, 910}, {164, 910}, {246, 910}, {328, 910}, {410, 910}, {492, 910}, {574, 910}, {656, 910}};
   etats["Left"] = {{0, 744}, {82, 744}, {164, 744}, {246, 744}, {328, 744}, {410, 744}, {492, 744}, {574, 744}, {656, 744}};
   etats["Jump"] = {{246, 175}, {328, 175}, {410, 175}, {492, 175}, {410, 175}, {328, 175}};
@@ -31,6 +34,8 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   Image.setSrcRect(0, 180, 64, 64);
   Image.loadImage(Renderer);
 }
+
+void Player::InitPlayer(std::vector<tmx::Object> Collisions) { this->Collisions = Collisions; }
 
 bool isBoxInBox(tmx::Object object1, tmx::Object object2) {
   if(object1.getPosition().x < object2.getPosition().x + object2.getAABB().width && object1.getPosition().x + object1.getAABB().width > object2.getPosition().x &&
@@ -45,12 +50,6 @@ bool isBoxInBox(int x, int y, tmx::Object object) {
     return true;
   }
   return false;
-}
-
-void Player::InitPlayer(std::vector<tmx::Object> Objects, world *Monde) {
-  Collisions = Objects;
-  Map = Monde->Map;
-  Mondee = Monde;
 }
 
 bool Player::isColliding(int x1, int y1, int w, int h) {
@@ -93,11 +92,22 @@ std::vector<std::pair<tmx::Object, std::string>> Player::isColliding(int realx, 
   return CollidePairs;
 }
 
+tmx::Object Player::isColliding(std::vector<tmx::Object> Collisions) {
+  tmx::Object Collision;
+  for(long unsigned int i = 0; i < Collisions.size(); i++) {
+    if(isColliding(Collisions[i].getPosition().x, Collisions[i].getPosition().y, Collisions[i].getAABB().width, Collisions[i].getAABB().height)) {
+      Collision = Collisions[i];
+      break;
+    }
+  }
+  return Collision;
+}
+
 Player::~Player() {}
 
 void Player::Moveto() {
-  x = Realx - Mondee->dx;
-  y = Realy - Mondee->dy;
+  x = Realx - mapDX;
+  y = Realy - mapDY;
 
   Image.Moveto(x - getWidth(), y);
 }
@@ -123,8 +133,11 @@ bool isEmpty(std::pair<tmx::Object, std::string> pair) {
   return false;
 }
 
-void Player::Move(int x1, int y1) {  // Pas les coordonnées, seulement le vecteur de déplacements
+void Player::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonnées, seulement le vecteur de déplacements
   std::vector<std::pair<tmx::Object, std::string>> result = isColliding(Realx, Realy);
+
+  mapDX = dxMap;
+  mapDY = dyMap;
 
   if(dy <= 0) {
     if(isEmpty(isInList(result, "Down"))) {
@@ -181,18 +194,6 @@ void Player::AllMove(int x1, int y1, bool Teleport) {
   }
 }
 
-void Player::FixCamera() {
-  if(x > Map->getMapWidth() - Var->Real_W / 2) {
-    int nombre = Map->getMapWidth() - Var->Real_W;
-    x = x - nombre;
-  }
-  if(y > Map->getMapHeight() - Var->Real_H / 2) {
-    int nombre = Map->getMapHeight() - Var->Real_H;
-    y = y - nombre;
-  }
-  Image.Moveto(x, y);
-}
-
 void Player::applyGravity(float deltaTime) {
   dy = 0;
   verticalVelocity += Var->Gravity;
@@ -215,7 +216,7 @@ void Player::applyGravity(float deltaTime) {
 
   if(!isJumping()) hasJump = false;
 
-  Move(0, dy * deltaTime);
+  Move(0, dy * deltaTime, mapDX, mapDY);
 }
 
 int Player::getRX() { return Realx; }
@@ -251,3 +252,11 @@ bool Player::isJumping() { return Jumping; }
 void Player::setIsJumping(bool Jump) { Jumping = Jump; }
 
 void Player::setVerticalVelocity(float velocity) { verticalVelocity = velocity; }
+
+void Player::setX(int x) { this->x = x; }
+
+void Player::setY(int y) { this->y = y; }
+
+int Player::getVie() { return vie; }
+
+void Player::IncrementVie(int vie) { this->vie += vie; }

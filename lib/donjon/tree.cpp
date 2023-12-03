@@ -1,6 +1,8 @@
 #include "tree.hpp"
 
-#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL.h>
+
+#include "../Variables/variables.hpp"
 
 rooms::rooms() {
   this->x = 0;
@@ -8,9 +10,10 @@ rooms::rooms() {
   this->w = 0;
   this->h = 0;
   this->type = 0;
-  this->tall = 0;
-  this->value = "0";
-  this->font = TTF_OpenFont("src/font/Misty Style.otf", 24);
+  this->tall = 1;
+  this->value = '0';
+  this->loaded = false;
+  setImages();
 }
 
 rooms::rooms(int x, int y) {
@@ -20,8 +23,9 @@ rooms::rooms(int x, int y) {
   this->h = 0;
   this->type = 0;
   this->tall = 1;
-  this->value = "0";
-  this->font = TTF_OpenFont("src/font/Misty Style.otf", 24);
+  this->value = '0';
+  this->loaded = false;
+  setImages();
 }
 
 rooms::rooms(int x, int y, int w, int h, int type, int tall) {
@@ -32,18 +36,13 @@ rooms::rooms(int x, int y, int w, int h, int type, int tall) {
   this->type = type;
   this->tall = tall;
   this->value = '0';
-  this->font = TTF_OpenFont("src/font/Misty Style.otf", 24);
+  this->loaded = false;
+  setImages();
 }
 
 void rooms::setTall(int tall) {
   this->tall = tall;
-  if(this->tall == 1) {
-    this->color = {0, 255, 255};
-    this->defaultColor = {0, 255, 255};
-  } else {
-    this->color = {255, 0, 255};
-    this->defaultColor = {255, 0, 255};
-  }
+  setImages();
 }
 
 void rooms::setType(int type) { this->type = type; }
@@ -64,22 +63,25 @@ void rooms::setX(int x) { this->x = x; }
 
 void rooms::setY(int y) { this->y = y; }
 
+void rooms::setImages() {
+  if(this->tall == 1) {
+    this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
+    this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
+  } else {
+    this->ImageIn = new Sprite("src/Images/HUD/Case3.png", 0, 0, this->w, this->h * 2);
+    this->ImageNotIn = new Sprite("src/Images/HUD/Case4.png", 0, 0, this->w, this->h * 2);
+  }
+}
+
 SDL_Color rooms::getDefaultColor() { return this->defaultColor; }
 
-void rooms::drawRoom(SDL_Renderer *Renderer) {
-  SDL_Rect rect;
-  rect.x = 320 + this->x * 32;
-  rect.y = 320 + this->y * 32;
-  rect.w = 32;
-  rect.h = 32;
-  if(this->tall == 1) {
-    SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, 255);
-  } else {
-    SDL_SetRenderDrawColor(Renderer, color.r, color.g, color.b, 255);
-    rect.h *= 2;
+void rooms::drawRoom(SDL_Renderer *Renderer, int x, int y) {
+  if(!this->loaded) {
+    this->ImageIn->loadImage(Renderer);
+    this->ImageNotIn->loadImage(Renderer);
+    this->loaded = true;
   }
-
-  SDL_RenderFillRect(Renderer, &rect);
+  this->ImageNotIn->selfDraw(Renderer, x + this->x * tailleCase, y + this->y * tailleCase);
 }
 
 std::vector<std::pair<int, int>> rooms::coordsarround() {
@@ -103,8 +105,7 @@ int rooms::getType() { return this->type; }
 
 void rooms::setValue(char value) { this->value = value; }
 
-rooms::~rooms() {  // TTF_CloseFont(font);
-}
+rooms::~rooms() {}
 
 // |---------------------- NODE ----------------------|
 

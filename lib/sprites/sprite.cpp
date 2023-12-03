@@ -13,6 +13,7 @@ Sprite::Sprite() {
   this->rect->w = 0;
   this->rect->h = 0;
   this->lien = "";
+  this->Rezise = false;
   this->Img = nullptr;
 }
 
@@ -27,9 +28,8 @@ Sprite::Sprite(std::string lien, int x, int y, int w, int h) {
   this->rect->y = y;
   this->rect->w = w;
   this->rect->h = h;
-
+  this->Rezise = false;
   this->srcRect = new SDL_Rect();
-  this->setSrcRect(0, 0, w, h);
 
   this->lien = lien;
   this->Img = nullptr;
@@ -46,6 +46,15 @@ void Sprite::loadImage(SDL_Renderer* Renderer) {
     std::cerr << "Échec du chargement de l'image." << std::endl;
   }
   this->SetImage(texture);
+  if(!this->Rezise) {
+    int width = 0;
+    int height = 0;
+    SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+    this->srcRect->x = 0;
+    this->srcRect->y = 0;
+    this->srcRect->w = width;
+    this->srcRect->h = height;
+  }
 }
 
 void Sprite::SetImage(SDL_Texture* Img) { this->Img = Img; }
@@ -67,13 +76,12 @@ SDL_Texture* Sprite::GetImg() { return this->Img; }
 void Sprite::selfDraw(SDL_Renderer* Renderer) { SDL_RenderCopyEx(Renderer, this->GetImg(), this->getsrcRect(), this->getRect(), 0, NULL, SDL_FLIP_NONE); }
 
 void Sprite::selfDraw(SDL_Renderer* Renderer, int x, int y) {
-  SDL_Rect* rect = new SDL_Rect();
-  rect->x = x;
-  rect->y = y;
-  rect->w = this->getWidth();
-  rect->h = this->getHeight();
-
-  SDL_RenderCopyEx(Renderer, this->GetImg(), this->getsrcRect(), rect, 0, NULL, SDL_FLIP_NONE);
+  SDL_Rect rect;
+  rect.x = x;
+  rect.y = y;
+  rect.w = this->getWidth();
+  rect.h = this->getHeight();
+  SDL_RenderCopyEx(Renderer, this->GetImg(), this->getsrcRect(), &rect, 0, NULL, SDL_FLIP_NONE);
 }
 
 void Sprite::setSrcRect(int x, int y, int w, int h) {
@@ -81,6 +89,7 @@ void Sprite::setSrcRect(int x, int y, int w, int h) {
   this->srcRect->y = y;
   this->srcRect->w = w;
   this->srcRect->h = h;
+  this->Rezise = true;
 }
 
 int Sprite::getWidth() { return this->w; }

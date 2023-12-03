@@ -1,15 +1,24 @@
-#ifndef DefHud
-#define DefHud
+#ifndef DefHude
+#define DefHude
+#include <SDL2/SDL.h>
+
+#include <iostream>
+
+#include "../donjon/donjon.hpp"
 #include "../player/player.hpp"
-
-class Hud {
- public:
-  Hud(Player *player);
-  ~Hud();
-  void draw();
-  void update();
-
+#include "../sprites/sprite.hpp"
+class HUD {
  private:
-  Player *joueur;
+  Player *Joueur;
+  Sprite *vieEntiere;
+  Sprite *vieDemi;
+  Sprite *MapFrame;
+  donjon *Don;
+  SDL_Rect *rect;
+
+ public:
+  HUD(SDL_Renderer *renderer, Player *Joueur, donjon *Don);
+  ~HUD();
+  void draw(SDL_Renderer *renderer);
 };
 #endif

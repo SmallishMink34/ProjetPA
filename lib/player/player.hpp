@@ -7,13 +7,9 @@
 #include <utility>  // Pour std::pair
 #include <vector>
 
-#include "../Cartes/cartes.hpp"
 #include "../Variables/variables.hpp"
 #include "../maps/maps.hpp"
 #include "../sprites/sprite.hpp"
-#include "../world/world.hpp"
-
-class world;
 
 class allMaps;
 class Player {
@@ -22,7 +18,7 @@ class Player {
   Player(SDL_Renderer* Renderer, Variable* Var);
 
   // Variables
-  int vie;
+
   Sprite Image;
   Sprite hp;
   int speed;
@@ -34,43 +30,57 @@ class Player {
   std::vector<tmx::Object> Collisions;
 
   // Fonctions
-  std::string GetName();
-  void SetName(const std::string Name);
-  void Moveto();
-  void RealMoveto(int x, int y);
-  void Move(int x, int y);
-  void AnimPlayer(int i);
-  int getWidth();
-  int getHeight();
 
-  bool isColliding(int x1, int y1, int realx, int realy);
-  std::vector<std::pair<tmx::Object, std::string>> isColliding(int realx, int realy);
+  // Getters
+  std::string GetName();
   int getRX();
   int getRY();
   int getX();
   int getY();
-
-  std::string toString();
-  void InitPlayer(std::vector<tmx::Object> Objects, world* Monde);
-  void FixCamera();
-  void AllMove(int x1, int y1, bool Teleport);
-  bool isOnGround();
+  int getWidth();
+  int getHeight();
   float getVerticalVelocity();
-  void jump();
   bool isJumping();
+  bool isOnGround();
+  int getVie();
+
+  // Setters
+  void SetName(const std::string Name);
   void setIsJumping(bool Jump);
-  void applyGravity(float deltaTime);
   void setVerticalVelocity(float velocity);
-  ~Player();
+  void setX(int x);
+  void setY(int y);
+  void IncrementVie(int vie);
+
+  // Collisions
+  bool isColliding(int x1, int y1, int realx, int realy);
+  std::vector<std::pair<tmx::Object, std::string>> isColliding(int realx, int realy);
+  tmx::Object isColliding(std::vector<tmx::Object> Collisions);
+
+  // Deplacements
+  void Moveto();
+  void RealMoveto(int x, int y);
+  void Move(int x, int y, int dx, int dy);
+  void AllMove(int x1, int y1, bool Teleport);
+  void jump();
+
+  // Autres
+  void InitPlayer(std::vector<tmx::Object> Collisions);
+  void AnimPlayer(int i);
+  std::string toString();
+  void applyGravity(float deltaTime);
   float dy;
+
+  ~Player();
 
  private:
   std::string Nom;
   int x;
   int y;
-
   int Realx;
   int Realy;
+
+  int vie;
 
   int width;
   int height;
@@ -81,8 +91,10 @@ class Player {
   float verticalVelocity;
   float jumpStrength;
   float jumpTime;
+
+  int mapDX;
+  int mapDY;
   allMaps* Map;
-  world* Mondee;
 };
 
 #endif

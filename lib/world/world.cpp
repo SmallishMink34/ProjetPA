@@ -9,6 +9,7 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
 
   this->Joueur = new Player(Renderer, Var);
   this->AllElements = Texture();
+  this->hud = new HUD(Renderer, this->Joueur, this->Donjon);
 
   this->currentTime = SDL_GetTicks();
   this->deltaTime = this->currentTime;
@@ -22,6 +23,11 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->seeMap = false;
 }
 
+void world::InitMonde(SDL_Renderer* Renderer) {
+  this->AllElements.addElements(Renderer, Sprite("src/Images/image.jpg", 0, 420, 1280, 720));
+  Map->InitializeRoom(this->Joueur, this, "Spawn");
+}
+
 void world::UpdateAll() {
   this->currentTime = SDL_GetTicks();
   this->deltaTime = (this->currentTime - this->previousTime) / 10.0;
@@ -30,7 +36,7 @@ void world::UpdateAll() {
 
   this->movePlayer();
 
-  tmx::Object collision = isColliding(this->Joueur, this->Map->getElements());
+  tmx::Object collision = this->Joueur->isColliding(this->Map->getElements());
   std::string collisionType = collision.getType();
 
   if(collisionType == "tp") {
@@ -88,17 +94,6 @@ void world::moveCamera() {
   dy += (targetCameraY - dy) * Var->CameraSpeed;
 }
 
-tmx::Object world::isColliding(Player* Joueur, std::vector<tmx::Object> Collisions) {
-  tmx::Object Collision;
-  for(long unsigned int i = 0; i < Collisions.size(); i++) {
-    if(Joueur->isColliding(Collisions[i].getPosition().x, Collisions[i].getPosition().y, Collisions[i].getAABB().width, Collisions[i].getAABB().height)) {
-      Collision = Collisions[i];
-      break;
-    }
-  }
-  return Collision;
-}
-
 void world::movePlayer() {
   // Appliquer la gravité
 
@@ -130,12 +125,13 @@ void world::movePlayer() {
       moveY = this->Joueur->speed;
     }
   }
-  this->Joueur->Move(moveX * this->deltaTime, moveY);
+  this->Joueur->Move(moveX * this->deltaTime, moveY, dx, dy);
 }
 
-void world::InitMonde(SDL_Renderer* Renderer) {
-  this->AllElements.addElements(Renderer, Sprite("src/Images/image.jpg", 0, 420, 1280, 720));
-  Map->InitializeRoom(this->Joueur, this, "Spawn");
+void world::drawMap(SDL_Renderer* Renderer) {
+  if(seeMap) {
+    this->hud->draw(Renderer);
+  }
 }
 
 void world::drawAll(SDL_Renderer* Renderer) {
@@ -147,8 +143,14 @@ void world::drawAll(SDL_Renderer* Renderer) {
   drawMap(Renderer);
 }
 
-void world::drawMap(SDL_Renderer* Renderer) {
-  if(seeMap) {
-    this->Donjon->draw_tree(Renderer, this->Donjon->initial_Node);
+void world::FixCamera() {
+  if(this->Joueur->getX() > Map->getMapWidth() - Var->Real_W / 2) {
+    int nombre = Map->getMapWidth() - Var->Real_W;
+    this->Joueur->setX(this->Joueur->getX() - nombre);
   }
+  if(this->Joueur->getY() > Map->getMapHeight() - Var->Real_H / 2) {
+    int nombre = Map->getMapHeight() - Var->Real_H;
+    this->Joueur->setY(this->Joueur->getY() - nombre);
+  }
+  this->Joueur->Moveto();
 }

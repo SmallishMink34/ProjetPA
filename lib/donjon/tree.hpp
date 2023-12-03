@@ -7,6 +7,8 @@
 #include <iostream>
 #include <tuple>
 #include <vector>
+
+#include "../sprites/sprite.hpp"
 class rooms {
  private:
   int x;
@@ -15,10 +17,13 @@ class rooms {
   int h;
   int type;
   int tall;
+  bool loaded;
   std::string value;
-  TTF_Font *font;
   SDL_Color color;
   SDL_Color defaultColor;
+
+  Sprite *ImageNotIn;
+  Sprite *ImageIn;
 
  public:
   rooms();
@@ -33,6 +38,7 @@ class rooms {
   void setValue(char value);
   void setColor(SDL_Color color);
   void setColor(int r, int g, int b);
+  void setImages();
 
   // Getters :
   int getX();
@@ -42,7 +48,7 @@ class rooms {
   SDL_Color getDefaultColor();
 
   // Others :
-  void drawRoom(SDL_Renderer *Renderer);
+  void drawRoom(SDL_Renderer *Renderer, int x, int y);
   std::vector<std::pair<int, int>> coordsarround();
 
   ~rooms();

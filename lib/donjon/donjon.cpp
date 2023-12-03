@@ -50,7 +50,7 @@ Node *donjon::searchNode(int x, int y, Node *node) {
 
 Node *donjon::create_tree() {
   char root_value = addletter();
-  Node *root = new Node(new rooms(0, 0, 32, 32, 2, 2), root_value, "None");
+  Node *root = new Node(new rooms(0, 0, tailleCase, tailleCase, 2, 2), root_value, "None");
   root->setMap("1");
   initial_Node = root;
   add_children(root, true, true, 0);
@@ -299,7 +299,7 @@ void donjon::load_rooms_from_file() {
 
   std::pair<int, int> origin = SearchLetterInMapFromOrigin('A', 0, 0);
 
-  initial_Node = new Node(new rooms(0, 0, 32, 32, 2, 2), 'A', "None");
+  initial_Node = new Node(new rooms(0, 0, tailleCase, tailleCase, 2, 2), 'A', "None");
   initial_Node->setMap("1");
 
   addChildFromFile(initial_Node, origin.first, origin.second, 'A');
@@ -368,7 +368,7 @@ void donjon::addChildFromFile(Node *node, int originx, int originy, char letter)
     for(std::pair<char, std::string> c : letters) {
       if(findInVector(letterAlreadyUsed, c.first) == -1) {
         std::pair<int, int> NewNode = SearchLetterInMapFromOrigin(c.first, originx, originy);
-        Node *child = new Node(new rooms(NewNode.first, NewNode.second), c.first, c.second);
+        Node *child = new Node(new rooms(NewNode.first, NewNode.second, tailleCase, tailleCase, 1, 1), c.first, c.second);
         node->addChild(child, c.second);
         addChildFromFile(child, originx, originy, node->getValue());
       } else if(c.first == letter) {
@@ -389,11 +389,11 @@ void donjon::drawDungeon(Node *node) {
   }
 }
 
-void donjon::draw_tree(SDL_Renderer *Renderer, Node *node) {
+void donjon::draw_tree(SDL_Renderer *Renderer, Node *node, int x, int y) {
   if(node != nullptr) {
-    node->getRoom()->drawRoom(Renderer);
+    node->getRoom()->drawRoom(Renderer, x, y);
     for(std::pair<Node *, std::string> i : node->getChildren()) {
-      draw_tree(Renderer, i.first);
+      draw_tree(Renderer, i.first, x, y);
     }
   }
 }

@@ -11,7 +11,7 @@ Jeu::Jeu(SDL_Window* window, SDL_Renderer* renderer, Variable* Var) {
 void Jeu::Init() {
   isLoaded = true;
 
-  Var->ChangeScale(Var->Windows_W / 1280.0);
+  Var->ChangeScale(Windows_W / 1280.0);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 
@@ -26,7 +26,7 @@ void Jeu::Pause(std::string* Gamemode) {
 
 void Jeu::unpause() {
   this->Monde->previousTime = SDL_GetTicks();
-  this->Var->ChangeScale(Var->Windows_W / 1280.0);
+  this->Var->ChangeScale(Windows_W / 1280.0);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 }
@@ -67,6 +67,10 @@ void Jeu::handleEvents(std::string* Gamemode) {
           std::cout << Monde->Joueur->toString() << std::endl;
           break;
         case SDLK_o:
+          Monde->Joueur->IncrementVie(1);
+          break;
+        case SDLK_l:
+          Monde->Joueur->IncrementVie(-1);
           break;
       }
     } else if(e.type == SDL_KEYUP) {

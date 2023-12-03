@@ -21,25 +21,25 @@ class Sprite {
 
   /**
    * @brief Dessine le sprite
-   * /param Renderer Le renderer sur lequel dessiner
+   * \param Renderer Le renderer sur lequel dessiner
    */
   void selfDraw(SDL_Renderer* Renderer);
 
   /**
    * @brief Dessine le sprite
-   * /param Renderer Le renderer sur lequel dessiner
-   * /param x La position en x
-   * /param y La position en y
+   * \param Renderer Le renderer sur lequel dessiner
+   * \param x La position en x
+   * \param y La position en y
    */
   void selfDraw(SDL_Renderer* Renderer, int x, int y);
 
   /**
    * @brief Dessine le sprite en répétant l'image
-   * /param Renderer Le renderer sur lequel dessiner
-   * /param w Le nombre de fois à répéter l'image en largeur
-   * /param h Le nombre de fois à répéter l'image en hauteur
-   * /param dx Le décalage en x
-   * /param dy Le décalage en y
+   * \param Renderer Le renderer sur lequel dessiner
+   * \param w Le nombre de fois à répéter l'image en largeur
+   * \param h Le nombre de fois à répéter l'image en hauteur
+   * \param dx Le décalage en x
+   * \param dy Le décalage en y
    */
   void DrawRepeat(SDL_Renderer* Renderer, int w, int h, int dx, int dy);
   void loadImage(SDL_Renderer* Renderer);
@@ -54,6 +54,7 @@ class Sprite {
   int y;
   int w;
   int h;
+  bool Rezise;
   SDL_Rect* rect;
   SDL_Rect* srcRect;
   std::string lien;
