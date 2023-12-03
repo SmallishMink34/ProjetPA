@@ -94,16 +94,17 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
   std::string SpawnType = "Spawn";
   if(map == "Spawn") {
     this->currentMap = this->Donjon->initial_Node;
+    getCurrentMap()->getRoom()->SetInTheRoom(true);
   } else {
     Node* oldNode = getCurrentMap();
-    getCurrentMap()->getRoom()->setColor(this->getCurrentMap()->getRoom()->getDefaultColor());
+    getCurrentMap()->getRoom()->SetInTheRoom(false);
 
     this->currentMap = Donjon->getElementInChildFromPlacement(map, getCurrentMap());
 
     SpawnType = Donjon->getAdjacentTypeFromNode(getCurrentMap(), oldNode);
 
     std::cout << "SpawnType : " << SpawnType << std::endl;
-    getCurrentMap()->getRoom()->setColor({255, 0, 0, 255});
+    getCurrentMap()->getRoom()->SetInTheRoom(true);
   }
   InitializeRoom(player, Monde, SpawnType);
 }

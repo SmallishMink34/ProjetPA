@@ -18,9 +18,8 @@ class rooms {
   int type;
   int tall;
   bool loaded;
+  bool InRoom;
   std::string value;
-  SDL_Color color;
-  SDL_Color defaultColor;
 
   Sprite *ImageNotIn;
   Sprite *ImageIn;
@@ -36,8 +35,7 @@ class rooms {
   void setX(int x);
   void setY(int y);
   void setValue(char value);
-  void setColor(SDL_Color color);
-  void setColor(int r, int g, int b);
+  void SetInTheRoom(bool in);
   void setImages();
 
   // Getters :
@@ -45,7 +43,6 @@ class rooms {
   int getY();
   int getTall();
   int getType();
-  SDL_Color getDefaultColor();
 
   // Others :
   void drawRoom(SDL_Renderer *Renderer, int x, int y);

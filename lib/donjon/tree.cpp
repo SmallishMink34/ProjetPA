@@ -37,6 +37,7 @@ rooms::rooms(int x, int y, int w, int h, int type, int tall) {
   this->tall = tall;
   this->value = '0';
   this->loaded = false;
+  this->InRoom = false;
   setImages();
 }
 
@@ -47,13 +48,7 @@ void rooms::setTall(int tall) {
 
 void rooms::setType(int type) { this->type = type; }
 
-void rooms::setColor(SDL_Color color) { this->color = color; }
-
-void rooms::setColor(int r, int g, int b) {
-  this->color.r = r;
-  this->color.g = g;
-  this->color.b = b;
-}
+void rooms::SetInTheRoom(bool in) { this->InRoom = in; }
 
 int rooms::getX() { return this->x; }
 
@@ -73,15 +68,17 @@ void rooms::setImages() {
   }
 }
 
-SDL_Color rooms::getDefaultColor() { return this->defaultColor; }
-
 void rooms::drawRoom(SDL_Renderer *Renderer, int x, int y) {
   if(!this->loaded) {
     this->ImageIn->loadImage(Renderer);
     this->ImageNotIn->loadImage(Renderer);
     this->loaded = true;
   }
-  this->ImageNotIn->selfDraw(Renderer, x + this->x * tailleCase, y + this->y * tailleCase);
+  if(this->InRoom) {
+    this->ImageIn->selfDraw(Renderer, x + this->x * tailleCase, y + this->y * tailleCase);
+  } else {
+    this->ImageNotIn->selfDraw(Renderer, x + this->x * tailleCase, y + this->y * tailleCase);
+  }
 }
 
 std::vector<std::pair<int, int>> rooms::coordsarround() {
