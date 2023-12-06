@@ -74,17 +74,17 @@ std::vector<std::pair<tmx::Object, std::string>> Player::isColliding(int realx, 
     }
     if(isPointInBox(realx + getWidth() + speed, realy + getHeight() / 4, collisionObject) ||
        (isPointInBox(realx + getWidth() + speed, realy + 3 * getHeight() / 4, collisionObject))) {
-      if(collisionObject.getName() == "") {
+      if(collisionObject.getName() != "Platform" && collisionObject.getName() != "Jump") {
         CollidePairs.push_back(std::make_pair(collisionObject, "Right"));
       }
     }
     if(isPointInBox(realx - speed, realy + getHeight() / 4, collisionObject) || (isPointInBox(realx - speed, realy + 3 * getHeight() / 4, collisionObject))) {
-      if(collisionObject.getName() == "") {
+      if(collisionObject.getName() != "Platform" && collisionObject.getName() != "Jump") {
         CollidePairs.push_back(std::make_pair(collisionObject, "Left"));
       }
     }
     if(isPointInBox(realx + speed, realy, collisionObject) || (isPointInBox(realx - speed + getWidth(), realy, collisionObject))) {
-      if(collisionObject.getName() == "") {
+      if(collisionObject.getName() != "Platform" && collisionObject.getName() != "Jump") {
         CollidePairs.push_back(std::make_pair(collisionObject, "Up"));
       }
     }

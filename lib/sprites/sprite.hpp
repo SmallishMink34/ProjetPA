@@ -11,7 +11,6 @@ class Sprite {
   Sprite();
   Sprite(std::string lien, int x, int y, int w, int h);
   Sprite(int x, int y, int w, int h);
-
   // Fonctions
   void Moveto(int x, int y);
   void SetImage(SDL_Texture* Img);
