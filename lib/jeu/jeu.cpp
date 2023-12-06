@@ -34,6 +34,17 @@ void Jeu::unpause() {
 void Jeu::handleEvents(std::string* Gamemode) {
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    this->Monde->mouseX = mouseX;
+    this->Monde->mouseY = mouseY;
+    if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
+      Monde->KeyPressed[4] = true;
+      std::cout << "X : " << mouseX << " Y : " << mouseY << std::endl;
+    } else if(e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT) {
+      Monde->KeyPressed[4] = false;
+    }
+
     if(e.type == SDL_QUIT) {
       quit = true;
     } else if(e.type == SDL_KEYDOWN) {

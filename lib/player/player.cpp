@@ -30,12 +30,18 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   etats["Jump"] = {{246, 175}, {328, 175}, {410, 175}, {492, 175}, {410, 175}, {328, 175}};
   etats["Idle"] = {{0, 173}};
 
+  this->Renderer = Renderer;
+
   Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 96, 96);
   Image.setSrcRect(0, 180, 64, 64);
   Image.loadImage(Renderer);
+  this->Arme = new armes(Renderer);
 }
 
-void Player::InitPlayer(std::vector<tmx::Object> Collisions) { this->Collisions = Collisions; }
+void Player::InitPlayer(std::vector<tmx::Object> Collisions) {
+  this->Collisions = Collisions;
+  this->Arme->setCollisions(Collisions);
+}
 
 bool isBoxInBox(tmx::Object object1, tmx::Object object2) {
   if(object1.getPosition().x < object2.getPosition().x + object2.getAABB().width && object1.getPosition().x + object1.getAABB().width > object2.getPosition().x &&

@@ -10,6 +10,7 @@
 #include "../Variables/variables.hpp"
 #include "../maps/maps.hpp"
 #include "../sprites/sprite.hpp"
+#include "../weapon/armes.hpp"
 
 class allMaps;
 class Player {
@@ -23,6 +24,7 @@ class Player {
   Sprite hp;
   int speed;
   Variable* Var;
+  armes* Arme;
 
   // std::string etats[4] = {"Right", "Left", "Jump", "Idle"};
   std::map<std::string, std::vector<std::pair<int, int>>> etats;
@@ -79,7 +81,6 @@ class Player {
   int y;
   int Realx;
   int Realy;
-
   int vie;
 
   int width;
@@ -91,6 +92,8 @@ class Player {
   float verticalVelocity;
   float jumpStrength;
   float jumpTime;
+
+  SDL_Renderer* Renderer;
 
   int mapDX;
   int mapDY;

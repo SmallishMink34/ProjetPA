@@ -85,7 +85,7 @@
   <object id="9" type="Collision" x="0" y="0" width="1856" height="64"/>
   <object id="10" type="Collision" x="896" y="576" width="128" height="256"/>
   <object id="11" name="Platform" type="Collision" x="192" y="768" width="192" height="19"/>
-  <object id="15" name="Spawn" type="Collision" x="960" y="448">
+  <object id="15" name="Spawn" x="960" y="448">
    <point/>
   </object>
   <object id="17" name="TR" type="tp" x="1890.5" y="514.167" width="31.5" height="192"/>

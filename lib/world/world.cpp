@@ -8,6 +8,7 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->Map = new allMaps(Renderer, this->Donjon);
 
   this->Joueur = new Player(Renderer, Var);
+
   this->AllElements = Texture();
   this->hud = new HUD(Renderer, this->Joueur, this->Donjon);
 
@@ -35,6 +36,7 @@ void world::UpdateAll() {
   this->previousTime = this->currentTime;
 
   this->movePlayer();
+  this->Joueur->Arme->update();
 
   tmx::Object collision = this->Joueur->isColliding(this->Map->getElements());
   std::string collisionType = collision.getType();
@@ -125,7 +127,12 @@ void world::movePlayer() {
       moveY = this->Joueur->speed;
     }
   }
-  this->Joueur->Move(moveX * this->deltaTime, moveY, dx, dy);
+
+  if(this->KeyPressed[4]) {
+    this->Joueur->Arme->tir(this->Joueur->getX(), this->Joueur->getY(), this->Joueur->getRX(), this->Joueur->getRY(), this->mouseX, this->mouseY);
+  }
+
+  this->Joueur->Move(moveX * this->deltaTime, moveY * this->deltaTime, dx, dy);
 }
 
 void world::drawMap(SDL_Renderer* Renderer) {
@@ -139,6 +146,7 @@ void world::drawAll(SDL_Renderer* Renderer) {
 
   // this->AllElements.drawElements(Renderer);
   this->Joueur->Image.selfDraw(Renderer);
+  this->Joueur->Arme->draw(Renderer, dx, dy);
 
   drawMap(Renderer);
 }

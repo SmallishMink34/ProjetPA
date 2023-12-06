@@ -8,6 +8,7 @@
 #include "../donjon/donjon.hpp"
 #include "../maps/maps.hpp"
 #include "../player/player.hpp"
+#include "../weapon/armes.hpp"
 
 class allMaps;
 class world {
@@ -20,10 +21,13 @@ class world {
   Texture AllElements;
   allMaps* Map;
   HUD* hud;
-  bool KeyPressed[4] = {false, false, false, false};  // 0 = left, 1 = right, 2 = up, 3 = down
+  bool KeyPressed[5] = {false, false, false, false, false};  // 0 = left, 1 = right, 2 = up, 3 = down, 4 = click
 
   int dx;  // Décalage X de la map par rapport au personnage.
   int dy;
+
+  int mouseX;
+  int mouseY;
 
   Variable* Var;
   donjon* Donjon;
