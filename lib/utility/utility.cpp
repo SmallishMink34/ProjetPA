@@ -81,3 +81,30 @@ std::vector<tmx::Object> mergeVectors(std::vector<tmx::Object> vec1, std::vector
   mergedVec.insert(mergedVec.end(), vec2.begin(), vec2.end());
   return mergedVec;
 }
+
+int getSeedFromFile(std::string name) {
+  int seed = 0;
+  std::ifstream file(name);
+  if (file.is_open()) {
+    std::string line;
+    while (std::getline(file, line)) {
+      for (char c : line) {
+        seed += static_cast<int>(c);
+      }
+    }
+    file.close();
+  }
+  return seed;
+}
+
+int compterLettres(const std::string& texte) {
+    int nombreLettres = 0;
+
+    for (char caractere : texte) {
+        if (std::isalpha(caractere)) {
+            ++nombreLettres;
+        }
+    }
+
+    return nombreLettres;
+}

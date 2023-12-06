@@ -23,5 +23,8 @@ tmx::Property getPropertyFromName(std::vector<tmx::Property> vec, std::string na
 bool isInSecondVector(std::vector<std::pair<Node *, std::string>> vec, std::string value);
 
 std::vector<tmx::Object> mergeVectors(std::vector<tmx::Object> vec1, std::vector<tmx::Object> vec2);
+int getSeedFromFile(std::string name);
+
+int compterLettres(const std::string& texte);
 
 #endif
