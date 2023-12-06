@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="19" tilewidth="64" tileheight="64" infinite="0" nextlayerid="6" nextobjectid="30">
+<map version="1.10" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="19" tilewidth="64" tileheight="64" infinite="0" nextlayerid="7" nextobjectid="39">
  <tileset firstgid="1" source="../../Base.tsx"/>
  <imagelayer id="5" name="Calque d'Images 1">
   <image source="../../../src/Images/Tiled/stone_bricks.png" width="512" height="512"/>
@@ -120,6 +120,43 @@
   </object>
   <object id="29" name="DR" type="Spawn" x="1792" y="896">
    <point/>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="Elements">
+  <object id="31" name="TL" type="wall" x="0" y="64" width="64" height="192">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+    <property name="file" type="file" value="../../../src/Images/titre.png"/>
+    <property name="typefile" value="image"/>
+   </properties>
+  </object>
+  <object id="32" name="TR" type="wall" x="1856" y="512" width="64" height="192">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+    <property name="file" type="file" value="../../../src/Images/titre.png"/>
+    <property name="typefile" value="image"/>
+   </properties>
+  </object>
+  <object id="33" name="DL" type="wall" x="0" y="832" width="64" height="192">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+    <property name="file" type="file" value="../../../src/Images/titre.png"/>
+    <property name="typefile" value="image"/>
+   </properties>
+  </object>
+  <object id="34" name="DR" type="wall" x="1850.67" y="830.667" width="64" height="192">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+    <property name="file" type="file" value="../../../src/Images/titre.png"/>
+    <property name="typefile" value="image"/>
+   </properties>
+  </object>
+  <object id="38" name="zzzz" type="blocks" x="1468.67" y="501.333" width="105.002" height="81.2792">
+   <properties>
+    <property name="collision" type="bool" value="true"/>
+    <property name="file" type="file" value="../../../src/Images/titre.png"/>
+    <property name="typefile" value="image"/>
+   </properties>
   </object>
  </objectgroup>
 </map>

@@ -55,3 +55,29 @@ int getNumverInList(std::vector<char> vec) {
   }
   return number;
 }
+
+tmx::Property getPropertyFromName(std::vector<tmx::Property> vec, std::string name) {
+  for(int i = 0; i < vec.size(); i++) {
+    if(vec[i].getName() == name) {
+      return vec[i];
+    }
+  }
+  return tmx::Property();
+}
+
+bool isInSecondVector(std::vector<std::pair<Node *, std::string>> vec, std::string value) {
+  for(int i = 0; i < vec.size(); i++) {
+    if(vec[i].second == value) {
+      return true;
+    }
+  }
+  return false;
+}
+
+std::vector<tmx::Object> mergeVectors(std::vector<tmx::Object> vec1, std::vector<tmx::Object> vec2) {
+  std::vector<tmx::Object> mergedVec;
+  mergedVec.reserve(vec1.size() + vec2.size());
+  mergedVec.insert(mergedVec.end(), vec1.begin(), vec1.end());
+  mergedVec.insert(mergedVec.end(), vec2.begin(), vec2.end());
+  return mergedVec;
+}

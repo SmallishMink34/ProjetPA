@@ -2,6 +2,7 @@
 #define DefCartes
 #include <SDL2/SDL.h>
 
+#include <cstdarg>
 #include <iostream>
 #include <map>
 #include <string>
@@ -10,6 +11,7 @@
 #include "../maps/maps.hpp"
 #include "../player/player.hpp"
 #include "../world/world.hpp"
+#include "tile.hpp"
 class Player;
 class world;
 class Cartes {
@@ -18,8 +20,11 @@ class Cartes {
   std::string file;
   level* Map;
   std::vector<tmx::Object> Collisions;
+  std::vector<tmx::Object> ElementsToAdd;
   std::map<std::string, tmx::Object> Spawn;
   std::vector<tmx::Object> Elements;
+  std::vector<Tile*> addTiles;
+  bool load;
 
  public:
   Cartes(SDL_Renderer* Renderer, std::string file);
@@ -29,6 +34,11 @@ class Cartes {
   std::vector<tmx::Object> getCollisions();
   std::vector<tmx::Object> getElements();
   tmx::Object getSpawn(std::string a);
+  std::vector<tmx::Object> getElementsToAdd();
+  bool hasBeenLoaded();
+  void setLoad(bool val);
+  void addTile(Tile* tile);
+  void addCollision(tmx::Object object);
 };
 
 class allMaps {

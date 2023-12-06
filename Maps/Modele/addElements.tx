@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <object type="block" width="116" height="86.6667">
+  <properties>
+   <property name="collision" type="bool" value="false"/>
+   <property name="file" type="file" value="../src/Images/image.jpg"/>
+   <property name="typefile" value="image"/>
+  </properties>
+ </object>
+</template>

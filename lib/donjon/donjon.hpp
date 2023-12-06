@@ -66,8 +66,11 @@ class donjon {
   Node* SearchNodeFromValue(char value, Node* node);
   Node* getElementInChildFromPlacement(std::string placement, Node* node);
 
+  // Getters
+
+  Node* getActualRoomNode(Node* node);
   ////////////// Dessin du donjon ///////////////////////
-  void draw_tree(SDL_Renderer* Renderer, Node* node, int x, int y);
+  void draw_tree(SDL_Renderer* Renderer, Node* node, int x, int y, SDL_Rect MapFrame);
   void printPair(const std::vector<std::pair<int, int>>& valid);
   void drawDungeon(Node* node);
   ~donjon();

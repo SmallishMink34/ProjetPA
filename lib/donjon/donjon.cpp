@@ -251,7 +251,7 @@ int donjon::WidthLoad(std::ifstream &file) {
   int maxChar = 0;
   std::string line;
   while(std::getline(file, line)) {
-    if(line.length() > maxChar) {
+    if(line.length() > (long unsigned int)maxChar) {
       maxChar = line.length();
     }
   }
@@ -312,8 +312,8 @@ std::vector<char> donjon::getLetterAt(std::ifstream &file, int x, int y) {
   int count = 0;
   while(std::getline(file, line)) {
     if(count == y - 1) {
-      for(int i = 0; i < line.length(); i++) {
-        if(i == x - 1) {
+      for(long unsigned int i = 0; i < line.length(); i++) {
+        if(i == (long unsigned int)x - 1) {
           letter.push_back(line[i]);
         }
       }
@@ -389,11 +389,11 @@ void donjon::drawDungeon(Node *node) {
   }
 }
 
-void donjon::draw_tree(SDL_Renderer *Renderer, Node *node, int x, int y) {
+void donjon::draw_tree(SDL_Renderer *Renderer, Node *node, int x, int y, SDL_Rect MapFrame) {
   if(node != nullptr) {
-    node->getRoom()->drawRoom(Renderer, x, y);
+    node->getRoom()->drawRoom(Renderer, x, y, MapFrame);
     for(std::pair<Node *, std::string> i : node->getChildren()) {
-      draw_tree(Renderer, i.first, x, y);
+      draw_tree(Renderer, i.first, x, y, MapFrame);
     }
   }
 }
@@ -453,6 +453,22 @@ std::string donjon::getAdjacentTypeFromNode(Node *node1, Node *node2) {
   }
 
   return "None";
+}
+
+Node *donjon::getActualRoomNode(Node *node) {
+  if(node != nullptr) {
+    if(node->getRoom()->getInRoom()) {
+      return node;
+    } else {
+      for(std::pair<Node *, std::string> i : node->getChildren()) {
+        Node *result = getActualRoomNode(i.first);
+        if(result != nullptr) {
+          return result;
+        }
+      }
+    }
+  }
+  return nullptr;
 }
 
 donjon::~donjon() { removeNode(initial_Node); }

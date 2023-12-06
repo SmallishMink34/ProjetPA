@@ -68,16 +68,16 @@ void rooms::setImages() {
   }
 }
 
-void rooms::drawRoom(SDL_Renderer *Renderer, int x, int y) {
+void rooms::drawRoom(SDL_Renderer *Renderer, int x, int y, SDL_Rect MapFrame) {
   if(!this->loaded) {
     this->ImageIn->loadImage(Renderer);
     this->ImageNotIn->loadImage(Renderer);
     this->loaded = true;
   }
   if(this->InRoom) {
-    this->ImageIn->selfDraw(Renderer, x + this->x * tailleCase, y + this->y * tailleCase);
+    this->ImageIn->selfDraw(Renderer, x + (this->x) * (tailleCase + 2), y + this->y * (tailleCase + 2), MapFrame);
   } else {
-    this->ImageNotIn->selfDraw(Renderer, x + this->x * tailleCase, y + this->y * tailleCase);
+    this->ImageNotIn->selfDraw(Renderer, x + (this->x) * (tailleCase + 2), y + this->y * (tailleCase + 2), MapFrame);
   }
 }
 
@@ -101,6 +101,8 @@ int rooms::getTall() { return this->tall; }
 int rooms::getType() { return this->type; }
 
 void rooms::setValue(char value) { this->value = value; }
+
+bool rooms::getInRoom() { return this->InRoom; }
 
 rooms::~rooms() {}
 

@@ -1,13 +1,17 @@
 #include "cartes.hpp"
 
+#include "../utility/utility.hpp"
+
 Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
   this->file = file;
   this->Renderer = Renderer;
   Map = new level(file);
   Map->load(this->file, Renderer);  // Load the map
-
+  load = false;
   Collisions = Map->getObjectsByType("Collision");  // Get all the collisions objects
   Elements = Map->getObjects();                     // Get all the elements objects
+
+  ElementsToAdd = mergeVectors(Map->getObjectsByType("blocks"), Map->getObjectsByType("wall"));
 
   Spawn["Spawn"] = Map->getObjectByName("Spawn");
   Spawn["TL"] = Map->getObjectByNameAndType("TL", "Spawn");
@@ -18,7 +22,12 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
 
 Cartes::~Cartes() { delete Map; }
 
-void Cartes::draw(SDL_Renderer* Renderer, int dx, int dy) { Map->draw(Renderer, dx, dy); }
+void Cartes::draw(SDL_Renderer* Renderer, int dx, int dy) {
+  Map->draw(Renderer, dx, dy);
+  for(long unsigned int i = 0; i < addTiles.size(); i++) {
+    addTiles[i]->draw(Renderer, dx, dy);
+  }
+}
 
 level* Cartes::getMap() { return Map; }
 
@@ -27,6 +36,16 @@ std::vector<tmx::Object> Cartes::getCollisions() { return Collisions; }
 std::vector<tmx::Object> Cartes::getElements() { return Elements; }
 
 tmx::Object Cartes::getSpawn(std::string a) { return Spawn[a]; }
+
+void Cartes::setLoad(bool val) { load = val; }
+
+bool Cartes::hasBeenLoaded() { return load; }
+
+std::vector<tmx::Object> Cartes::getElementsToAdd() { return ElementsToAdd; }
+
+void Cartes::addTile(Tile* tile) { addTiles.push_back(tile); }
+
+void Cartes::addCollision(tmx::Object object) { Collisions.push_back(object); }
 ////////////////////////////////// allMaps //////////////////////////////////
 
 allMaps::allMaps(SDL_Renderer* Renderer, donjon* Don) {
@@ -61,6 +80,35 @@ void allMaps::InitializeLevel() {
 
 void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType) {
   tmx::Object object = cartesMap[this->currentMap->getValue()]->getSpawn(SpawnType);
+
+  if(!cartesMap[this->currentMap->getValue()]->hasBeenLoaded()) {
+    for(tmx::Object c : cartesMap[this->currentMap->getValue()]->getElementsToAdd()) {
+      if(c.getClass() == "blocks") {
+        if(getPropertyFromName(c.getProperties(), "typefile").getStringValue() == "image") {
+          Tile* tile = new Tile(Renderer, getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9), c.getPosition().x, c.getPosition().y, c.getAABB().width,
+                                c.getAABB().height);
+          std::cout << "Tile : " << getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9) << " at " << c.getPosition().x << " " << c.getPosition().y << std::endl;
+          cartesMap[this->currentMap->getValue()]->addTile(tile);
+        }
+        if(getPropertyFromName(c.getProperties(), "collision").getBoolValue()) {
+          cartesMap[this->currentMap->getValue()]->addCollision(c);
+        }
+      } else if(c.getClass() == "wall") {
+        if(!isInSecondVector(this->Donjon->getActualRoomNode(this->Donjon->initial_Node)->getChildAndParent(), c.getName())) {
+          if(getPropertyFromName(c.getProperties(), "typefile").getStringValue() == "image") {
+            Tile* tile = new Tile(Renderer, getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9), c.getPosition().x, c.getPosition().y, c.getAABB().width,
+                                  c.getAABB().height);
+            std::cout << "Tile : " << getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9) << " at " << c.getPosition().x << " " << c.getPosition().y
+                      << std::endl;
+            cartesMap[this->currentMap->getValue()]->addTile(tile);
+          }
+          if(getPropertyFromName(c.getProperties(), "collision").getBoolValue()) {
+            cartesMap[this->currentMap->getValue()]->addCollision(c);
+          }
+        }
+      }
+    }
+  }
 
   player->InitPlayer(getCollisions());
   player->AllMove(object.getPosition().x, object.getPosition().y, true);

@@ -109,7 +109,7 @@
  <objectgroup id="4" name="Collision">
   <object id="1" type="Collision" x="0" y="1728" width="1856" height="192"/>
   <object id="2" type="Collision" x="-81" y="738" width="80.4706" height="1082"/>
-  <object id="3" name="Spawn" type="Spawn" x="128" y="1536">
+  <object id="3" name="Spawn" type="Spawn" x="2048" y="1664">
    <point/>
   </object>
   <object id="6" type="Collision" x="2624" y="1728" width="1280" height="192"/>

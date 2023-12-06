@@ -20,6 +20,10 @@ HUD::HUD(SDL_Renderer* renderer, Player* Joueur, donjon* Don) {
 void HUD::draw(SDL_Renderer* renderer) {
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderFillRect(renderer, rect);
+  this->Don->draw_tree(renderer, this->Don->initial_Node,
+                       MapFrame->getRect()->x + MapFrame->getRect()->w / 2 - this->Don->getActualRoomNode(this->Don->initial_Node)->getRoom()->getX() * tailleCase,
+                       MapFrame->getRect()->y + MapFrame->getRect()->h / 2 - this->Don->getActualRoomNode(this->Don->initial_Node)->getRoom()->getY() * tailleCase,
+                       *MapFrame->getRect());
 
   MapFrame->selfDraw(renderer);
   int compteur = 0;
@@ -31,7 +35,6 @@ void HUD::draw(SDL_Renderer* renderer) {
       this->vieDemi->selfDraw(renderer, 10 + compteur * 45, 10);
     }
   }
-  this->Don->draw_tree(renderer, this->Don->initial_Node, MapFrame->getRect()->x + MapFrame->getRect()->w / 2, MapFrame->getRect()->y + MapFrame->getRect()->h / 2 - 32);
 }
 
 HUD::~HUD() {}

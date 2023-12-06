@@ -1,5 +1,6 @@
 #include "sprite.hpp"
 
+#include "../Variables/variables.hpp"
 #include "../display/display.hpp"
 
 Sprite::Sprite() {
@@ -12,6 +13,8 @@ Sprite::Sprite() {
   this->rect->y = 0;
   this->rect->w = 0;
   this->rect->h = 0;
+  this->realw = 0;
+  this->realh = 0;
   this->lien = "";
   this->Rezise = false;
   this->Img = nullptr;
@@ -30,8 +33,28 @@ Sprite::Sprite(std::string lien, int x, int y, int w, int h) {
   this->rect->h = h;
   this->Rezise = false;
   this->srcRect = new SDL_Rect();
+  this->realw = 0;
+  this->realh = 0;
 
   this->lien = lien;
+  this->Img = nullptr;
+}
+
+Sprite::Sprite(int x, int y, int w, int h) {
+  this->x = x;
+  this->y = y;
+  this->w = w;
+  this->h = h;
+
+  this->rect = new SDL_Rect();
+  this->rect->x = x;
+  this->rect->y = y;
+  this->rect->w = w;
+  this->rect->h = h;
+  this->Rezise = false;
+  this->srcRect = new SDL_Rect();
+  this->realw = 0;
+  this->realh = 0;
   this->Img = nullptr;
 }
 
@@ -54,6 +77,28 @@ void Sprite::loadImage(SDL_Renderer* Renderer) {
     this->srcRect->y = 0;
     this->srcRect->w = width;
     this->srcRect->h = height;
+
+    this->realw = width;
+    this->realh = height;
+  }
+}
+
+void Sprite::loadImage(SDL_Renderer* Renderer, SDL_Texture* Img) {
+  if(Img == nullptr) {
+    std::cerr << "Échec du chargement de l'image." << std::endl;
+  }
+  this->SetImage(Img);
+  if(!this->Rezise) {
+    int width = 0;
+    int height = 0;
+    SDL_QueryTexture(Img, NULL, NULL, &width, &height);
+    this->srcRect->x = 0;
+    this->srcRect->y = 0;
+    this->srcRect->w = width;
+    this->srcRect->h = height;
+
+    this->realw = width;
+    this->realh = height;
   }
 }
 
@@ -81,6 +126,54 @@ void Sprite::selfDraw(SDL_Renderer* Renderer, int x, int y) {
   rect.y = y;
   rect.w = this->getWidth();
   rect.h = this->getHeight();
+  SDL_RenderCopyEx(Renderer, this->GetImg(), this->getsrcRect(), &rect, 0, NULL, SDL_FLIP_NONE);
+}
+
+void Sprite::selfDraw(SDL_Renderer* Renderer, int x, int y, SDL_Rect Frame) {
+  SDL_Rect rect;
+  rect.x = x;
+  rect.y = y;
+  // rect.w = std::min(this->getWidth() - (Frame.x - x), this->getWidth());
+  // rect.h = std::min(this->getHeight() - (Frame.y - y), this->getHeight());
+
+  rect.h = this->getHeight();
+
+  if(x < Frame.x && x + this->getWidth() < Frame.x) {
+    rect.w = 0;
+    this->srcRect->x = realw;
+  } else if(x < Frame.x && x + this->getWidth() > Frame.x) {
+    rect.x = Frame.x + 5;
+    rect.w = this->getWidth() - (rect.x - x);
+    this->srcRect->x = 20;
+  } else if(x > Frame.x + Frame.w) {
+    rect.w = 0;
+    this->srcRect->x = -realw;
+  } else if(x + this->getWidth() > Frame.x + Frame.w) {
+    rect.w = this->getWidth() - (x + this->getWidth() - (Frame.x + Frame.w) + 5);
+    this->srcRect->x = realw - (realw + tailleCase);
+  } else {
+    rect.w = this->getWidth();
+    this->srcRect->x = 0;
+  }
+
+  if(y < Frame.y && y + this->getHeight() < Frame.y) {
+    rect.h = 0;
+    this->srcRect->y = realh;
+  } else if(y < Frame.y && y + this->getHeight() > Frame.y) {
+    rect.y = Frame.y + 7;
+    rect.h = this->getHeight() - (rect.y - y);
+    this->srcRect->y = 20;
+  } else if(y > Frame.y + Frame.h) {
+    rect.h = 0;
+    this->srcRect->y = -realh;
+  } else if(y + this->getHeight() > Frame.y + Frame.h) {
+    rect.h = this->getHeight() - (y + this->getHeight() - (Frame.y + Frame.h) + 7);
+    this->srcRect->y = realh - (realh + tailleCase);
+  } else {
+    rect.h = this->getHeight();
+    this->srcRect->y = 0;
+  }
+
   SDL_RenderCopyEx(Renderer, this->GetImg(), this->getsrcRect(), &rect, 0, NULL, SDL_FLIP_NONE);
 }
 

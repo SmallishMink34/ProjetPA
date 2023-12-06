@@ -10,6 +10,7 @@ class Sprite {
   // Constructeur
   Sprite();
   Sprite(std::string lien, int x, int y, int w, int h);
+  Sprite(int x, int y, int w, int h);
 
   // Fonctions
   void Moveto(int x, int y);
@@ -34,6 +35,14 @@ class Sprite {
   void selfDraw(SDL_Renderer* Renderer, int x, int y);
 
   /**
+   * @brief Dessine le sprite
+   * \param Renderer Le renderer sur lequel dessiner
+   * \param x La position en x
+   * \param y La position en y
+   * \param Frame Le rectangle de destination
+   */
+  void selfDraw(SDL_Renderer* Renderer, int x, int y, SDL_Rect Frame);
+  /**
    * @brief Dessine le sprite en répétant l'image
    * \param Renderer Le renderer sur lequel dessiner
    * \param w Le nombre de fois à répéter l'image en largeur
@@ -43,6 +52,7 @@ class Sprite {
    */
   void DrawRepeat(SDL_Renderer* Renderer, int w, int h, int dx, int dy);
   void loadImage(SDL_Renderer* Renderer);
+  void loadImage(SDL_Renderer* Renderer, SDL_Texture* Img);
   void setSrcRect(int x, int y, int w, int h);
   int getWidth();
   int getHeight();
@@ -54,6 +64,8 @@ class Sprite {
   int y;
   int w;
   int h;
+  int realw;
+  int realh;
   bool Rezise;
   SDL_Rect* rect;
   SDL_Rect* srcRect;

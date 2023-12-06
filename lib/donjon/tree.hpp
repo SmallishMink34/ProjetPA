@@ -43,9 +43,10 @@ class rooms {
   int getY();
   int getTall();
   int getType();
+  bool getInRoom();
 
   // Others :
-  void drawRoom(SDL_Renderer *Renderer, int x, int y);
+  void drawRoom(SDL_Renderer *Renderer, int x, int y, SDL_Rect MapFrame);
   std::vector<std::pair<int, int>> coordsarround();
 
   ~rooms();
