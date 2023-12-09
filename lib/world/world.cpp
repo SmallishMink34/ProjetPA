@@ -70,7 +70,7 @@ void world::UpdateAll() {
   if(Animcpt > Joueur->etats[Joueur->etat].size() - 1) {
     Animcpt = 0;
   }
-  this->Joueur->AnimPlayer(Animcpt);
+  this->Joueur->AnimEntity(Animcpt);
 }
 
 void world::moveCamera() {
@@ -107,31 +107,27 @@ void world::moveCamera() {
 void world::movePlayer() {
   // Appliquer la gravité
 
-  this->Joueur->applyGravity(this->deltaTime);
-
   int moveX = 0;
   int moveY = 0;
+
+  moveY = this->Joueur->applyGravity(this->deltaTime);
 
   // Gérer les mouvements verticaux (haut / bas)
   if(this->KeyPressed[2] && this->Joueur->isOnGround()) {
     this->Joueur->jump();
-    this->Joueur->etat = "Jump";
-  } else if(this->Joueur->isOnGround()) {
-    this->Joueur->etat = "Idle";
   }
+
   // Gérer les déplacements horizontaux
   if(this->KeyPressed[0]) {
     moveX = -this->Joueur->speed;
-    this->Joueur->etat = "Left";
   }
 
   if(this->KeyPressed[1]) {
     moveX = this->Joueur->speed;
-    this->Joueur->etat = "Right";
   }
 
   if(this->KeyPressed[3]) {
-    if(this->Joueur->isOnGround()) {
+    if(!this->Joueur->isOnGround()) {
       moveY = this->Joueur->speed;
     }
   }

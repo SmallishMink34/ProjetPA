@@ -44,7 +44,7 @@ class Entity {
   virtual bool isJumping();
   virtual bool isOnGround();
 
-  void applyGravity(float deltaTime);
+  int applyGravity(float deltaTime);
 
   // Collisions
   virtual bool isColliding(int x, int y, int w, int h);
@@ -69,6 +69,11 @@ class Entity {
   int mapDY;
   Variable* Var;
   Sprite Image;
+
+  std::map<std::string, std::vector<std::pair<int, int>>> etats;
+  std::string etat;
+
+  void AnimEntity(int i);
 
   Uint32 previousDamageTime;
 

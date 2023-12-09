@@ -16,8 +16,8 @@ void Jeu::Init() {
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 
   Monde = new world(this->gRenderer, Var);
-
   Monde->InitMonde(this->gRenderer);
+  this->Monde->previousTime = SDL_GetTicks();
 }
 
 void Jeu::Pause(std::string* Gamemode) {
@@ -40,7 +40,6 @@ void Jeu::handleEvents(std::string* Gamemode) {
     this->Monde->mouseY = mouseY;
     if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
       Monde->KeyPressed[4] = true;
-      std::cout << "X : " << mouseX << " Y : " << mouseY << std::endl;
     } else if(e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT) {
       Monde->KeyPressed[4] = false;
     }
@@ -74,7 +73,6 @@ void Jeu::handleEvents(std::string* Gamemode) {
           break;
 
         case SDLK_p:
-          std::cout << "RealX : " << Monde->Joueur->getRX() << " RealY : " << Monde->Joueur->getRY() << std::endl;
           std::cout << Monde->Joueur->toString() << std::endl;
           break;
         case SDLK_o:

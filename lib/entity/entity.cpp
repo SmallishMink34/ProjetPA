@@ -20,6 +20,7 @@ Entity::Entity() {
   hasJump = false;
   canTakeDamage = false;
   previousDamageTime = 0;
+  etat = "Idle";
 }
 
 Entity::~Entity() {}
@@ -68,7 +69,7 @@ std::vector<std::pair<tmx::Object, std::string>> Entity::isColliding(int realx, 
   std::vector<std::pair<tmx::Object, std::string>> CollidePairs;
 
   for(auto &collisionObject : Collisions) {
-    if(isPointInBox(realx + speed, realy + getHeight() + 2, collisionObject) || (isPointInBox(realx + getWidth() - speed, realy + getHeight() + 2, collisionObject))) {
+    if(isPointInBox(realx + speed, realy + getHeight() + speed, collisionObject) || (isPointInBox(realx + getWidth() - speed, realy + getHeight() + speed, collisionObject))) {
       CollidePairs.push_back(std::make_pair(collisionObject, "Down"));
     }
     if(isPointInBox(realx + getWidth() + speed, realy + getHeight() / 4, collisionObject) ||
@@ -119,49 +120,61 @@ void Entity::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonné
   mapDX = dxMap;
   mapDY = dyMap;
 
-  if(dy <= 0) {
-    if(isEmpty(isInList(result, "Down"))) {
-      OnGround = false;
-      jumpStrength = Var->JumpStrength;
-    }
-  }
-
   std::pair<tmx::Object, std::string> Down = isInList(result, "Down");
   std::pair<tmx::Object, std::string> Up = isInList(result, "Up");
   std::pair<tmx::Object, std::string> Left = isInList(result, "Left");
   std::pair<tmx::Object, std::string> Right = isInList(result, "Right");
-
-  if(!isEmpty(Left)) {
-    AllMove(Left.first.getPosition().x + Left.first.getAABB().width + 2, Realy, true);
-    if(x1 < 0) {
-      x1 = 0;
-    }
-  } else if(!isEmpty(Right)) {
-    AllMove(Right.first.getPosition().x - getWidth() - 2, Realy, true);
-    if(x1 > 0) {
-      x1 = 0;
+  if(isEmpty(Down)) {
+    OnGround = false;
+    if(dy <= 0) {
+      jumpStrength = Var->JumpStrength;
     }
   }
-  if(!isEmpty(Down) && dy >= 0) {
-    AllMove(Realx, Down.first.getPosition().y - getHeight(), true);
+
+  if(!isEmpty(Left) && getRX() != Left.first.getPosition().x + Left.first.getAABB().width) {
+    x1 = Left.first.getPosition().x + Left.first.getAABB().width - getRX();
+  } else if(!isEmpty(Left) && x1 < 0) {
+    x1 = 0;
+  } else if(!isEmpty(Right) && getRX() != Right.first.getPosition().x - getWidth()) {
+    x1 = Right.first.getPosition().x - getWidth() - getRX();
+  } else if(!isEmpty(Right) && x1 > 0) {
+    x1 = 0;
+  }
+  if(!isEmpty(Down) && !hasJump && dy >= 0 && getRY() != Down.first.getPosition().y - getHeight()) {
+    std::cout << Down.first.getName() << std::endl;
+    y1 = Down.first.getPosition().y - getHeight() - getRY();
+
     if(Down.first.getName() == "Jump") {
       jumpStrength = (float)Down.first.getProperties().front().getIntValue();
       jump();
     }
 
     if(y1 > 0 && Down.first.getName() == "Platform") {
-      AllMove(Realx, Realy + Down.first.getAABB().height, true);
+      y1 = 50;
     }
 
     OnGround = true;
-  } else if(!isEmpty(Up)) {
-    AllMove(Realx, Up.first.getPosition().y + Up.first.getAABB().height + 2, true);
+  } else if(!isEmpty(Up) && dy <= 0 && getRY() != Up.first.getPosition().y + Up.first.getAABB().height) {
+    y1 = Up.first.getPosition().y + Up.first.getAABB().height - getRY();
     verticalVelocity = 0;
   }
 
   AllMove(x1, y1, false);
 }
 void Entity::AllMove(int x1, int y1, bool Teleport) {
+  if(x1 < 0) {
+    etat = "Left";
+  } else if(x1 > 0) {
+    etat = "Right";
+  } else if(x1 == 0 && y1 <= 1 && y1 >= -1) {
+    etat = "Idle";
+  }
+
+  if(y1 < -1) {
+    etat = "Jump";
+  } else if(y1 > 1) {
+    etat = "Fall";
+  }
   if(!Teleport) {
     RealMoveto(Realx + x1, Realy + y1);
     Moveto();
@@ -183,29 +196,27 @@ float Entity::getVerticalVelocity() { return verticalVelocity; }
 
 bool Entity::isJumping() { return Jumping; }
 
-void Entity::applyGravity(float deltaTime) {
+int Entity::applyGravity(float deltaTime) {
   dy = 0;
   verticalVelocity += Var->Gravity;
   dy += verticalVelocity;
   if(verticalVelocity > maxSpeed) verticalVelocity = maxSpeed;
 
-  // if(dy > 0.5 && !isOnGround()) {
-  //   etat = "Idle";
-  // }
   if(isOnGround()) {
     dy = 0;
     verticalVelocity = 0;
     setIsJumping(false);
     if(hasJump) {  // Seulement si il est sur le sol
+      std::cout << "Jump" << std::endl;
       verticalVelocity = -jumpStrength;
       dy += verticalVelocity;
-      // etat = "Jump";
     }
   }
 
   if(!isJumping()) hasJump = false;
 
-  Move(0, dy * deltaTime, mapDX, mapDY);
+  return dy * deltaTime;
+  // Move(0, dy * deltaTime, mapDX, mapDY);
 }
 
 void Entity::setIsJumping(bool Jump) { Jumping = Jump; }
@@ -219,7 +230,6 @@ bool Entity::takeDamage(int damage) {
   // TODO : Add sound
   if(canTakeDamage) {
     IncrementVie(-damage);
-    std::cout << "Invincible" << std::endl;
     canTakeDamage = false;
   }
 
@@ -244,3 +254,5 @@ void Entity::update(Uint32 currentTime) {
     vie = 0;
   }
 }
+
+void Entity::AnimEntity(int i) { Image.setSrcRect(etats[etat][i].first, etats[etat][i].second, 70, 70); }

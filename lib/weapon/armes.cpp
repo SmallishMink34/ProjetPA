@@ -111,7 +111,8 @@ bool balles::isColliding(tmx::Object object) {
 
 bool balles::isColliding(monster* monstre) {
   if(this->rect.x < monstre->getRX() + monstre->getWidth() && this->rect.x + this->rect.w > monstre->getRX() && this->rect.y < monstre->getRY() + monstre->getHeight() &&
-     this->rect.y + this->rect.h > monstre->getY()) {
+     this->rect.y + this->rect.h > monstre->getRY()) {
+    std::cout << "Y" << this->rect.y << " " << monstre->getRY() << " " << monstre->getHeight() << std::endl;
     return true;
   }
   return false;
