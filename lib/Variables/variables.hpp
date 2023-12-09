@@ -26,5 +26,6 @@ const int nbOneTallMaps = 1;
 const int nbTwoTallMaps = 3;
 
 const int tailleCase = 32;
+const float InvincibilityTime = 1.0f;
 
 #endif

@@ -1,5 +1,6 @@
 #include "cartes.hpp"
 
+#include "../monster/monster.hpp"
 #include "../utility/utility.hpp"
 
 Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
@@ -9,9 +10,10 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
   Map->load(this->file, Renderer);  // Load the map
   load = false;
   Collisions = Map->getObjectsByType("Collision");  // Get all the collisions objects
-  Elements = Map->getObjects();                     // Get all the elements objects
+  Elements = Map->getObjectsByType("tp");           // Get all the elements objects
 
   ElementsToAdd = mergeVectors(Map->getObjectsByType("blocks"), Map->getObjectsByType("wall"));
+  ElementsToAdd = mergeVectors(ElementsToAdd, Map->getObjectsByType("monster"));
 
   Spawn["Spawn"] = Map->getObjectByName("Spawn");
   Spawn["TL"] = Map->getObjectByNameAndType("TL", "Spawn");
@@ -22,10 +24,14 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
 
 Cartes::~Cartes() { delete Map; }
 
-void Cartes::draw(SDL_Renderer* Renderer, int dx, int dy) {
+void Cartes::draw(SDL_Renderer* Renderer) {
   Map->draw(Renderer, dx, dy);
   for(long unsigned int i = 0; i < addTiles.size(); i++) {
     addTiles[i]->draw(Renderer, dx, dy);
+  }
+
+  for(long unsigned int i2 = 0; i2 < monsterList.size(); i2++) {
+    monsterList.at(i2)->Image.selfDraw(Renderer, monsterList.at(i2)->getRX() - dx, monsterList.at(i2)->getRY() - dy);
   }
 }
 
@@ -46,6 +52,10 @@ std::vector<tmx::Object> Cartes::getElementsToAdd() { return ElementsToAdd; }
 void Cartes::addTile(Tile* tile) { addTiles.push_back(tile); }
 
 void Cartes::addCollision(tmx::Object object) { Collisions.push_back(object); }
+
+int Cartes::getDx() { return dx; }
+
+int Cartes::getDy() { return dy; }
 ////////////////////////////////// allMaps //////////////////////////////////
 
 allMaps::allMaps(SDL_Renderer* Renderer, donjon* Don) {
@@ -82,6 +92,7 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
   tmx::Object object = cartesMap[this->currentMap->getValue()]->getSpawn(SpawnType);
 
   if(!cartesMap[this->currentMap->getValue()]->hasBeenLoaded()) {
+    cartesMap[this->currentMap->getValue()]->setLoad(true);
     for(tmx::Object c : cartesMap[this->currentMap->getValue()]->getElementsToAdd()) {
       if(c.getClass() == "blocks") {
         if(getPropertyFromName(c.getProperties(), "typefile").getStringValue() == "image") {
@@ -106,11 +117,17 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
             cartesMap[this->currentMap->getValue()]->addCollision(c);
           }
         }
+      } else if(c.getClass() == "monster") {
+        std::cout << "MONSTERRERER" << std::endl;
+        monster* monstre = new monster(Renderer, Monde->Var);
+        monstre->InitMonster(getCollisions());
+        monstre->AllMove(c.getPosition().x, c.getPosition().y, true);
+        cartesMap[this->currentMap->getValue()]->monsterList.push_back(monstre);
       }
     }
   }
 
-  player->InitPlayer(getCollisions());
+  player->InitPlayer(getCollisions(), &cartesMap[this->currentMap->getValue()]->monsterList);
   player->AllMove(object.getPosition().x, object.getPosition().y, true);
   Monde->FixCamera();
 }
@@ -121,7 +138,7 @@ allMaps::~allMaps() {
   }
 }
 
-void allMaps::drawMap(SDL_Renderer* Renderer, int dx, int dy) { this->cartesMap[this->currentMap->getValue()]->draw(Renderer, dx, dy); }
+void allMaps::drawMap(SDL_Renderer* Renderer) { this->cartesMap[this->currentMap->getValue()]->draw(Renderer); }
 
 Cartes* allMaps::getMap(char i) { return cartesMap[i]; }
 
@@ -156,3 +173,19 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
   }
   InitializeRoom(player, Monde, SpawnType);
 }
+
+void Cartes::update(Uint32 currentTime, int dx, int dy) {
+  this->dx = dx;
+  this->dy = dy;
+  for(long unsigned int i = 0; i < monsterList.size(); i++) {
+    monsterList.at(i)->applyGravity(1);
+    monsterList.at(i)->Move(2, 0, dx, dy);
+    monsterList.at(i)->update(currentTime);
+  }
+}
+
+void allMaps::update(Uint32 currentTime, int dx, int dy) { cartesMap[this->currentMap->getValue()]->update(currentTime, dx, dy); }
+
+int allMaps::getDx() { return cartesMap[this->currentMap->getValue()]->getDx(); }
+
+int allMaps::getDy() { return cartesMap[this->currentMap->getValue()]->getDy(); }

@@ -1,9 +1,9 @@
 #include "armes.hpp"
 
 armes::armes(SDL_Renderer* renderer) {
-  this->degats = 0;
+  this->degats = 1;
   this->portee = 50;
-  this->cadence = 8;
+  this->cadence = 2;
   this->renderer = renderer;
   this->bullet = std::vector<balles>();
   this->counter = -1;
@@ -11,13 +11,17 @@ armes::armes(SDL_Renderer* renderer) {
 
 armes::~armes() {}
 
-void armes::setCollisions(std::vector<tmx::Object> collisions) { this->collisions = collisions; }
+void armes::setCollisions(std::vector<tmx::Object> collisions, std::vector<monster*>* MonstreList) {
+  this->collisions = collisions;
+  this->MonstreList = MonstreList;
+}
 
 void armes::tir(int PlayerX, int PlayerY, int PlayerRX, int PlayerRY, int mouseX, int mouseY) {
   float dirrectionX = (mouseX - PlayerX);
   float dirrectionY = (mouseY - PlayerY);
 
-  float distance = sqrt(dirrectionX * dirrectionX + dirrectionY * dirrectionY);
+  float distanceSquared = dirrectionX * dirrectionX + dirrectionY * dirrectionY;
+  float distance = sqrt(distanceSquared);
 
   if(distance != 0) {
     dirrectionX = dirrectionX / distance;
@@ -25,7 +29,6 @@ void armes::tir(int PlayerX, int PlayerY, int PlayerRX, int PlayerRY, int mouseX
   }
 
   if(counter == -1) {
-    std::cout << "Dirrection :" << dirrectionX << " " << dirrectionY << std::endl;
     balles balle = balles(renderer, PlayerRX, PlayerRY, dirrectionX, dirrectionY, this->degats, this->portee);
     bullet.push_back(balle);
     counter = 0;
@@ -40,7 +43,7 @@ void armes::update() {
 
   for(long unsigned int i = 0; i < bullet.size(); i++) {
     bullet.at(i).move();
-    if(bullet.at(i).update(collisions)) {
+    if(bullet.at(i).update(collisions, MonstreList)) {
       bullet.erase(bullet.begin() + i);
     }
   }
@@ -53,7 +56,7 @@ void armes::draw(SDL_Renderer* renderer, int dx, int dy) {
 }
 
 balles::balles(SDL_Renderer* renderer, int x, int y, float dirrectionX, float dirrectionY, int degats, int portee) {
-  this->vitesse = 7.0f;
+  this->vitesse = 12.0f;
   this->rect = {x, y, 10, 10};
   sprite = Sprite("src/Images/Player/bullet.png", x, y, 30, 30);
   sprite.loadImage(renderer);
@@ -64,7 +67,7 @@ balles::balles(SDL_Renderer* renderer, int x, int y, float dirrectionX, float di
   this->portee = portee;
 }
 
-bool balles::update(std::vector<tmx::Object> collisions) {
+bool balles::update(std::vector<tmx::Object> collisions, std::vector<monster*>* MonstreList) {
   this->counter++;
   if(counter == this->portee) {
     return true;
@@ -75,19 +78,40 @@ bool balles::update(std::vector<tmx::Object> collisions) {
       return true;
     }
   }
+
+  for(auto& monstre : *MonstreList) {
+    if(isColliding(monstre)) {
+      monstre->takeDamage(this->degats);
+      if(monstre->getVie() <= 0) {
+        MonstreList->erase(std::remove(MonstreList->begin(), MonstreList->end(), monstre), MonstreList->end());
+      }
+      return true;
+    }
+  }
   return false;
 }
 
 void balles::draw(SDL_Renderer* renderer, int dx, int dy) { sprite.selfDraw(renderer, this->rect.x - dx, this->rect.y - dy); }
 
 void balles::move() {
-  this->rect.x += vitesse * dirrX;
-  this->rect.y += vitesse * dirrY;
+  float resultX = dirrX * vitesse;
+  float resultY = dirrY * vitesse;
+
+  this->rect.x += resultX;
+  this->rect.y += resultY;
 }
 
 bool balles::isColliding(tmx::Object object) {
-  if(this->rect.x<object.getAABB().left + object.getAABB().width&& this->rect.x + this->rect.w> object.getAABB().left &&
-     this->rect.y<object.getAABB().top + object.getAABB().height&& this->rect.y + this->rect.h> object.getAABB().top) {
+  if(this->rect.x<object.getPosition().x + object.getAABB().width&& this->rect.x + this->rect.w> object.getPosition().x &&
+     this->rect.y<object.getPosition().y + object.getAABB().height&& this->rect.y + this->rect.h> object.getPosition().y) {
+    return true;
+  }
+  return false;
+}
+
+bool balles::isColliding(monster* monstre) {
+  if(this->rect.x < monstre->getRX() + monstre->getWidth() && this->rect.x + this->rect.w > monstre->getRX() && this->rect.y < monstre->getRY() + monstre->getHeight() &&
+     this->rect.y + this->rect.h > monstre->getY()) {
     return true;
   }
   return false;

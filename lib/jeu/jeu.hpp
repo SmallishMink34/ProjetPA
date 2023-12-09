@@ -8,6 +8,7 @@
 class Jeu: public Gamemode {
  public:
   Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
+  ~Jeu();
   void Init();
   void Pause(std::string* Gamemode);
   world* Monde;

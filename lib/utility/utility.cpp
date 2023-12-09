@@ -36,13 +36,14 @@ int height(std::vector<std::vector<char>> list) { return list.size(); }
 
 char getCharAt(std::vector<std::vector<char>> list, int x, int y) {
   if(x < 0 || y < 0 || x >= width(list) || y >= height(list)) {
-    return ' ';
+    return '#';
   }
   return list[y][x];
 }
 
 std::string getRandomElement(std::vector<std::string> vec) {
   int random = rand() % vec.size();
+  std::cout << random << std::endl;
   return vec[random];
 }
 
@@ -80,4 +81,35 @@ std::vector<tmx::Object> mergeVectors(std::vector<tmx::Object> vec1, std::vector
   mergedVec.insert(mergedVec.end(), vec1.begin(), vec1.end());
   mergedVec.insert(mergedVec.end(), vec2.begin(), vec2.end());
   return mergedVec;
+}
+
+bool isPointInBox(int x, int y, tmx::Object object) {
+  if(x > object.getPosition().x && x < object.getPosition().x + object.getAABB().width && y > object.getPosition().y && y < object.getPosition().y + object.getAABB().height) {
+    return true;
+  }
+  return false;
+}
+
+bool isBoxInBox(tmx::Object object1, tmx::Object object2) {
+  if(object1.getPosition().x < object2.getPosition().x + object2.getAABB().width && object1.getPosition().x + object1.getAABB().width > object2.getPosition().x &&
+     object1.getPosition().y < object2.getPosition().y + object2.getAABB().height && object1.getPosition().y + object1.getAABB().height > object2.getPosition().y) {
+    return true;
+  }
+  return false;
+}
+
+bool isEmpty(std::pair<tmx::Object, std::string> pair) {
+  if(pair.second == "") {
+    return true;
+  }
+  return false;
+}
+
+std::pair<tmx::Object, std::string> isInList(std::vector<std::pair<tmx::Object, std::string>> list, std::string value) {
+  for(int i = 0; i < (int)list.size(); i++) {
+    if(list[i].second == value) {
+      return list[i];
+    }
+  }
+  return std::make_pair(tmx::Object(), "");  // Return an empty pair
 }

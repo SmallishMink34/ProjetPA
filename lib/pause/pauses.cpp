@@ -75,3 +75,5 @@ void Mpause::unpause() {
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 }
+
+Mpause::~Mpause() {}

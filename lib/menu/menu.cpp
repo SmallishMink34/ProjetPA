@@ -69,3 +69,5 @@ void menu::render() {
 void menu::update() {}
 
 void menu::unpause() {}
+
+menu::~menu() {}

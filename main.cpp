@@ -58,6 +58,13 @@ bool init(Variable *Var) {
   return true;
 }
 
+void free(std::map<std::string, Gamemode *> Gamemodes, Variable *Var) {
+  for(auto &Gamemode : Gamemodes) {
+    delete Gamemode.second;
+  }
+  delete Var;
+}
+
 // Fonction pour gérer les événements
 
 // Fonction pour libérer les ressources et quitter SDL
@@ -112,7 +119,6 @@ int main(int argc, char *args[]) {
       SDL_Delay(frameDelay - frameTime);
     }
   }
-
   closeSDL(Gamemodes[currentGamemode]);
 
   return 0;

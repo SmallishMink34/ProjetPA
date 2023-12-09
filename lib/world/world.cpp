@@ -32,17 +32,19 @@ void world::InitMonde(SDL_Renderer* Renderer) {
 void world::UpdateAll() {
   this->currentTime = SDL_GetTicks();
   this->deltaTime = (this->currentTime - this->previousTime) / 10.0;
-  // affichage du temps
   this->previousTime = this->currentTime;
 
   this->movePlayer();
+
+  this->Map->update(currentTime, dx, dy);
+
   this->Joueur->Arme->update();
 
   tmx::Object collision = this->Joueur->isColliding(this->Map->getElements());
   std::string collisionType = collision.getType();
-
   if(collisionType == "tp") {
     std::string whatDoor = collision.getName();
+
     if(whatDoor == "Spawn") {
       this->Map->InitializeLevel();
       this->seeMap = true;
@@ -56,13 +58,19 @@ void world::UpdateAll() {
   Var->CameraSpeed = Var->DefaultCameraSpeed;
   this->cptest++;
 
-  if(cptest % 10 == 0) {
-    this->Animcpt++;
-    if(Animcpt > Joueur->etats[Joueur->etat].size() - 1) {
-      Animcpt = 0;
+  if(Joueur->etat != "Jump") {
+    if(cptest % 5 == 0) {
+      this->Animcpt++;
     }
-    this->Joueur->AnimPlayer(Animcpt);
+  } else {
+    if(cptest % 12 == 0) {
+      this->Animcpt++;
+    }
   }
+  if(Animcpt > Joueur->etats[Joueur->etat].size() - 1) {
+    Animcpt = 0;
+  }
+  this->Joueur->AnimPlayer(Animcpt);
 }
 
 void world::moveCamera() {
@@ -142,7 +150,7 @@ void world::drawMap(SDL_Renderer* Renderer) {
 }
 
 void world::drawAll(SDL_Renderer* Renderer) {
-  this->Map->drawMap(Renderer, dx, dy);
+  this->Map->drawMap(Renderer);
 
   // this->AllElements.drawElements(Renderer);
   this->Joueur->Image.selfDraw(Renderer);

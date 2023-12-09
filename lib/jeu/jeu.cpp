@@ -118,3 +118,5 @@ void Jeu::render() {
 }
 
 void Jeu::update() { Monde->UpdateAll(); }
+
+Jeu::~Jeu() { delete Monde; }
