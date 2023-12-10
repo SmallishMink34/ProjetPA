@@ -24,3 +24,8 @@ int Tile::getWidth() { return this->rect->w; }
 int Tile::getHeight() { return this->rect->h; }
 
 void Tile::draw(SDL_Renderer* renderer, int dx, int dy) { this->sprite->selfDraw(renderer, this->rect->x - dx, this->rect->y - dy); };
+
+Tile::~Tile() {
+  delete sprite;
+  delete rect;
+}

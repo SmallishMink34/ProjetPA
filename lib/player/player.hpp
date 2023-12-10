@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <utility>  // Pour std::pair
 #include <vector>
@@ -18,9 +19,10 @@ class Player: public Entity {
  public:
   // Constructeur
   Player(SDL_Renderer* Renderer, Variable* Var);
+  ~Player();
 
   // Variables
-  armes* Arme;
+  std::unique_ptr<armes> Arme;
 
   // Fonctions
 
@@ -32,7 +34,7 @@ class Player: public Entity {
 
   // Autres
   void InitPlayer(std::vector<tmx::Object> Collisions, std::vector<monster*>* Monsters);
-
+  void selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy);
   std::string toString();
 
  private:

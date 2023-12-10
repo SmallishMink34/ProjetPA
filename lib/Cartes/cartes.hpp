@@ -32,6 +32,7 @@ class Cartes {
  public:
   Cartes(SDL_Renderer* Renderer, std::string file);
   ~Cartes();
+  Player* player;
   level* getMap();
   void draw(SDL_Renderer* Renderer);
   std::vector<tmx::Object> getCollisions();

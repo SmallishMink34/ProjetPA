@@ -1,4 +1,5 @@
 build/
+.vscode/
 mon_programme
 .clang-format
 # Prerequisites

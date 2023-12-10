@@ -33,10 +33,10 @@ void world::UpdateAll() {
   this->currentTime = SDL_GetTicks();
   this->deltaTime = (this->currentTime - this->previousTime) / 10.0;
   this->previousTime = this->currentTime;
-
   this->movePlayer();
 
   this->Map->update(currentTime, dx, dy);
+  this->Joueur->update(currentTime);
 
   this->Joueur->Arme->update();
 
@@ -58,18 +58,24 @@ void world::UpdateAll() {
   Var->CameraSpeed = Var->DefaultCameraSpeed;
   this->cptest++;
 
-  if(Joueur->etat != "Jump") {
+  if(Joueur->etat != "Jump" && Joueur->etat != "Fall") {
     if(cptest % 5 == 0) {
       this->Animcpt++;
     }
+    if(Animcpt > Joueur->etats[Joueur->etat].size() - 1) {
+      Animcpt = 0;
+      this->cptest = 0;
+    }
+
   } else {
-    if(cptest % 12 == 0) {
+    if(cptest % 5 == 0) {
       this->Animcpt++;
     }
+    if(Animcpt > Joueur->etats[Joueur->etat].size() - 1) {
+      Animcpt = Joueur->etats[Joueur->etat].size() - 1;
+    }
   }
-  if(Animcpt > Joueur->etats[Joueur->etat].size() - 1) {
-    Animcpt = 0;
-  }
+
   this->Joueur->AnimEntity(Animcpt);
 }
 
@@ -104,40 +110,7 @@ void world::moveCamera() {
   dy += (targetCameraY - dy) * Var->CameraSpeed;
 }
 
-void world::movePlayer() {
-  // Appliquer la gravité
-
-  int moveX = 0;
-  int moveY = 0;
-
-  moveY = this->Joueur->applyGravity(this->deltaTime);
-
-  // Gérer les mouvements verticaux (haut / bas)
-  if(this->KeyPressed[2] && this->Joueur->isOnGround()) {
-    this->Joueur->jump();
-  }
-
-  // Gérer les déplacements horizontaux
-  if(this->KeyPressed[0]) {
-    moveX = -this->Joueur->speed;
-  }
-
-  if(this->KeyPressed[1]) {
-    moveX = this->Joueur->speed;
-  }
-
-  if(this->KeyPressed[3]) {
-    if(!this->Joueur->isOnGround()) {
-      moveY = this->Joueur->speed;
-    }
-  }
-
-  if(this->KeyPressed[4]) {
-    this->Joueur->Arme->tir(this->Joueur->getX(), this->Joueur->getY(), this->Joueur->getRX(), this->Joueur->getRY(), this->mouseX, this->mouseY);
-  }
-
-  this->Joueur->Move(moveX * this->deltaTime, moveY * this->deltaTime, dx, dy);
-}
+void world::movePlayer() { this->Joueur->selfMove(this->KeyPressed, this->mouseX, this->mouseY, dx, dy); }
 
 void world::drawMap(SDL_Renderer* Renderer) {
   if(seeMap) {
@@ -165,4 +138,11 @@ void world::FixCamera() {
     this->Joueur->setY(this->Joueur->getY() - nombre);
   }
   this->Joueur->Moveto();
+}
+
+world::~world() {
+  delete this->Joueur;
+  delete this->Map;
+  delete this->hud;
+  delete this->Donjon;
 }

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/matt/Documents/PA/Projet",
-      "program": "/home/matt/Documents/PA/Projet/build/Debug/outDebug",
+      "cwd": "/home/matt/Documents/PA/ProjetPA/",
+      "program": "/home/matt/Documents/PA/ProjetPA/mon_programme",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

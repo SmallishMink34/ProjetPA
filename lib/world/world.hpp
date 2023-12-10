@@ -16,6 +16,7 @@ class world {
   // Constucteur
 
   world(SDL_Renderer* Renderer, Variable* Var);
+  ~world();
   // Variables
   Player* Joueur;
   Texture AllElements;

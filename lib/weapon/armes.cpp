@@ -5,11 +5,9 @@ armes::armes(SDL_Renderer* renderer) {
   this->portee = 50;
   this->cadence = 2;
   this->renderer = renderer;
-  this->bullet = std::vector<balles>();
+  this->bullet = std::vector<balles*>();
   this->counter = -1;
 }
-
-armes::~armes() {}
 
 void armes::setCollisions(std::vector<tmx::Object> collisions, std::vector<monster*>* MonstreList) {
   this->collisions = collisions;
@@ -29,7 +27,7 @@ void armes::tir(int PlayerX, int PlayerY, int PlayerRX, int PlayerRY, int mouseX
   }
 
   if(counter == -1) {
-    balles balle = balles(renderer, PlayerRX, PlayerRY, dirrectionX, dirrectionY, this->degats, this->portee);
+    balles* balle = new balles(renderer, PlayerRX, PlayerRY, dirrectionX, dirrectionY, this->degats, this->portee);
     bullet.push_back(balle);
     counter = 0;
   }
@@ -42,8 +40,9 @@ void armes::update() {
   }
 
   for(long unsigned int i = 0; i < bullet.size(); i++) {
-    bullet.at(i).move();
-    if(bullet.at(i).update(collisions, MonstreList)) {
+    bullet.at(i)->move();
+    if(bullet.at(i)->update(collisions, MonstreList)) {
+      delete bullet.at(i);
       bullet.erase(bullet.begin() + i);
     }
   }
@@ -51,15 +50,22 @@ void armes::update() {
 
 void armes::draw(SDL_Renderer* renderer, int dx, int dy) {
   for(long unsigned int i = 0; i < bullet.size(); i++) {
-    bullet.at(i).draw(renderer, dx, dy);
+    bullet.at(i)->draw(renderer, dx, dy);
   }
+}
+
+armes::~armes() {
+  for(long unsigned int i = 0; i < bullet.size(); i++) {
+    delete bullet.at(i);
+  }
+  std::cout << "Armes deleted" << std::endl;
 }
 
 balles::balles(SDL_Renderer* renderer, int x, int y, float dirrectionX, float dirrectionY, int degats, int portee) {
   this->vitesse = 12.0f;
   this->rect = {x, y, 10, 10};
-  sprite = Sprite("src/Images/Player/bullet.png", x, y, 30, 30);
-  sprite.loadImage(renderer);
+  sprite = new Sprite("src/Images/Player/bullet.png", x, y, 30, 30);
+  sprite->loadImage(renderer);
   this->dirrX = dirrectionX;
   this->dirrY = dirrectionY;
   this->counter = 0;
@@ -91,7 +97,7 @@ bool balles::update(std::vector<tmx::Object> collisions, std::vector<monster*>* 
   return false;
 }
 
-void balles::draw(SDL_Renderer* renderer, int dx, int dy) { sprite.selfDraw(renderer, this->rect.x - dx, this->rect.y - dy); }
+void balles::draw(SDL_Renderer* renderer, int dx, int dy) { sprite->selfDraw(renderer, this->rect.x - dx, this->rect.y - dy); }
 
 void balles::move() {
   float resultX = dirrX * vitesse;
@@ -118,4 +124,8 @@ bool balles::isColliding(monster* monstre) {
   return false;
 }
 
-balles::~balles() {}
+balles::~balles() {
+  if(sprite != nullptr) {
+    delete sprite;
+  }
+}

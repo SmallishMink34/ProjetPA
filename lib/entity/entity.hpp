@@ -44,12 +44,13 @@ class Entity {
   virtual bool isJumping();
   virtual bool isOnGround();
 
-  int applyGravity(float deltaTime);
+  virtual void applyGravity();
 
   // Collisions
   virtual bool isColliding(int x, int y, int w, int h);
   virtual std::vector<std::pair<tmx::Object, std::string>> isColliding(int realx, int realy);
   virtual tmx::Object isColliding(std::vector<tmx::Object> Collisions);
+  virtual bool isCollidingEntity(Entity* entity);
   std::vector<tmx::Object> Collisions;
 
   // Others

@@ -20,9 +20,18 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
   Spawn["TR"] = Map->getObjectByNameAndType("TR", "Spawn");
   Spawn["DL"] = Map->getObjectByNameAndType("DL", "Spawn");
   Spawn["DR"] = Map->getObjectByNameAndType("DR", "Spawn");
+  player = nullptr;
 }
 
-Cartes::~Cartes() { delete Map; }
+Cartes::~Cartes() {
+  delete Map;
+  for(long unsigned int i = 0; i < addTiles.size(); i++) {
+    delete addTiles[i];
+  }
+  for(long unsigned int i = 0; i < monsterList.size(); i++) {
+    delete monsterList[i];
+  }
+}
 
 void Cartes::draw(SDL_Renderer* Renderer) {
   Map->draw(Renderer, dx, dy);
@@ -98,7 +107,6 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
         if(getPropertyFromName(c.getProperties(), "typefile").getStringValue() == "image") {
           Tile* tile = new Tile(Renderer, getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9), c.getPosition().x, c.getPosition().y, c.getAABB().width,
                                 c.getAABB().height);
-          std::cout << "Tile : " << getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9) << " at " << c.getPosition().x << " " << c.getPosition().y << std::endl;
           cartesMap[this->currentMap->getValue()]->addTile(tile);
         }
         if(getPropertyFromName(c.getProperties(), "collision").getBoolValue()) {
@@ -109,8 +117,6 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
           if(getPropertyFromName(c.getProperties(), "typefile").getStringValue() == "image") {
             Tile* tile = new Tile(Renderer, getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9), c.getPosition().x, c.getPosition().y, c.getAABB().width,
                                   c.getAABB().height);
-            std::cout << "Tile : " << getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9) << " at " << c.getPosition().x << " " << c.getPosition().y
-                      << std::endl;
             cartesMap[this->currentMap->getValue()]->addTile(tile);
           }
           if(getPropertyFromName(c.getProperties(), "collision").getBoolValue()) {
@@ -118,7 +124,6 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
           }
         }
       } else if(c.getClass() == "monster") {
-        std::cout << "MONSTERRERER" << std::endl;
         monster* monstre = new monster(Renderer, Monde->Var);
         monstre->InitMonster(getCollisions());
         monstre->AllMove(c.getPosition().x, c.getPosition().y, true);
@@ -126,7 +131,7 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
       }
     }
   }
-
+  this->cartesMap[this->currentMap->getValue()]->player = player;
   player->InitPlayer(getCollisions(), &cartesMap[this->currentMap->getValue()]->monsterList);
   player->AllMove(object.getPosition().x, object.getPosition().y, true);
   Monde->FixCamera();
@@ -135,6 +140,9 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
 allMaps::~allMaps() {
   for(auto map : cartesMap) {
     delete map.second;
+  }
+  if(currentMap != nullptr) {
+    delete currentMap;
   }
 }
 
@@ -155,7 +163,6 @@ std::vector<tmx::Object> allMaps::getCollisions() { return cartesMap[this->curre
 std::vector<tmx::Object> allMaps::getElements() { return cartesMap[this->currentMap->getValue()]->getElements(); }
 
 void allMaps::changeMap(std::string map, Player* player, world* Monde) {
-  std::cout << "Change map : " << map << std::endl;
   std::string SpawnType = "Spawn";
   if(map == "Spawn") {
     this->currentMap = this->Donjon->initial_Node;
@@ -168,7 +175,6 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
 
     SpawnType = Donjon->getAdjacentTypeFromNode(getCurrentMap(), oldNode);
 
-    std::cout << "SpawnType : " << SpawnType << std::endl;
     getCurrentMap()->getRoom()->SetInTheRoom(true);
   }
   InitializeRoom(player, Monde, SpawnType);
@@ -178,9 +184,13 @@ void Cartes::update(Uint32 currentTime, int dx, int dy) {
   this->dx = dx;
   this->dy = dy;
   for(long unsigned int i = 0; i < monsterList.size(); i++) {
-    monsterList.at(i)->applyGravity(1);
+    monsterList.at(i)->applyGravity();
     monsterList.at(i)->Move(2, 0, dx, dy);
     monsterList.at(i)->update(currentTime);
+    if(player->isCollidingEntity(monsterList.at(i))) {
+      std::cout << "Player is colliding with monster " << player->canTakeDamage << std::endl;
+      player->takeDamage(1);
+    }
   }
 }
 

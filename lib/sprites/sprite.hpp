@@ -11,9 +11,11 @@ class Sprite {
   Sprite();
   Sprite(std::string lien, int x, int y, int w, int h);
   Sprite(int x, int y, int w, int h);
+  ~Sprite();
   // Fonctions
   void Moveto(int x, int y);
   void SetImage(SDL_Texture* Img);
+  void SetImage(std::string lien, int x, int y, int w, int h);
   std::string Getlink();
   SDL_Rect* getRect();
   SDL_Rect* getsrcRect();
@@ -66,8 +68,8 @@ class Sprite {
   int realw;
   int realh;
   bool Rezise;
-  SDL_Rect* rect;
-  SDL_Rect* srcRect;
+  SDL_Rect rect;
+  SDL_Rect srcRect;
   std::string lien;
   SDL_Texture* Img;
 };

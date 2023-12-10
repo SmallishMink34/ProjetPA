@@ -15,7 +15,7 @@ SDL_Renderer *gRenderer = nullptr;
 SDL_Window *gWindow = nullptr;
 
 // Fonction pour initialiser SDL
-bool initSDL(Variable *Var) {
+bool initSDL() {
   if(SDL_Init(SDL_INIT_VIDEO) < 0) {
     std::cerr << "Erreur lors de l'initialisation de SDL : " << SDL_GetError() << std::endl;
     return false;
@@ -49,8 +49,8 @@ bool initSDL(Variable *Var) {
   return true;
 }
 
-bool init(Variable *Var) {
-  if(!initSDL(Var)) {
+bool init() {
+  if(!initSDL()) {
     std::cerr << "Échec de l'initialisation de SDL." << std::endl;
     return false;
   }
@@ -68,9 +68,9 @@ void free(std::map<std::string, Gamemode *> Gamemodes, Variable *Var) {
 // Fonction pour gérer les événements
 
 // Fonction pour libérer les ressources et quitter SDL
-void closeSDL(Gamemode *Monde) {
-  SDL_DestroyRenderer(gRenderer);
-  SDL_DestroyWindow(gWindow);
+void closeSDL() {
+  if(gRenderer != nullptr) SDL_DestroyRenderer(gRenderer);
+  if(gWindow != nullptr) SDL_DestroyWindow(gWindow);
 
   IMG_Quit();
   TTF_Quit();
@@ -84,7 +84,7 @@ int main(int argc, char *args[]) {
   std::string oldGamemode = currentGamemode;
   Variable *Var = new Variable();
 
-  if(!init(Var)) {
+  if(!init()) {
     return 1;
   }
 
@@ -102,6 +102,7 @@ int main(int argc, char *args[]) {
     frameStart = SDL_GetTicks();
 
     oldGamemode = currentGamemode;
+
     Gamemodes[currentGamemode]->handleEvents(&currentGamemode);
 
     if(currentGamemode != oldGamemode && !Gamemodes[currentGamemode]->isLoaded) {
@@ -119,7 +120,8 @@ int main(int argc, char *args[]) {
       SDL_Delay(frameDelay - frameTime);
     }
   }
-  closeSDL(Gamemodes[currentGamemode]);
+  free(Gamemodes, Var);
+  closeSDL();
 
   return 0;
 }

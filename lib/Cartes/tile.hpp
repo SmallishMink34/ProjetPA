@@ -11,6 +11,7 @@ class Tile {
  public:
   Tile(SDL_Renderer* Renderer, std::string image, int x, int y, int w, int h);
   Tile(SDL_Renderer* Renderer, tile t, int x, int y, int w, int h);
+  ~Tile();
 
   int getX();
   int getY();

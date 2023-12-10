@@ -117,4 +117,7 @@ void Jeu::render() {
 
 void Jeu::update() { Monde->UpdateAll(); }
 
-Jeu::~Jeu() { delete Monde; }
+Jeu::~Jeu() {
+  delete Monde;
+  Monde = nullptr;
+}

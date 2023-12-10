@@ -10,9 +10,9 @@ class Mpause: public Gamemode {
  public:
   Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
   ~Mpause();
-  Sprite Image;
-  Bouton play;
-  Bouton exit;
+  Sprite* Image;
+  Bouton* play;
+  Bouton* exit;
   SDL_Event evenement;
 
   void Init();

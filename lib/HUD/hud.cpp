@@ -37,4 +37,9 @@ void HUD::draw(SDL_Renderer* renderer) {
   }
 }
 
-HUD::~HUD() {}
+HUD::~HUD() {
+  delete vieEntiere;
+  delete vieDemi;
+  delete MapFrame;
+  delete rect;
+}

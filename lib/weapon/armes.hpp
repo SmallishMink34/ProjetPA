@@ -1,6 +1,7 @@
 #ifndef ARMES_HPP
 #define ARMES_HPP
 #include <iostream>
+#include <memory>
 #include <vector>
 
 #include "../maps/maps.hpp"
@@ -24,7 +25,7 @@ class balles {
   int degats;
   int portee;
   int counter;
-  Sprite sprite;
+  Sprite* sprite;
   SDL_Rect rect;
 };
 
@@ -45,7 +46,7 @@ class armes {
   std::vector<tmx::Object> collisions;
   std::vector<monster*>* MonstreList;
   SDL_Renderer* renderer;
-  std::vector<balles> bullet;
+  std::vector<balles*> bullet;
 };
 
 #endif

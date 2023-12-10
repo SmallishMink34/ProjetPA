@@ -1,7 +1,7 @@
 #include "utility.hpp"
 
 int findInVector(std::vector<char> vec, char value) {
-  for(int i = 0; i < vec.size(); i++) {
+  for(long unsigned int i = 0; i < vec.size(); i++) {
     if(vec[i] == value) {
       return i;
     }
@@ -14,7 +14,7 @@ std::vector<std::vector<char>> getListOfFile(std::ifstream &file) {
   std::string line;
   while(std::getline(file, line)) {
     std::vector<char> vec;
-    for(int i = 0; i < line.size(); i++) {
+    for(long unsigned int i = 0; i < line.size(); i++) {
       vec.push_back(line[i]);
     }
     list.push_back(vec);
@@ -23,13 +23,13 @@ std::vector<std::vector<char>> getListOfFile(std::ifstream &file) {
 }
 
 int width(std::vector<std::vector<char>> list) {
-  int max = 0;
-  for(int i = 0; i < list.size(); i++) {
+  long unsigned int max = 0;
+  for(long unsigned int i = 0; i < list.size(); i++) {
     if(list[i].size() > max) {
       max = list[i].size();
     }
   }
-  return max;
+  return (int)max;
 }
 
 int height(std::vector<std::vector<char>> list) { return list.size(); }
@@ -49,7 +49,7 @@ std::string getRandomElement(std::vector<std::string> vec) {
 
 int getNumverInList(std::vector<char> vec) {
   int number = 0;
-  for(int i = 0; i < vec.size(); i++) {
+  for(long unsigned int i = 0; i < vec.size(); i++) {
     if(vec[i] >= '0' && vec[i] <= '9') {
       number = number * 10 + (vec[i] - '0');
     }
@@ -58,7 +58,7 @@ int getNumverInList(std::vector<char> vec) {
 }
 
 tmx::Property getPropertyFromName(std::vector<tmx::Property> vec, std::string name) {
-  for(int i = 0; i < vec.size(); i++) {
+  for(long unsigned int i = 0; i < vec.size(); i++) {
     if(vec[i].getName() == name) {
       return vec[i];
     }
@@ -67,7 +67,7 @@ tmx::Property getPropertyFromName(std::vector<tmx::Property> vec, std::string na
 }
 
 bool isInSecondVector(std::vector<std::pair<Node *, std::string>> vec, std::string value) {
-  for(int i = 0; i < vec.size(); i++) {
+  for(long unsigned int i = 0; i < vec.size(); i++) {
     if(vec[i].second == value) {
       return true;
     }

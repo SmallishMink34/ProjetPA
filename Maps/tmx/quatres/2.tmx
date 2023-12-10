@@ -94,7 +94,7 @@
   <object id="20" name="TL" type="tp" x="0" y="64" width="25.3333" height="192.667"/>
   <object id="21" name="Jump" type="Collision" x="1088" y="896" width="65.3333" height="24">
    <properties>
-    <property name="Force" type="int" value="12"/>
+    <property name="Force" type="int" value="15"/>
    </properties>
   </object>
   <object id="22" name="Jump" type="Collision" x="768" y="448" width="65.3333" height="24">

@@ -471,4 +471,10 @@ Node *donjon::getActualRoomNode(Node *node) {
   return nullptr;
 }
 
-donjon::~donjon() { removeNode(initial_Node); }
+donjon::~donjon() {
+  removeNode(initial_Node);
+  for(Node *node : celibNode) {
+    delete node;
+  }
+  
+}

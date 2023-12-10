@@ -13,6 +13,8 @@ rooms::rooms() {
   this->tall = 1;
   this->value = '0';
   this->loaded = false;
+  this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
+  this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
   setImages();
 }
 
@@ -25,6 +27,8 @@ rooms::rooms(int x, int y) {
   this->tall = 1;
   this->value = '0';
   this->loaded = false;
+  this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
+  this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
   setImages();
 }
 
@@ -38,6 +42,8 @@ rooms::rooms(int x, int y, int w, int h, int type, int tall) {
   this->value = '0';
   this->loaded = false;
   this->InRoom = false;
+  this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
+  this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
   setImages();
 }
 
@@ -60,12 +66,13 @@ void rooms::setY(int y) { this->y = y; }
 
 void rooms::setImages() {
   if(this->tall == 1) {
-    this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
-    this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
+    this->ImageIn->SetImage("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
+    this->ImageNotIn->SetImage("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
   } else {
-    this->ImageIn = new Sprite("src/Images/HUD/Case3.png", 0, 0, this->w, this->h * 2);
-    this->ImageNotIn = new Sprite("src/Images/HUD/Case4.png", 0, 0, this->w, this->h * 2);
+    this->ImageIn->SetImage("src/Images/HUD/Case3.png", 0, 0, this->w, this->h * 2);
+    this->ImageNotIn->SetImage("src/Images/HUD/Case4.png", 0, 0, this->w, this->h * 2);
   }
+  this->loaded = false;
 }
 
 void rooms::drawRoom(SDL_Renderer *Renderer, int x, int y, SDL_Rect MapFrame) {
@@ -104,7 +111,14 @@ void rooms::setValue(char value) { this->value = value; }
 
 bool rooms::getInRoom() { return this->InRoom; }
 
-rooms::~rooms() {}
+rooms::~rooms() {
+  if(this->ImageIn != nullptr) {
+    delete ImageIn;
+  }
+  if(this->ImageNotIn != nullptr) {
+    delete ImageNotIn;
+  }
+}
 
 // |---------------------- NODE ----------------------|
 

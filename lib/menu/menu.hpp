@@ -11,10 +11,10 @@ class menu: public Gamemode {
   menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
   ~menu();
 
-  Sprite Image;
-  Sprite titre;
-  Bouton play;
-  Bouton exit;
+  Sprite* Image;
+  Sprite* titre;
+  Bouton* play;
+  Bouton* exit;
   SDL_Event evenement;
 
   void Init();
