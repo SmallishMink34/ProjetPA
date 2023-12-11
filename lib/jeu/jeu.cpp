@@ -28,6 +28,7 @@ void Jeu::Pause(std::string* Gamemode) {
 }
 
 void Jeu::saveScore() {
+    //rajouter 2 conditions : si on ne meurt pas, si tous les ennemis sont morts
     std::ofstream fichierSortie;
     fichierSortie.open(nomFichier, std::ios::app);
 
