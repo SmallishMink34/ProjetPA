@@ -274,13 +274,17 @@ bool Entity::isCollidingEntity(Entity* entity) {
   return false;
 }
 
-int Entity::getCX() { return getRX() + getWidth() / 2; }
+int Entity::getCRX() { return getRX() + getWidth() / 2; }
 
-int Entity::getCY() { return getRY() + getHeight() / 2; }
+int Entity::getCRY() { return getRY() + getHeight() / 2; }
+
+int Entity::getCX() { return getX() + getWidth() / 2; }
+
+int Entity::getCY() { return getY() + getHeight() / 2; }
 
 void Entity::knockback(Entity* monstre) {
-  float dx = getCX() - monstre->getCX();
-  float dy = getCY() - monstre->getCY();
+  float dx = getCRX() - monstre->getCRX();
+  float dy = getCRY() - monstre->getCRY();
   float magnitude = sqrt(dx * dx + dy * dy);
   if(magnitude != 0) {
     dx /= magnitude;

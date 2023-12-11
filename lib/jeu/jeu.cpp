@@ -111,7 +111,10 @@ void Jeu::render() {
   SDL_RenderPresent(gRenderer);
 }
 
-void Jeu::update() { Monde->UpdateAll(); }
+void Jeu::update() {
+  // TODO : Gerer la fin du jeu
+  Monde->UpdateAll();
+}
 
 Jeu::~Jeu() {
   delete Monde;

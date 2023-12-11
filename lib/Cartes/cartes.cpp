@@ -66,13 +66,17 @@ int Cartes::getDx() { return dx; }
 
 int Cartes::getDy() { return dy; }
 
+int Cartes::getNbMonster() { return monsterList.size(); }
+
 void Cartes::update(Uint32 currentTime, int dx, int dy) {
   this->dx = dx;
   this->dy = dy;
+
   for(long unsigned int i = 0; i < monsterList.size(); i++) {
     monsterList.at(i)->applyGravity();
     monsterList.at(i)->ai(dx, dy);
     monsterList.at(i)->update(currentTime);
+    // TODO : Ajout de l'animation des monstres
     if(player->isCollidingEntity(monsterList.at(i))) {
       player->takeDamage(1);
       player->knockback(monsterList.at(i));
@@ -116,6 +120,7 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
   tmx::Object object = cartesMap[this->currentMap->getValue()]->getSpawn(SpawnType);
 
   if(!cartesMap[this->currentMap->getValue()]->hasBeenLoaded()) {
+    this->currentMap->getRoom()->setVisited(true);
     cartesMap[this->currentMap->getValue()]->setLoad(true);
     for(tmx::Object c : cartesMap[this->currentMap->getValue()]->getElementsToAdd()) {
       if(c.getClass() == "blocks") {
@@ -195,7 +200,14 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
   InitializeRoom(player, Monde, SpawnType);
 }
 
-void allMaps::update(Uint32 currentTime, int dx, int dy) { cartesMap[this->currentMap->getValue()]->update(currentTime, dx, dy); }
+void allMaps::update(Uint32 currentTime, int dx, int dy) {
+  if(cartesMap[this->currentMap->getValue()]->getNbMonster() != 0) {
+    this->currentMap->getRoom()->setMonster(true);
+  } else {
+    this->currentMap->getRoom()->setMonster(false);
+  }
+  cartesMap[this->currentMap->getValue()]->update(currentTime, dx, dy);
+}
 
 int allMaps::getDx() { return cartesMap[this->currentMap->getValue()]->getDx(); }
 

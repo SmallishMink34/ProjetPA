@@ -62,6 +62,13 @@ class Cartes {
   void draw(SDL_Renderer* Renderer);
 
   /**
+   * @brief Get the Nb Monster object
+   * @return The number of monsters on the map
+   */
+
+  int getNbMonster();
+
+  /**
    * @brief Get the Collisions object
    * @return Vector of collision objects on the map
    */

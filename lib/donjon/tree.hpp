@@ -20,9 +20,12 @@ class rooms {
   bool loaded;
   bool InRoom;
   std::string value;
+  bool thereIsMonster;
+  bool isVisited;
 
   Sprite *ImageNotIn;
   Sprite *ImageIn;
+  Sprite *MonsterImage;
 
  public:
   rooms();
@@ -37,6 +40,8 @@ class rooms {
   void setValue(char value);
   void SetInTheRoom(bool in);
   void setImages();
+  void setMonster(bool monster);
+  void setVisited(bool visited);
 
   // Getters :
   int getX();

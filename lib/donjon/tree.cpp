@@ -15,6 +15,9 @@ rooms::rooms() {
   this->loaded = false;
   this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
   this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
+  this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
+  this->thereIsMonster = false;
+  this->isVisited = false;
   setImages();
 }
 
@@ -29,6 +32,9 @@ rooms::rooms(int x, int y) {
   this->loaded = false;
   this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
   this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
+  this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
+  this->thereIsMonster = false;
+  this->isVisited = false;
   setImages();
 }
 
@@ -44,6 +50,9 @@ rooms::rooms(int x, int y, int w, int h, int type, int tall) {
   this->InRoom = false;
   this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
   this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
+  this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
+  this->thereIsMonster = false;
+  this->isVisited = false;
   setImages();
 }
 
@@ -79,12 +88,18 @@ void rooms::drawRoom(SDL_Renderer *Renderer, int x, int y, SDL_Rect MapFrame) {
   if(!this->loaded) {
     this->ImageIn->loadImage(Renderer);
     this->ImageNotIn->loadImage(Renderer);
+    this->MonsterImage->loadImage(Renderer);
     this->loaded = true;
   }
-  if(this->InRoom) {
-    this->ImageIn->selfDraw(Renderer, x + (this->x) * (tailleCase + 2), y + this->y * (tailleCase + 2), MapFrame);
-  } else {
-    this->ImageNotIn->selfDraw(Renderer, x + (this->x) * (tailleCase + 2), y + this->y * (tailleCase + 2), MapFrame);
+  if(this->isVisited) {
+    if(this->InRoom) {
+      this->ImageIn->selfDraw(Renderer, x + (this->x) * (tailleCase + 2), y + this->y * (tailleCase + 2), MapFrame);
+    } else {
+      this->ImageNotIn->selfDraw(Renderer, x + (this->x) * (tailleCase + 2), y + this->y * (tailleCase + 2), MapFrame);
+    }
+    if(this->thereIsMonster) {
+      this->MonsterImage->selfDraw(Renderer, x + (this->x) * (tailleCase + 2) + 2, y + this->y * (tailleCase + 2) + 5, MapFrame);
+    }
   }
 }
 
@@ -118,7 +133,15 @@ rooms::~rooms() {
   if(this->ImageNotIn != nullptr) {
     delete ImageNotIn;
   }
+
+  if(this->MonsterImage != nullptr) {
+    delete MonsterImage;
+  }
 }
+
+void rooms::setMonster(bool monster) { this->thereIsMonster = monster; }
+
+void rooms::setVisited(bool visited) { this->isVisited = visited; }
 
 // |---------------------- NODE ----------------------|
 

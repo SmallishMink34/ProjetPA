@@ -40,13 +40,13 @@ class Entity {
   virtual int getVie();
 
   /**
-   * @brief Get the x-coordinate of the entity.
+   * @brief Get the x-coordinate of the entity on the screen.
    * @return The x-coordinate of the entity.
    */
   virtual int getX();
 
   /**
-   * @brief Get the y-coordinate of the entity.
+   * @brief Get the y-coordinate of the entity on the screen.
    * @return The y-coordinate of the entity.
    */
   virtual int getY();
@@ -79,11 +79,23 @@ class Entity {
    * @brief Get the center x-coordinate of the entity.
    * @return The center x-coordinate of the entity.
    */
-  virtual int getCX();
+  virtual int getCRX();
 
   /**
    * @brief Get the center y-coordinate of the entity.
    * @return The center y-coordinate of the entity.
+   */
+  virtual int getCRY();
+
+  /**
+   * @brief Get the center x-coordinate of the entity on the screen.
+   * @return The center x-coordinate of the entityon the screen.
+   */
+  virtual int getCX();
+
+  /**
+   * @brief Get the center y-coordinate of the entity on the screen.
+   * @return The center y-coordinate of the entity on the screen.
    */
   virtual int getCY();
 
