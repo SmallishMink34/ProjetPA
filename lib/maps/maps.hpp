@@ -114,35 +114,3 @@ class level {
   int MapHeight;                         // The height of the level map.
   Sprite background;                     // The background sprite of the level.
 };
-class level {
- public:
-  level(const std::string& name);
-  void load(const std::string& path, SDL_Renderer* ren);
-  void draw(SDL_Renderer* ren, int dx, int dy);
-  tmx::Object getObjectByName(const std::string& Name);
-  std::vector<tmx::Object> getObjects();
-  std::vector<tmx::Object> getObjectsByType(const std::string& Name);
-
-  tmx::Object getObjectByNameAndType(const std::string& Name, const std::string& Type);
-  int getMapWidth();
-  int getMapHeight();
-
- private:
-  std::string name;
-  std::string tmxFilePath;
-  // Think of the dimensions as a 2D array (after all, that's what our
-  // Tiled map is)
-  // The rows variable is the number of tiles from top to bottom (Y axis).
-  int rows;
-  // The cols variable is the number of tiles from left to right (X axis).
-  int cols;
-  int tile_width;
-  int tile_height;
-  // All of the tiles we will draw to the screen.
-  std::vector<tile> tiles;  // Like library in python
-  // All of the tilesets used by our Tiled map.
-  std::map<gid, SDL_Texture*> tilesets;
-  int MapWidth;
-  int MapHeight;
-  Sprite background;
-};

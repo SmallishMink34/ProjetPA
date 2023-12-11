@@ -25,11 +25,11 @@ void monster::ai(int dx, int dy) {
   if(aiDirrection == "Right") {
     Move(speed, 0, dx, dy);
   } else if(aiDirrection == "Left") {
-    // Move(-speed, 0, dx, dy);
+    Move(-speed, 0, dx, dy);
   }
 
   if(std::rand() % 100 == 0) {
-    // jump();
+    jump();
   }
 }
 

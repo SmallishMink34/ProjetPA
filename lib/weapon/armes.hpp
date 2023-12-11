@@ -144,24 +144,5 @@ class armes {
   SDL_Renderer* renderer;              /**< The SDL renderer used for rendering. */
   std::vector<balles*> bullet;         /**< The bullets fired by the weapon. */
 };
-class armes {
- public:
-  armes(SDL_Renderer* renderer);
-  ~armes();
-  void setCollisions(std::vector<tmx::Object> collisions, std::vector<monster*>* MonstreList);
-  void tir(int PlayerX, int PlayerY, int PlayerRX, int PlayerRY, int mouseX, int mouseY);
-  void draw(SDL_Renderer* renderer, int dx, int dy);
-  void update();
-
- private:
-  int degats;
-  int portee;
-  int cadence;
-  int counter;
-  std::vector<tmx::Object> collisions;
-  std::vector<monster*>* MonstreList;
-  SDL_Renderer* renderer;
-  std::vector<balles*> bullet;
-};
 
 #endif

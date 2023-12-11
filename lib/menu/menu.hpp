@@ -65,25 +65,5 @@ class menu: public Gamemode {
   int Real_H; /**< The real height of the menu. */
   bool var;   /**< A boolean variable. */
 };
-class menu: public Gamemode {
- public:
-  menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
-  ~menu();
-
-  Sprite* Image;
-  Sprite* titre;
-  Bouton* play;
-  Bouton* exit;
-  SDL_Event evenement;
-
-  void Init();
-  void handleEvents(std::string* Gamemode);
-  void render();
-  void update();
-  void unpause();
-  int Real_W;
-  int Real_H;
-  bool var;
-};
 
 #endif

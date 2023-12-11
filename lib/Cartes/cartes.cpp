@@ -139,7 +139,7 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
           }
         }
       } else if(c.getClass() == "monster") {
-        monster* monstre = new monster(Renderer, Monde->Var);
+        monster* monstre = new monster(Renderer);
         monstre->InitMonster(getCollisions());
         monstre->AllMove(c.getPosition().x, c.getPosition().y, true);
         cartesMap[this->currentMap->getValue()]->monsterList.push_back(monstre);
