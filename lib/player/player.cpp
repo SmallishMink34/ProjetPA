@@ -21,13 +21,15 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   hasJump = false;
   OnGround = false;
   etat = "Idle";
+  Animcpt = 0;
+  score = 0;
 
   mapDX = 0;
   mapDY = 0;
 
   etats["Right"] = {{0, 910}, {82, 910}, {164, 910}, {246, 910}, {328, 910}, {410, 910}, {492, 910}, {574, 910}, {656, 910}};
   etats["Left"] = {{0, 744}, {82, 744}, {164, 744}, {246, 744}, {328, 744}, {410, 744}, {492, 744}, {574, 744}, {656, 744}};
-  etats["Jump"] = {{246, 175}, {328, 175}, {410, 175}, {492, 175}, {410, 175}, {328, 175}};
+  etats["Jump"] = {{164, 175}, {328, 175}, {410, 175}, {492, 175}, {82, 175}, {0, 175}, {0, 175}};
   etats["Idle"] = {{0, 173}};
 
   Image = Sprite("src/Images/Player/Player_default_Tilesheet.png", x, y, 96, 96);
@@ -182,7 +184,21 @@ void Player::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonné
   AllMove(x1, y1, false);
 }
 
-void Player::AnimPlayer(int i) { Image.setSrcRect(etats[etat][i].first, etats[etat][i].second, 70, 70); }
+void Player::AnimPlayer(int i) {
+  if(etat != "Jump") {
+    if(i % 5 == 0) {
+      this->Animcpt++;
+    }
+  } else {
+    if(i % 12 == 0) {
+      this->Animcpt++;
+    }
+  }
+  if(Animcpt > etats[etat].size() - 1) {
+    Animcpt = 0;
+  }
+  Image.setSrcRect(etats[etat][Animcpt].first, etats[etat][Animcpt].second, 70, 70); 
+  }
 
 void Player::AllMove(int x1, int y1, bool Teleport) {
   if(!Teleport) {
@@ -260,3 +276,7 @@ void Player::setY(int y) { this->y = y; }
 int Player::getVie() { return vie; }
 
 void Player::IncrementVie(int vie) { this->vie += vie; }
+
+int Player::getScore() { return score;  }
+
+void Player::IncrementScore(int value) { this->score += value; }

@@ -43,6 +43,7 @@ class world {
   void moveCamera();
   void FixCamera();
   void drawMap(SDL_Renderer* Renderer);
+  int getScore();
 };
 
 #endif

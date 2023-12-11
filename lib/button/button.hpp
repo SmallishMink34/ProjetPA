@@ -17,6 +17,7 @@ public:
 
     void gererFin(SDL_Event* evenement, SDL_Renderer* rendu, bool* quit);
     void gererPlay(SDL_Event* evenement, SDL_Renderer* rendu, bool* var);
+    void gererMenu(SDL_Event* evenement, SDL_Renderer* rendu, bool* menu);
     bool isColliding(int mouseX, int mouseY);
     int getY();
     int getX();

@@ -10,11 +10,16 @@ class Jeu: public Gamemode {
   Jeu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
   void Init();
   void Pause(std::string* Gamemode);
+  void saveScore();
   world* Monde;
   void handleEvents(std::string* Gamemode);
   void render();
   void update();
   void unpause();
+  int getBestScore();
+
+ private:  
+  const char* nomFichier = "monFichier.txt";
 };
 
 #endif

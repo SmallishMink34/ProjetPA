@@ -43,6 +43,7 @@ class Player {
   bool isJumping();
   bool isOnGround();
   int getVie();
+  int getScore();
 
   // Setters
   void SetName(const std::string Name);
@@ -51,6 +52,7 @@ class Player {
   void setX(int x);
   void setY(int y);
   void IncrementVie(int vie);
+  void IncrementScore(int value);
 
   // Collisions
   bool isColliding(int x1, int y1, int realx, int realy);
@@ -81,6 +83,10 @@ class Player {
   int Realy;
 
   int vie;
+
+  int Animcpt;
+
+  int score;
 
   int width;
   int height;

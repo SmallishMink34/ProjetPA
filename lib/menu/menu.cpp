@@ -22,7 +22,7 @@ void menu::Init() {
   titre.loadImage(gRenderer);
 
   // bouton play
-  this->play = Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 3.6, Var->Real_H / 1.7, 256, 128);
+  this->play = Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 4.3, Var->Real_H / 1.7, 256, 128);
   this->play.setSurface(0, 0, 512, 256);
   this->play.gererPlay(&evenement, gRenderer, &var);
 
@@ -39,6 +39,7 @@ void menu::handleEvents(std::string* Gamemode) {
     play.gererPlay(&e, this->gRenderer, &var);
     if(var) {
       *Gamemode = "jeu";
+      var = false;
     }
     if(e.type == SDL_QUIT) {
       quit = true;
@@ -50,8 +51,6 @@ void menu::handleEvents(std::string* Gamemode) {
           break;
       }
     }
-
-    // Appeler la fonction de gestion des événements du bouton
   }
 }
 

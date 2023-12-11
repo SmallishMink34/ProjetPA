@@ -3,7 +3,7 @@
 #include "../gamemode/gamemode.hpp"
 #include "../utility/utility.hpp"
 #include <SDL2/SDL_ttf.h>
-// #include "../button/button.cpp"
+#include <fstream>
 
 Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->gWindow = gWindow;
@@ -11,8 +11,7 @@ Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   quit = false;
   isLoaded = false;
   this->Var = Var;
-
-  var = false;
+  menu = false;
 }
 
 void Mpause::Init() {
@@ -24,15 +23,15 @@ void Mpause::Init() {
   this->Image = Sprite("src/Images/pause.png", 0, 0, Var->Real_W, Var->Real_H);
   Image.loadImage(gRenderer);
 
-  // bouton play
-  this->play = Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 2 - 135, Var->Real_H / 3, 256, 128);
-  this->play.setSurface(0, 0, 512, 256);
-  this->play.gererPlay(&evenement, gRenderer, &var);
-
   // bouton exit
-  this->exit = Bouton(gRenderer, "src/Images/exit.png", Var->Real_W - 180, Var->Real_H - 90, 192, 96);
+  this->exit = Bouton(gRenderer, "src/Images/exit.png", Var->Real_W/2 - 80, Var->Real_H - 90, 192, 96);
   this->exit.setSurface(0, 256, 512, 256);
   this->exit.gererFin(&evenement, gRenderer, &quit);
+
+  //bouton menu
+  this->main_menu = Bouton(gRenderer, "src/Images/menu.png", Var->Real_W/2 - 90, Var->Real_H/2+25, 192, 96);
+  this->main_menu.setSurface(0, 0, 512, 256);
+  this->main_menu.gererFin(&evenement, gRenderer, &quit);
 
   // afficher le mot "pause" en haut   
   TTF_Font* Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
@@ -64,10 +63,11 @@ void Mpause::handleEvents(std::string* Gamemode) {
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
     exit.gererFin(&e, this->gRenderer, &quit);
-    play.gererPlay(&e, this->gRenderer, &var);
-    if(var) {
-      *Gamemode = "jeu";
-      var = false;
+    main_menu.gererMenu(&e, this->gRenderer, &menu);
+    if(menu) {
+      menu = false;
+      *Gamemode = "menu";
+      //saveScore();
     }
     if(e.type == SDL_QUIT) {
       quit = true;
@@ -90,6 +90,7 @@ void Mpause::render() {
   SDL_RenderClear(gRenderer);
   Image.selfDraw(gRenderer);
   exit.selfDraw(gRenderer);
+  main_menu.selfDraw(gRenderer);
   SDL_RenderCopy(gRenderer, TextureSeed, NULL, &Seed_rect);
   SDL_RenderCopy(gRenderer, TextureMessage, NULL, &Message_rect); 
   //play.selfDraw(gRenderer);

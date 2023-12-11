@@ -81,8 +81,22 @@ void Bouton::gererPlay(SDL_Event* evenement, SDL_Renderer* rendu, bool* var) {
         if (evenement->type == SDL_MOUSEMOTION) {
             this->setSurface(0, 0, 512, 256);
         } else if (evenement->type == SDL_MOUSEBUTTONDOWN && evenement->button.button == SDL_BUTTON_LEFT) {
-            printf("jeu\n");
             *var = true;
+        }
+    }else{
+            this->setSurface(0, 256, 512, 256);
+    }
+}
+
+void Bouton::gererMenu(SDL_Event* evenement, SDL_Renderer* rendu, bool* menu) {
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+
+    if (isColliding(mouseX, mouseY)) {
+        if (evenement->type == SDL_MOUSEMOTION) {
+            this->setSurface(0, 0, 512, 256);
+        } else if (evenement->type == SDL_MOUSEBUTTONDOWN && evenement->button.button == SDL_BUTTON_LEFT) {
+            *menu = true;
         }
     }else{
             this->setSurface(0, 256, 512, 256);

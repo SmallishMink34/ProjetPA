@@ -1,4 +1,5 @@
 #include "jeu.hpp"
+#include <fstream>
 
 Jeu::Jeu(SDL_Window* window, SDL_Renderer* renderer, Variable* Var) {
   this->gWindow = window;
@@ -22,6 +23,40 @@ void Jeu::Init() {
 
 void Jeu::Pause(std::string* Gamemode) {
   *Gamemode = "pause";  // Quitte l'application si la touche Échap est enfoncée
+  saveScore();
+  getBestScore();
+}
+
+void Jeu::saveScore() {
+    std::ofstream fichierSortie;
+    fichierSortie.open(nomFichier, std::ios::app);
+
+    if (fichierSortie.fail()) {
+        std::cout << "Erreur à l'ouverture" << std::endl;
+    } else {
+        fichierSortie << std::to_string(this->Monde->getScore()) << std::endl;
+        fichierSortie.close();
+    }
+}
+
+int Jeu::getBestScore(){
+  std::ifstream fichierEntree;
+  std::string ligne;
+  int mini = 0;
+
+  fichierEntree.open(nomFichier);
+
+  if (fichierEntree.fail()) {
+      std::cout << "Erreur à l'ouverture !" << std::endl;
+  } else {
+      while (getline(fichierEntree, ligne)) {
+          if (mini >= std::stoi(ligne) ) {
+              mini = std::stoi(ligne);
+          }
+      }
+      fichierEntree.close();
+  }
+  return mini;
 }
 
 void Jeu::unpause() {

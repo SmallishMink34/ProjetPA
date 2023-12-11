@@ -14,7 +14,6 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->currentTime = SDL_GetTicks();
   this->deltaTime = this->currentTime;
   this->previousTime = 0;
-  this->Animcpt = 0;
   this->cptest = 0;
 
   this->dx = 0;
@@ -54,13 +53,7 @@ void world::UpdateAll() {
   Var->CameraSpeed = Var->DefaultCameraSpeed;
   this->cptest++;
 
-  if(cptest % 10 == 0) {
-    this->Animcpt++;
-    if(Animcpt > Joueur->etats[Joueur->etat].size() - 1) {
-      Animcpt = 0;
-    }
-    this->Joueur->AnimPlayer(Animcpt);
-  }
+  this->Joueur->AnimPlayer(cptest);
 }
 
 void world::moveCamera() {
@@ -154,3 +147,8 @@ void world::FixCamera() {
   }
   this->Joueur->Moveto();
 }
+
+int world::getScore() {
+  return this->Joueur->getScore()/120;
+}
+
