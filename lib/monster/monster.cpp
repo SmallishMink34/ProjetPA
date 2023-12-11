@@ -1,7 +1,6 @@
 #include "monster.hpp"
 
-monster::monster(SDL_Renderer* Renderer, Variable* Var) {
-  this->Var = Var;
+monster::monster(SDL_Renderer* Renderer) {
   speed = 5;
   width = 96;
   height = 96;
@@ -48,7 +47,7 @@ void monster::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonn√
   if(dy <= 0) {
     if(isEmpty(Down)) {
       OnGround = false;
-      jumpStrength = Var->JumpStrength;
+      jumpStrength = JumpStrength;
     }
   }
   if(!isEmpty(Left)) {

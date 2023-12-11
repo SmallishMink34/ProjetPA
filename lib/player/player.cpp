@@ -4,13 +4,12 @@
 #include <iostream>
 #include <thread>
 
-Player::Player(SDL_Renderer *Renderer, Variable *Var) {
+Player::Player(SDL_Renderer *Renderer) {
   vie = 10;
   x = 60;  // Coordonnées sur l'interface
   y = 60;
   Realx = 60;  // Coordonnées réels
   Realy = 60;
-  this->Var = Var;
   speed = playerSpeed;
   width = 36;
   height = 96;

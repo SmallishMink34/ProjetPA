@@ -18,7 +18,7 @@ class allMaps;
 class Player: public Entity {
  public:
   // Constructeur
-  Player(SDL_Renderer* Renderer, Variable* Var);
+  Player(SDL_Renderer* Renderer);
   ~Player();
 
   // Variables

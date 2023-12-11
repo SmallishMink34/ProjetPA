@@ -7,7 +7,7 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->Donjon = new donjon(30, 5);
   this->Map = new allMaps(Renderer, this->Donjon);
 
-  this->Joueur = new Player(Renderer, Var);
+  this->Joueur = new Player(Renderer);
 
   this->AllElements = Texture();
   this->hud = new HUD(Renderer, this->Joueur, this->Donjon);

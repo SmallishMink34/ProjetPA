@@ -3,10 +3,9 @@
 
 #include <SDL2/SDL.h>
 
-Bouton::Bouton() { this->etat = 0; }
+Bouton::Bouton() {}
 
 Bouton::Bouton(SDL_Renderer* Renderer, const char* lien, int x, int y, int w, int h) {
-  this->etat = 0;
   this->rect = SDL_Rect();
   this->rect.x = x;
   this->rect.y = y;

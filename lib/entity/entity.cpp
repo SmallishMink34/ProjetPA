@@ -131,7 +131,7 @@ void Entity::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonné
   if(dy <= 0) {
     if(isEmpty(Down)) {
       OnGround = false;
-      jumpStrength = Var->JumpStrength;
+      jumpStrength = JumpStrength;
     }
   }
   if(!isEmpty(Left)) {
@@ -188,7 +188,7 @@ bool Entity::isJumping() { return Jumping; }
 
 void Entity::applyGravity() {
   dy = 0;
-  verticalVelocity += Var->Gravity;
+  verticalVelocity += Gravity;
   dy += verticalVelocity;
   if(verticalVelocity > maxSpeed) verticalVelocity = maxSpeed;
 

@@ -1,9 +1,9 @@
 #include "armes.hpp"
 
 armes::armes(SDL_Renderer* renderer) {
-  this->degats = 1;
-  this->portee = 50;
-  this->cadence = 6;
+  this->degats = degatsArme;
+  this->portee = porteeArme;
+  this->cadence = cadenceArme;
   this->renderer = renderer;
   this->bullet = std::vector<balles*>();
   this->counter = -1;

@@ -11,6 +11,88 @@
 #include "../weapon/armes.hpp"
 
 class allMaps;
+/**
+ * @class world
+ * @brief Represents the game world.
+ *
+ * The world class manages the game world, including the player, maps, HUD, and camera.
+ * It provides functions for initializing the world, drawing all elements, moving the player,
+ * updating all elements, moving the camera, fixing the camera, and drawing the map.
+ */
+class world {
+ public:
+  // Constucteur
+
+  /**
+   * @brief Constructs a world object.
+   * @param Renderer The SDL renderer used for rendering.
+   * @param Var A pointer to the Variable object.
+   */
+  world(SDL_Renderer* Renderer, Variable* Var);
+
+  /**
+   * @brief Destroys the world object.
+   */
+  ~world();
+
+  // Variables
+  Player* Joueur;                                           /**< The player object. */
+  Texture AllElements;                                      /**< The texture for all elements in the world. */
+  allMaps* Map;                                             /**< The map object. */
+  HUD* hud;                                                 /**< The HUD object. */
+  bool KeyPressed[5] = {false, false, false, false, false}; /**< An array representing the state of the keys (0 = left, 1 = right, 2 = up, 3 = down, 4 = click). */
+  int dx;                                                   /**< The X offset of the map relative to the player. */
+  int dy;                                                   /**< The Y offset of the map relative to the player. */
+  int mouseX;                                               /**< The X coordinate of the mouse. */
+  int mouseY;                                               /**< The Y coordinate of the mouse. */
+  Variable* Var;                                            /**< A pointer to the Variable object. */
+  donjon* Donjon;                                           /**< The donjon object. */
+  bool seeMap;                                              /**< Flag indicating whether the map is visible. */
+  Uint32 currentTime;                                       /**< The current time. */
+  double deltaTime;                                         /**< The time elapsed since the previous frame. */
+  Uint32 previousTime;                                      /**< The previous time. */
+  Uint32 Animcpt;                                           /**< Animation counter. */
+  Uint32 cptest;                                            /**< Test counter. */
+
+  // Fonctions
+  /**
+   * @brief Initializes the game world.
+   * @param Renderer The SDL renderer used for rendering.
+   */
+  void InitMonde(SDL_Renderer* Renderer);
+
+  /**
+   * @brief Draws all elements in the game world.
+   * @param Renderer The SDL renderer used for rendering.
+   */
+  void drawAll(SDL_Renderer* Renderer);
+
+  /**
+   * @brief Moves the player.
+   */
+  void movePlayer();
+
+  /**
+   * @brief Updates all elements in the game world.
+   */
+  void UpdateAll();
+
+  /**
+   * @brief Moves the camera.
+   */
+  void moveCamera();
+
+  /**
+   * @brief Fixes the camera position.
+   */
+  void FixCamera();
+
+  /**
+   * @brief Draws the map.
+   * @param Renderer The SDL renderer used for rendering.
+   */
+  void drawMap(SDL_Renderer* Renderer);
+};
 class world {
  public:
   // Constucteur
