@@ -11,6 +11,8 @@ Entity::Entity() {
   width = 0;
   height = 0;
   dy = 0;
+  deltax = 0;
+  deltay = 0;
   mapDX = 0;
   mapDY = 0;
   verticalVelocity = 0;
@@ -18,7 +20,8 @@ Entity::Entity() {
   OnGround = false;
   Jumping = false;
   hasJump = false;
-  canTakeDamage = true;
+  canTakeDamage = false;
+  istakeDamage = false;
   previousDamageTime = 0;
   etat = "Idle";
 }
@@ -58,7 +61,6 @@ bool Entity::isColliding(int x, int y, int w, int h) {
   int rect2Right = getRX() + getWidth();
   int rect2Top = getRY();
   int rect2Bottom = getRY() + getHeight();
-  // FIXME : Collision correcte
   if(rect1Left <= rect2Right && rect1Right >= rect2Left && rect1Top <= rect2Bottom && rect1Bottom >= rect2Top) {
     return true;
   }
@@ -73,7 +75,8 @@ std::vector<std::pair<tmx::Object, std::string>> Entity::isColliding(int realx, 
       CollidePairs.push_back(std::make_pair(collisionObject, "Down"));
     }
     if(isPointInBox(realx + getWidth() + speed, realy + getHeight() / 4, collisionObject) ||
-       (isPointInBox(realx + getWidth() + speed, realy + 3 * getHeight() / 4, collisionObject))) {
+       (isPointInBox(realx + getWidth() + speed, realy + 3 * getHeight() / 4, collisionObject)) ||
+       isPointInBox(realx + getWidth() + speed, realy + getHeight() / 2, collisionObject)) {
       if(collisionObject.getName() != "Platform" && collisionObject.getName() != "Jump") {
         CollidePairs.push_back(std::make_pair(collisionObject, "Right"));
       }
@@ -120,18 +123,17 @@ void Entity::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonné
   mapDX = dxMap;
   mapDY = dyMap;
 
-  if(dy <= 0) {
-    if(isEmpty(isInList(result, "Down"))) {
-      OnGround = false;
-      jumpStrength = Var->JumpStrength;
-    }
-  }
-
   std::pair<tmx::Object, std::string> Down = isInList(result, "Down");
   std::pair<tmx::Object, std::string> Up = isInList(result, "Up");
   std::pair<tmx::Object, std::string> Left = isInList(result, "Left");
   std::pair<tmx::Object, std::string> Right = isInList(result, "Right");
 
+  if(dy <= 0) {
+    if(isEmpty(Down)) {
+      OnGround = false;
+      jumpStrength = Var->JumpStrength;
+    }
+  }
   if(!isEmpty(Left)) {
     AllMove(Left.first.getPosition().x + Left.first.getAABB().width + 2, Realy, true);
     if(x1 < 0) {
@@ -212,12 +214,12 @@ void Entity::setVerticalVelocity(float velocity) { verticalVelocity = velocity; 
 void Entity::IncrementVie(int vie) { this->vie += vie; }
 
 bool Entity::takeDamage(int damage) {
-  // TODO : add knockback
   // TODO : Add sound
   if(canTakeDamage) {
-    std::cout << "Entity took " << damage << " damage" << std::endl;
     IncrementVie(-damage);
+    std::cout << "Vie : " << vie << std::endl;
     canTakeDamage = false;
+    istakeDamage = true;
   }
 
   if(vie <= 0) {
@@ -227,11 +229,34 @@ bool Entity::takeDamage(int damage) {
 }
 
 void Entity::update(Uint32 currentTime) {
-  // TODO : add AI
+  if(istakeDamage) {
+    istakeDamage = false;
+    previousDamageTime = currentTime;
+  }
+
   if(!canTakeDamage) {
+    std::cout << (currentTime - previousDamageTime) / 1000.0f << std::endl;
     if((currentTime - previousDamageTime) / 1000.0f > InvincibilityTime) {
       canTakeDamage = true;
       previousDamageTime = currentTime;
+    }
+  }
+
+  if(deltax != 0) {
+    Move(deltax, 0, mapDX, mapDY);
+    if(deltax > 0) {
+      deltax -= 1;
+    } else if(deltax < 0) {
+      deltax += 1;
+    }
+  }
+
+  if(deltay != 0) {
+    Move(0, deltay, mapDX, mapDY);
+    if(deltay > 0) {
+      deltay -= 1;
+    } else if(deltay < 0) {
+      deltay += 1;
     }
   }
 
@@ -247,4 +272,20 @@ bool Entity::isCollidingEntity(Entity* entity) {
     return true;
   }
   return false;
+}
+
+int Entity::getCX() { return getRX() + getWidth() / 2; }
+
+int Entity::getCY() { return getRY() + getHeight() / 2; }
+
+void Entity::knockback(Entity* monstre) {
+  float dx = getCX() - monstre->getCX();
+  float dy = getCY() - monstre->getCY();
+  float magnitude = sqrt(dx * dx + dy * dy);
+  if(magnitude != 0) {
+    dx /= magnitude;
+    dy /= magnitude;
+  }
+  deltax = dx * RECUL;
+  deltay = dy * RECUL;
 }

@@ -43,7 +43,6 @@ char getCharAt(std::vector<std::vector<char>> list, int x, int y) {
 
 std::string getRandomElement(std::vector<std::string> vec) {
   int random = rand() % vec.size();
-  std::cout << random << std::endl;
   return vec[random];
 }
 

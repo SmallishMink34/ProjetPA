@@ -359,6 +359,8 @@ void donjon::addChildFromFile(Node *node, int originx, int originy, char letter)
     std::vector<std::pair<char, std::string>> letters = getAdjacentLetterFromMap(node->getValue(), &tall);
     node->getRoom()->setTall(tall);
     node->getRoom()->setType(type);
+    seed++;
+    std::mt19937 g(seed);
     if(tall == 2) {
       node->setMap(getRandomElement(TwoTallMaps));
     } else {
@@ -476,5 +478,4 @@ donjon::~donjon() {
   for(Node *node : celibNode) {
     delete node;
   }
-  
 }

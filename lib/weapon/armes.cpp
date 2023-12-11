@@ -3,7 +3,7 @@
 armes::armes(SDL_Renderer* renderer) {
   this->degats = 1;
   this->portee = 50;
-  this->cadence = 2;
+  this->cadence = 6;
   this->renderer = renderer;
   this->bullet = std::vector<balles*>();
   this->counter = -1;
@@ -58,7 +58,6 @@ armes::~armes() {
   for(long unsigned int i = 0; i < bullet.size(); i++) {
     delete bullet.at(i);
   }
-  std::cout << "Armes deleted" << std::endl;
 }
 
 balles::balles(SDL_Renderer* renderer, int x, int y, float dirrectionX, float dirrectionY, int degats, int portee) {
@@ -118,7 +117,6 @@ bool balles::isColliding(tmx::Object object) {
 bool balles::isColliding(monster* monstre) {
   if(this->rect.x < monstre->getRX() + monstre->getWidth() && this->rect.x + this->rect.w > monstre->getRX() && this->rect.y < monstre->getRY() + monstre->getHeight() &&
      this->rect.y + this->rect.h > monstre->getRY()) {
-    std::cout << "Y" << this->rect.y << " " << monstre->getRY() << " " << monstre->getHeight() << std::endl;
     return true;
   }
   return false;

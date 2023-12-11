@@ -21,11 +21,14 @@ class Variable {
   void ChangeScale(float scale);
 };
 
+const int playerSpeed = 8;
+
 const std::string MAP = "map.txt";
-const int nbOneTallMaps = 1;
+const int nbOneTallMaps = 2;
 const int nbTwoTallMaps = 3;
 
 const int tailleCase = 32;
 const float InvincibilityTime = 1.0f;
+const float RECUL = 15.0f;
 
 #endif

@@ -25,6 +25,8 @@ class Entity {
   virtual int getRY();
   virtual int getWidth();
   virtual int getHeight();
+  virtual int getCX();
+  virtual int getCY();
 
   // Setters
   virtual void setX(int x);
@@ -39,6 +41,7 @@ class Entity {
   virtual void Move(int x, int y, int dxMap, int dyMap);
   virtual void AllMove(int x1, int y1, bool Teleport);
   virtual void jump();
+  virtual void knockback(Entity* monstre);
 
   virtual float getVerticalVelocity();
   virtual bool isJumping();
@@ -65,6 +68,8 @@ class Entity {
   int height;
   int Realx;
   int Realy;
+  int deltax;
+  int deltay;
 
   int mapDX;
   int mapDY;
@@ -78,11 +83,12 @@ class Entity {
 
   Uint32 previousDamageTime;
 
-  bool OnGround;
-  bool Jumping;
-  bool hasJump;
-  bool canTakeDamage;
-  float verticalVelocity;
+  bool OnGround;           // if entity is on ground
+  bool Jumping;            // if entity is jumping
+  bool hasJump;            // if entity has jumped
+  bool canTakeDamage;      // if entity can take damage
+  bool istakeDamage;       // if entity is taking damage
+  float verticalVelocity;  // vertical velocity
   float jumpStrength;
   float jumpTime;
   float dy;

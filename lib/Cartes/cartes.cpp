@@ -65,6 +65,21 @@ void Cartes::addCollision(tmx::Object object) { Collisions.push_back(object); }
 int Cartes::getDx() { return dx; }
 
 int Cartes::getDy() { return dy; }
+
+void Cartes::update(Uint32 currentTime, int dx, int dy) {
+  this->dx = dx;
+  this->dy = dy;
+  for(long unsigned int i = 0; i < monsterList.size(); i++) {
+    monsterList.at(i)->applyGravity();
+    monsterList.at(i)->ai(dx, dy);
+    monsterList.at(i)->update(currentTime);
+    if(player->isCollidingEntity(monsterList.at(i))) {
+      player->takeDamage(1);
+      player->knockback(monsterList.at(i));
+    }
+  }
+}
+
 ////////////////////////////////// allMaps //////////////////////////////////
 
 allMaps::allMaps(SDL_Renderer* Renderer, donjon* Don) {
@@ -178,20 +193,6 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
     getCurrentMap()->getRoom()->SetInTheRoom(true);
   }
   InitializeRoom(player, Monde, SpawnType);
-}
-
-void Cartes::update(Uint32 currentTime, int dx, int dy) {
-  this->dx = dx;
-  this->dy = dy;
-  for(long unsigned int i = 0; i < monsterList.size(); i++) {
-    monsterList.at(i)->applyGravity();
-    monsterList.at(i)->Move(2, 0, dx, dy);
-    monsterList.at(i)->update(currentTime);
-    if(player->isCollidingEntity(monsterList.at(i))) {
-      std::cout << "Player is colliding with monster " << player->canTakeDamage << std::endl;
-      player->takeDamage(1);
-    }
-  }
 }
 
 void allMaps::update(Uint32 currentTime, int dx, int dy) { cartesMap[this->currentMap->getValue()]->update(currentTime, dx, dy); }

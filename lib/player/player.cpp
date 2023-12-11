@@ -11,7 +11,7 @@ Player::Player(SDL_Renderer *Renderer, Variable *Var) {
   Realx = 60;  // Coordonnées réels
   Realy = 60;
   this->Var = Var;
-  speed = 5;
+  speed = playerSpeed;
   width = 36;
   height = 96;
   dy = 0;
@@ -72,13 +72,13 @@ void Player::selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy) {
   }
 
   if(Keys[3]) {
-    if(!isOnGround()) {
+    if(isOnGround()) {
       moveY = speed;
     }
   }
 
   if(Keys[4]) {
-    Arme->tir(getX(), getY(), getRX(), getRY(), mouseX, mouseY);
+    Arme->tir(getX(), getY(), getCX(), getCY(), mouseX, mouseY);
   }
 
   Move(moveX, moveY, dx, dy);

@@ -14,8 +14,12 @@ class monster: public Entity {
 
   // Fonctions
   void InitMonster(std::vector<tmx::Object> Collisions);
+  void ai(int dx, int dy);
+  void Move(int x1, int y1, int dxMap, int dyMap) override;
 
  private:
+  // Variables
+  std::string aiDirrection;
   std::string Nom;
 };
 

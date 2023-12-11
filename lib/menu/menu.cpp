@@ -20,9 +20,6 @@ void menu::Init() {
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 
   Image->loadImage(gRenderer);
-
-  std::cout << Image->getWidth() << std::endl;
-
   titre->loadImage(gRenderer);
 
   // bouton play

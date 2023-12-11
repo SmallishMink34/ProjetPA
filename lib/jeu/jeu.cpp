@@ -71,10 +71,6 @@ void Jeu::handleEvents(std::string* Gamemode) {
         case SDLK_SPACE:
           Monde->KeyPressed[2] = true;
           break;
-
-        case SDLK_p:
-          std::cout << Monde->Joueur->toString() << std::endl;
-          break;
         case SDLK_o:
           Monde->Joueur->IncrementVie(1);
           break;
