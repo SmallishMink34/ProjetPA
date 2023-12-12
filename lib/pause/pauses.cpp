@@ -15,7 +15,7 @@ Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->Var = Var;
   menu = false;
   this->Image = new Sprite("src/Images/pause.png", 0, 0, Var->Real_W, Var->Real_H);
-  this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 2 - 135, Var->Real_H / 1.6, 256, 128);
+  this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 2 - 80, Var->Real_H - 90, 192, 96);
   this->main_menu = new Bouton(gRenderer, "src/Images/menu.png", Var->Real_W / 2 - 90, Var->Real_H / 2 + 25, 192, 96);
   this->TextureMessage = nullptr;
   this->TextureSeed = nullptr;
@@ -60,7 +60,7 @@ void Mpause::Init() {
   SDL_Surface* surfaceSeed = TTF_RenderText_Solid(Sans, seed.c_str(), White);
   TextureSeed = SDL_CreateTextureFromSurface(gRenderer, surfaceSeed);
   Seed_rect.x = 80 - 80 / 2;
-  Seed_rect.y = Var->Real_H - 59;
+  Seed_rect.y = Var->Real_H - 45;
   Seed_rect.w = 80;
   Seed_rect.h = 40;
 
