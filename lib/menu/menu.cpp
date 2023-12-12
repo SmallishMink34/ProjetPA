@@ -43,6 +43,7 @@ void menu::handleEvents(std::string* Gamemode) {
 
     if(var) {
       *Gamemode = "jeu";
+      var = false;
     }
     if(e.type == SDL_QUIT) {
       quit = true;
@@ -55,8 +56,6 @@ void menu::handleEvents(std::string* Gamemode) {
           break;
       }
     }
-
-    // Appeler la fonction de gestion des événements du bouton
   }
 }
 

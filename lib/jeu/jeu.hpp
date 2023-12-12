@@ -40,6 +40,7 @@ class Jeu: public Gamemode {
    */
   void Pause(std::string* Gamemode);
 
+  void saveScore();
   world* Monde;  // A pointer to the world object
 
   /**
@@ -63,6 +64,10 @@ class Jeu: public Gamemode {
    * @brief Unpauses the game mode.
    */
   void unpause();
+  int getBestScore();
+
+ private:
+  const char* nomFichier = "monFichier.txt";
 };
 
 #endif

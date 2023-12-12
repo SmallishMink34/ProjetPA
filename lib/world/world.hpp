@@ -92,6 +92,7 @@ class world {
    * @param Renderer The SDL renderer used for rendering.
    */
   void drawMap(SDL_Renderer* Renderer);
+  int getScore();
 };
 
 #endif

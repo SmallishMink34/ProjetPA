@@ -67,6 +67,7 @@ class Bouton {
    * @param mouseY int
    * @return int
    */
+  void gererMenu(SDL_Event* evenement, SDL_Renderer* rendu, bool* menu);
   bool isColliding(int mouseX, int mouseY);
 
   /**

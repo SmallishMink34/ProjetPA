@@ -28,6 +28,7 @@ class Player: public Entity {
 
   // Getters
   std::string GetName();
+  int getScore();
 
   // Setters
   void SetName(const std::string Name);
@@ -39,7 +40,9 @@ class Player: public Entity {
 
  private:
   std::string Nom;
+  int Animcpt;
 
+  int score;
   SDL_Renderer* Renderer;
   allMaps* Map;
 };

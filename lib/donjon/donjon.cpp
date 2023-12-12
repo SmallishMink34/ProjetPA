@@ -15,7 +15,7 @@ donjon::donjon(int nbnoeuds, int seed = 1) : noeuds(nbnoeuds), max_noeuds(nbnoeu
   dirrection = {"bas", "haut"};
   dirrectionCopy = dirrection;
   std::random_device rd;
-  std::mt19937 g(seed);
+  std::mt19937 g(getSeedFromFile("map.txt"));
 
   for(int i = 1; i <= nbTwoTallMaps; i++) {
     TwoTallMaps.push_back(std::to_string(i));

@@ -28,7 +28,7 @@ class Mpause: public Gamemode {
   ~Mpause();
 
   Sprite* Image;       /**< The image sprite. */
-  Bouton* play;        /**< The play button. */
+  Bouton main_menu;    /**< The play button. */
   Bouton* exit;        /**< The exit button. */
   SDL_Event evenement; /**< The SDL event. */
 
@@ -57,6 +57,8 @@ class Mpause: public Gamemode {
    * @brief Unpauses the game.
    */
   void unpause();
+
+  void saveScore();
 
   int Real_W; /**< The real width. */
   int Real_H; /**< The real height. */

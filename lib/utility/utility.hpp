@@ -92,6 +92,9 @@ bool isInSecondVector(std::vector<std::pair<Node *, std::string>> vec, std::stri
  * @return The merged vector of tmx::Object.
  */
 std::vector<tmx::Object> mergeVectors(std::vector<tmx::Object> vec1, std::vector<tmx::Object> vec2);
+int getSeedFromFile(std::string name);
+
+int compterLettres(const std::string& texte);
 
 /**
  * @brief Checks if a point is inside a bounding box.
