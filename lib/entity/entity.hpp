@@ -239,16 +239,18 @@ class Entity {
    */
   virtual bool takeDamage(int damage);
 
-  int vie;     // Life points
-  int speed;   // Movement speed
-  int x;       // x-coordinate
-  int y;       // y-coordinate
-  int width;   // Width
-  int height;  // Height
-  int Realx;   // Real x-coordinate
-  int Realy;   // Real y-coordinate
-  int deltax;  // Change in x-coordinate
-  int deltay;  // Change in y-coordinate
+  int vie;      // Life points
+  int speed;    // Movement speed
+  int x;        // x-coordinate
+  int y;        // y-coordinate
+  int width;    // Width
+  int height;   // Height
+  int Rwidth;   // Real width on the image
+  int Rheight;  // Real height on the image
+  int Realx;    // Real x-coordinate
+  int Realy;    // Real y-coordinate
+  int deltax;   // Change in x-coordinate
+  int deltay;   // Change in y-coordinate
 
   int mapDX;     // Change in x-coordinate of the map
   int mapDY;     // Change in y-coordinate of the map

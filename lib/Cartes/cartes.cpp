@@ -21,6 +21,7 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
   Spawn["DL"] = Map->getObjectByNameAndType("DL", "Spawn");
   Spawn["DR"] = Map->getObjectByNameAndType("DR", "Spawn");
   player = nullptr;
+  animeMCounter = 0;
 }
 
 Cartes::~Cartes() {
@@ -71,12 +72,12 @@ int Cartes::getNbMonster() { return monsterList.size(); }
 void Cartes::update(Uint32 currentTime, int dx, int dy) {
   this->dx = dx;
   this->dy = dy;
-
+  animeMCounter++;
   for(long unsigned int i = 0; i < monsterList.size(); i++) {
     monsterList.at(i)->applyGravity();
     monsterList.at(i)->ai(dx, dy);
     monsterList.at(i)->update(currentTime);
-    // TODO : Ajout de l'animation des monstres
+    monsterList.at(i)->AnimEntity(animeMCounter);
     if(player->isCollidingEntity(monsterList.at(i))) {
       player->takeDamage(1);
       player->knockback(monsterList.at(i));

@@ -1,4 +1,5 @@
 #include "jeu.hpp"
+
 #include <fstream>
 
 Jeu::Jeu(SDL_Window* window, SDL_Renderer* renderer, Variable* Var) {
@@ -28,34 +29,34 @@ void Jeu::Pause(std::string* Gamemode) {
 }
 
 void Jeu::saveScore() {
-    //rajouter 2 conditions : si on ne meurt pas, si tous les ennemis sont morts
-    std::ofstream fichierSortie;
-    fichierSortie.open(nomFichier, std::ios::app);
+  // rajouter 2 conditions : si on ne meurt pas, si tous les ennemis sont morts
+  std::ofstream fichierSortie;
+  fichierSortie.open(nomFichier, std::ios::app);
 
-    if (fichierSortie.fail()) {
-        std::cout << "Erreur à l'ouverture" << std::endl;
-    } else {
-        fichierSortie << std::to_string(this->Monde->getScore()) << std::endl;
-        fichierSortie.close();
-    }
+  if(fichierSortie.fail()) {
+    std::cout << "Erreur à l'ouverture" << std::endl;
+  } else {
+    fichierSortie << std::to_string(this->Monde->getScore()) << std::endl;
+    fichierSortie.close();
+  }
 }
 
-int Jeu::getBestScore(){
+int Jeu::getBestScore() {
   std::ifstream fichierEntree;
   std::string ligne;
   int mini = 0;
 
   fichierEntree.open(nomFichier);
 
-  if (fichierEntree.fail()) {
-      std::cout << "Erreur à l'ouverture !" << std::endl;
+  if(fichierEntree.fail()) {
+    std::cout << "Erreur à l'ouverture !" << std::endl;
   } else {
-      while (getline(fichierEntree, ligne)) {
-          if (mini >= std::stoi(ligne) ) {
-              mini = std::stoi(ligne);
-          }
+    while(getline(fichierEntree, ligne)) {
+      if(mini >= std::stoi(ligne)) {
+        mini = std::stoi(ligne);
       }
-      fichierEntree.close();
+    }
+    fichierEntree.close();
   }
   return mini;
 }
@@ -106,12 +107,6 @@ void Jeu::handleEvents(std::string* Gamemode) {
 
         case SDLK_SPACE:
           Monde->KeyPressed[2] = true;
-          break;
-        case SDLK_o:
-          Monde->Joueur->IncrementVie(1);
-          break;
-        case SDLK_l:
-          Monde->Joueur->IncrementVie(-1);
           break;
       }
     } else if(e.type == SDL_KEYUP) {

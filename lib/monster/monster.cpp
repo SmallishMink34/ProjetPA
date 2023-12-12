@@ -8,28 +8,50 @@ monster::monster(SDL_Renderer* Renderer) {
   dy = 0;
   verticalVelocity = 0.0f;
   Image = Sprite("src/Images/Monster/Monster1.png", x, y, 96, 96);
-  Image.setSrcRect(0, 0, 64, 64);
+  Rwidth = 64;
+  Rheight = 64;
+  Image.setSrcRect(0, 0, Rwidth, Rheight);
   Image.loadImage(Renderer);
   aiDirrection = "Right";
 
   etat = "Right";
-  etats["Right"] = {{0, 910}, {82, 910}, {164, 910}, {246, 910}, {328, 910}, {410, 910}, {492, 910}, {574, 910}, {656, 910}};
-  etats["Left"] = {{0, 744}, {82, 744}, {164, 744}, {246, 744}, {328, 744}, {410, 744}, {492, 744}, {574, 744}, {656, 744}};
-  etats["Jump"] = {{246, 175}, {328, 175}, {410, 175}, {492, 175}, {82, 175}, {0, 175}, {0, 175}};
+  etats["Right"] = {{0, 704}, {64, 704}, {128, 704}, {192, 704}, {256, 704}, {320, 704}, {384, 704}, {448, 704}, {512, 704}};
+  etats["Left"] = {{0, 576}, {64, 576}, {128, 576}, {192, 576}, {256, 576}, {320, 576}, {384, 576}, {448, 576}, {512, 576}};
+  etats["Jump"] = {{0, 128}, {64, 128}, {128, 128}, {196, 128}, {256, 128}, {320, 128}, {384, 128}};
+  etats["Fall"] = {{384, 128}, {320, 128}, {256, 128}, {192, 128}, {128, 128}, {64, 128}};
   etats["Idle"] = {{0, 910}};
 }
 
 void monster::InitMonster(std::vector<tmx::Object> Collisions) { this->Collisions = Collisions; }
 
 void monster::ai(int dx, int dy) {
+  int moveX = 0;
+  int moveY = 0;
+
   if(aiDirrection == "Right") {
-    Move(speed, 0, dx, dy);
+    moveX = speed;
   } else if(aiDirrection == "Left") {
-    Move(-speed, 0, dx, dy);
+    moveX = -speed;
   }
 
   if(std::rand() % 100 == 0) {
     jump();
+  }
+
+  Move(moveX, moveY, dx, dy);
+
+  if(moveX < 0) {
+    etat = "Left";
+  } else if(moveX > 0) {
+    etat = "Right";
+  } else if(moveX == 0 && moveY <= 1 && moveY >= -1) {
+    etat = "Idle";
+  }
+
+  if(verticalVelocity < 0) {
+    etat = "Jump";
+  } else if(verticalVelocity > 0) {
+    etat = "Fall";
   }
 }
 

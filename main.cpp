@@ -62,6 +62,7 @@ void FreeGamemodes(std::map<std::string, Gamemode *> *Gamemodes, Variable *Var) 
   for(auto &Gamemode : *Gamemodes) {
     delete Gamemode.second;
   }
+
   delete Var;
 }
 

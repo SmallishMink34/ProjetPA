@@ -33,6 +33,7 @@ class Cartes {
   bool load;                                /**< Flag indicating whether the map has been loaded */
   int dx;                                   /**< The change in x-coordinate */
   int dy;                                   /**< The change in y-coordinate */
+  int animeMCounter;
 
  public:
   /**

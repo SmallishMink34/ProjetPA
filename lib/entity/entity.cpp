@@ -23,7 +23,9 @@ Entity::Entity() {
   canTakeDamage = false;
   istakeDamage = false;
   previousDamageTime = 0;
-  etat = "Idle";
+  etat = "Right";
+  Rwidth = 0;
+  Rheight = 0;
 }
 
 Entity::~Entity() {}
@@ -266,19 +268,25 @@ void Entity::update(Uint32 currentTime) {
 }
 
 void Entity::AnimEntity(int i) {
-  if(etat != "Jump") {
+  if(etat != "Jump" && etat != "Fall") {
     if(i % 5 == 0) {
-      this->Animcpt++;
+      Animcpt++;
     }
+    if(Animcpt > etats[etat].size() - 1) {
+      Animcpt = 0;
+      i = 0;
+    }
+
   } else {
-    if(i % 12 == 0) {
-      this->Animcpt++;
+    if(i % 5 == 0) {
+      Animcpt++;
+    }
+    if(Animcpt > etats[etat].size() - 1) {
+      Animcpt = etats[etat].size() - 1;
     }
   }
-  if(Animcpt > etats[etat].size() - 1) {
-    Animcpt = 0;
-  }
-  Image.setSrcRect(etats[etat][Animcpt].first, etats[etat][Animcpt].second, 70, 70);
+
+  Image.setSrcRect(etats[etat][Animcpt].first, etats[etat][Animcpt].second, Rwidth, Rheight);
 }
 
 bool Entity::isCollidingEntity(Entity* entity) {
