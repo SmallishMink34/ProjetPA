@@ -9,7 +9,7 @@ menu::menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->Var = Var;
   this->Image = new Sprite("src/Images/bg.jpg", 0, 0, Var->Real_W, Var->Real_H);
   this->titre = new Sprite("src/Images/titre.png", (int)(Var->Real_W / 3), (int)(Var->Real_H / 10), (int)(Var->Real_W / 3), (int)(Var->Real_H / 3));
-  this->play = new Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 3.6, Var->Real_H / 1.7, 256, 128);
+  this->play = new Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 4.6, Var->Real_H / 1.7, 256, 128);
   this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 1.66, Var->Real_H / 1.7, 256, 128);
 }
 
