@@ -52,37 +52,10 @@ void Player::SetName(const std::string Name) { Nom = Name; }
 
 std::string Player::toString() { return ("X : " + std::to_string(getX()) + " Y : " + std::to_string(getY())); }
 
-int Player::getWidth() { return width; }
-
-int Player::getHeight() { return height; }
-
-bool Player::isOnGround() { return OnGround; }
-
-void Player::jump() {
-  if(isOnGround()) {
-    hasJump = true;
-  }
-}
-
-float Player::getVerticalVelocity() { return verticalVelocity; }
-
-bool Player::isJumping() { return Jumping; }
-
-void Player::setIsJumping(bool Jump) { Jumping = Jump; }
-
-void Player::setVerticalVelocity(float velocity) { verticalVelocity = velocity; }
-
-void Player::setX(int x) { this->x = x; }
-
-void Player::setY(int y) { this->y = y; }
-
-int Player::getVie() { return vie; }
-
-void Player::IncrementVie(int vie) { this->vie += vie; }
-
 int Player::getScore() { return score; }
 
 void Player::IncrementScore(int value) { this->score += value; }
+
 void Player::selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy) {
   int moveX = 0;
   int moveY = 0;

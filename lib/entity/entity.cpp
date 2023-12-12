@@ -265,7 +265,21 @@ void Entity::update(Uint32 currentTime) {
   }
 }
 
-void Entity::AnimEntity(int i) { Image.setSrcRect(etats[etat][i].first, etats[etat][i].second, 70, 70); }
+void Entity::AnimEntity(int i) {
+  if(etat != "Jump") {
+    if(i % 5 == 0) {
+      this->Animcpt++;
+    }
+  } else {
+    if(i % 12 == 0) {
+      this->Animcpt++;
+    }
+  }
+  if(Animcpt > etats[etat].size() - 1) {
+    Animcpt = 0;
+  }
+  Image.setSrcRect(etats[etat][Animcpt].first, etats[etat][Animcpt].second, 70, 70);
+}
 
 bool Entity::isCollidingEntity(Entity* entity) {
   if(isColliding(entity->getRX(), entity->getRY(), entity->getWidth(), entity->getHeight())) {

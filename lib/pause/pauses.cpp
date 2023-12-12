@@ -14,10 +14,11 @@ Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   isLoaded = false;
   this->Var = Var;
   menu = false;
-  this->Image = new Sprite("src/Images/bg.jpg", 0, 0, Var->Real_W, Var->Real_H);
-  this->play = new Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 2 - 135, Var->Real_H / 3, 256, 128);
+  this->Image = new Sprite("src/Images/pause.png", 0, 0, Var->Real_W, Var->Real_H);
   this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 2 - 135, Var->Real_H / 1.6, 256, 128);
   this->main_menu = new Bouton(gRenderer, "src/Images/menu.png", Var->Real_W / 2 - 90, Var->Real_H / 2 + 25, 192, 96);
+  this->TextureMessage = nullptr;
+  this->TextureSeed = nullptr;
 }
 
 void Mpause::Init() {
@@ -27,11 +28,6 @@ void Mpause::Init() {
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 
   Image->loadImage(gRenderer);
-
-  // bouton play
-
-  this->play->setSurface(0, 0, 512, 256);
-  this->play->gererPlay(&evenement, gRenderer, &var);
 
   // bouton exit
 
@@ -49,11 +45,12 @@ void Mpause::Init() {
 
   SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "Pause", Blue);
   TextureMessage = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
-  Message_rect;
   Message_rect.x = Var->Real_W / 2 - 50;
   Message_rect.y = 13;
   Message_rect.w = 120;
   Message_rect.h = 60;
+
+  SDL_FreeSurface(surfaceMessage);
 
   std::string seed = std::to_string(getSeedFromFile("map.txt"));
   int taille = compterLettres(seed);
@@ -62,18 +59,18 @@ void Mpause::Init() {
   SDL_Color White = {255, 255, 255};
   SDL_Surface* surfaceSeed = TTF_RenderText_Solid(Sans, seed.c_str(), White);
   TextureSeed = SDL_CreateTextureFromSurface(gRenderer, surfaceSeed);
-  Seed_rect;
   Seed_rect.x = 80 - 80 / 2;
   Seed_rect.y = Var->Real_H - 59;
   Seed_rect.w = 80;
   Seed_rect.h = 40;
-  std::cout << "seed : " << seed << std::endl;
+
+  SDL_FreeSurface(surfaceSeed);
 }
 void Mpause::handleEvents(std::string* Gamemode) {
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
-    exit.gererFin(&e, this->gRenderer, &quit);
-    main_menu.gererMenu(&e, this->gRenderer, &menu);
+    exit->gererFin(&e, this->gRenderer, &quit);
+    main_menu->gererMenu(&e, this->gRenderer, &menu);
     if(menu) {
       menu = false;
       *Gamemode = "menu";
@@ -98,13 +95,11 @@ void Mpause::handleEvents(std::string* Gamemode) {
 void Mpause::render() {
   // Efface le renderer
   SDL_RenderClear(gRenderer);
-  Image.selfDraw(gRenderer);
-  exit.selfDraw(gRenderer);
-  main_menu.selfDraw(gRenderer);
+  Image->selfDraw(gRenderer);
+  exit->selfDraw(gRenderer);
+  main_menu->selfDraw(gRenderer);
   SDL_RenderCopy(gRenderer, TextureSeed, NULL, &Seed_rect);
   SDL_RenderCopy(gRenderer, TextureMessage, NULL, &Message_rect);
-  // play.selfDraw(gRenderer);
-  //  Met à jour le renderer
   SDL_RenderPresent(gRenderer);
 }
 
@@ -120,4 +115,11 @@ Mpause::~Mpause() {
   delete Image;
   delete main_menu;
   delete exit;
+  if(TextureMessage != nullptr) {
+    SDL_DestroyTexture(TextureMessage);
+  }
+
+  if(TextureSeed != nullptr) {
+    SDL_DestroyTexture(TextureSeed);
+  }
 }

@@ -274,6 +274,7 @@ class Entity {
   float jumpStrength;      // Jump strength
   float jumpTime;          // Jump time
   float dy;                // Change in y-coordinate
+  int Animcpt;             // Animation Counter
 };
 
 #endif

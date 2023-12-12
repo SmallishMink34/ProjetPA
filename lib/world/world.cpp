@@ -57,7 +57,7 @@ void world::UpdateAll() {
   Var->CameraSpeed = Var->DefaultCameraSpeed;
   this->cptest++;
 
-  this->Joueur->AnimPlayer(cptest);
+  this->Joueur->AnimEntity(cptest);
 }
 
 void world::moveCamera() {
@@ -120,8 +120,6 @@ void world::FixCamera() {
   }
   this->Joueur->Moveto();
 }
-
-int world::getScore() { return this->Joueur->getScore() / 120; }
 
 int world::getScore() { return this->Joueur->getScore() / 120; }
 

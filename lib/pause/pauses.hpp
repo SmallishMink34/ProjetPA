@@ -28,7 +28,7 @@ class Mpause: public Gamemode {
   ~Mpause();
 
   Sprite* Image;       /**< The image sprite. */
-  Bouton main_menu;    /**< The play button. */
+  Bouton* main_menu;   /**< The play button. */
   Bouton* exit;        /**< The exit button. */
   SDL_Event evenement; /**< The SDL event. */
 
@@ -58,17 +58,19 @@ class Mpause: public Gamemode {
    */
   void unpause();
 
+  /**
+   * @brief save the score text in a file
+   */
   void saveScore();
-
+  bool menu;
   int Real_W; /**< The real width. */
   int Real_H; /**< The real height. */
-  bool var;   /**< The variable. */
+
+  SDL_Texture* TextureMessage;
+  SDL_Rect Message_rect;
+  SDL_Texture* TextureSeed;
+  SDL_Rect Seed_rect;
+  bool var; /**< The variable. */
 };
-/**
- * @class Mpause
- * @brief Represents the pause menu gamemode.
- *
- * This class inherits from the Gamemode class and provides functionality for the pause menu.
- */
 
 #endif

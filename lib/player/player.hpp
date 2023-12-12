@@ -32,7 +32,7 @@ class Player: public Entity {
 
   // Setters
   void SetName(const std::string Name);
-
+  void IncrementScore(int value);
   // Autres
   void InitPlayer(std::vector<tmx::Object> Collisions, std::vector<monster*>* Monsters);
   void selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy);
@@ -40,7 +40,6 @@ class Player: public Entity {
 
  private:
   std::string Nom;
-  int Animcpt;
 
   int score;
   SDL_Renderer* Renderer;
