@@ -21,9 +21,11 @@ END::END(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->TextureSeed = nullptr;
   this->Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
   this->score = Var->getScore();
+  this->scoreText = new texte(gRenderer, std::to_string(score), {255, 255, 255}, {Var->Real_W / 2 - 50, Var->Real_H / 2 - 50, 100, 100});
 }
 
 void END::Init() {
+  this->score = Var->getScore();
   isLoaded = true;
   Var->ChangeScale(1);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
@@ -45,32 +47,10 @@ void END::Init() {
 
   SDL_Color Blue = {0, 191, 255};
 
-  SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "ENDGAME", Blue);
-  TextureMessage = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
-  Message_rect.x = Var->Real_W / 2 - 50;
-  Message_rect.y = 13;
-  Message_rect.w = 120;
-  Message_rect.h = 60;
-
-  SDL_FreeSurface(surfaceMessage);
-
-  std::string seed = std::to_string(getSeedFromFile("map.txt"));
-  int taille = compterLettres(seed);
-  std::cout << taille << std::endl;
-
-  SDL_Color White = {255, 255, 255};
-  SDL_Surface* surfaceSeed = TTF_RenderText_Solid(Sans, seed.c_str(), White);
-  TextureSeed = SDL_CreateTextureFromSurface(gRenderer, surfaceSeed);
-  Seed_rect.x = 80 - 80 / 2;
-  Seed_rect.y = Var->Real_H - 45;
-  Seed_rect.w = 80;
-  Seed_rect.h = 40;
-
-  SDL_FreeSurface(surfaceSeed);
+  this->scoreText->setText(std::to_string(score));
+  std::cout << "Tu as fini la partie avec un score de " << Var->getScore() << std::endl;
 }
 void END::handleEvents(std::string* Gamemode) {
-  std::cout << "Tu as fini la partie avec un score de " << Var->getScore() << std::endl;
-
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
     // TODO : Son bouton
@@ -105,6 +85,8 @@ void END::render() {
   main_menu->selfDraw(gRenderer);
   SDL_RenderCopy(gRenderer, TextureSeed, NULL, &Seed_rect);
   SDL_RenderCopy(gRenderer, TextureMessage, NULL, &Message_rect);
+  scoreText->draw(gRenderer);
+
   SDL_RenderPresent(gRenderer);
 }
 

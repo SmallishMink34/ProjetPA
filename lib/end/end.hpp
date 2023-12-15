@@ -5,6 +5,7 @@
 #include "../button/button.hpp"
 #include "../gamemode/gamemode.hpp"
 #include "../sprites/sprite.hpp"
+#include "../texte/texte.hpp"
 
 /**
  * @class Mpause
@@ -31,6 +32,7 @@ class END: public Gamemode {
   Bouton* main_menu;   /**< The play button. */
   Bouton* exit;        /**< The exit button. */
   SDL_Event evenement; /**< The SDL event. */
+  texte* scoreText;
   int score;
 
   /**
