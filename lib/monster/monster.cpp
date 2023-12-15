@@ -2,7 +2,7 @@
 
 monster::monster(SDL_Renderer* Renderer) {
   speed = 5;
-  width = 96;
+  width = 64;
   height = 96;
   vie = 3;
   dy = 0;
@@ -14,11 +14,17 @@ monster::monster(SDL_Renderer* Renderer) {
   Image.loadImage(Renderer);
   aiDirrection = "Right";
 
+  int decalX = 10;
+
   etat = "Right";
-  etats["Right"] = {{0, 704}, {64, 704}, {128, 704}, {192, 704}, {256, 704}, {320, 704}, {384, 704}, {448, 704}, {512, 704}};
-  etats["Left"] = {{0, 576}, {64, 576}, {128, 576}, {192, 576}, {256, 576}, {320, 576}, {384, 576}, {448, 576}, {512, 576}};
-  etats["Jump"] = {{0, 128}, {64, 128}, {128, 128}, {196, 128}, {256, 128}, {320, 128}, {384, 128}};
-  etats["Fall"] = {{384, 128}, {320, 128}, {256, 128}, {192, 128}, {128, 128}, {64, 128}};
+
+  for(int i = 0; i < 9; i++) etats["Right"].push_back({decalX + i * 64, 704});
+
+  for(int i = 0; i < 9; i++) etats["Left"].push_back({decalX + i * 64, 576});
+
+  for(int i = 0; i < 7; i++) etats["Jump"].push_back({decalX + i * 64, 128});
+
+  for(int i = 5; i >= 0; i--) etats["Fall"].push_back({decalX + i * 64, 128});
   etats["Idle"] = {{0, 910}};
 }
 

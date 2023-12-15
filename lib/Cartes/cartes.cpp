@@ -203,9 +203,9 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
 
 void allMaps::update(Uint32 currentTime, int dx, int dy) {
   if(cartesMap[this->currentMap->getValue()]->getNbMonster() != 0) {
-    this->currentMap->getRoom()->setMonster(true);
+    this->currentMap->getRoom()->setMonster(true, cartesMap[this->currentMap->getValue()]->getNbMonster());
   } else {
-    this->currentMap->getRoom()->setMonster(false);
+    this->currentMap->getRoom()->setMonster(false, 0);
   }
   cartesMap[this->currentMap->getValue()]->update(currentTime, dx, dy);
 }

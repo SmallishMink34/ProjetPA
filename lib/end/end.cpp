@@ -1,4 +1,4 @@
-#include "pauses.hpp"
+#include "end.hpp"
 
 #include <SDL2/SDL_ttf.h>
 
@@ -7,7 +7,7 @@
 #include "../gamemode/gamemode.hpp"
 #include "../utility/utility.hpp"
 
-Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
+END::END(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->gWindow = gWindow;
   this->gRenderer = gRenderer;
   quit = false;
@@ -20,9 +20,10 @@ Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->TextureMessage = nullptr;
   this->TextureSeed = nullptr;
   this->Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
+  this->score = Var->getScore();
 }
 
-void Mpause::Init() {
+void END::Init() {
   isLoaded = true;
   Var->ChangeScale(1);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
@@ -44,7 +45,7 @@ void Mpause::Init() {
 
   SDL_Color Blue = {0, 191, 255};
 
-  SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "Pause", Blue);
+  SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "ENDGAME", Blue);
   TextureMessage = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
   Message_rect.x = Var->Real_W / 2 - 50;
   Message_rect.y = 13;
@@ -67,7 +68,9 @@ void Mpause::Init() {
 
   SDL_FreeSurface(surfaceSeed);
 }
-void Mpause::handleEvents(std::string* Gamemode) {
+void END::handleEvents(std::string* Gamemode) {
+  std::cout << "Tu as fini la partie avec un score de " << Var->getScore() << std::endl;
+
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
     // TODO : Son bouton
@@ -94,7 +97,7 @@ void Mpause::handleEvents(std::string* Gamemode) {
   }
 }
 
-void Mpause::render() {
+void END::render() {
   // Efface le renderer
   SDL_RenderClear(gRenderer);
   Image->selfDraw(gRenderer);
@@ -105,15 +108,15 @@ void Mpause::render() {
   SDL_RenderPresent(gRenderer);
 }
 
-void Mpause::update() {}
+void END::update() {}
 
-void Mpause::unpause() {
+void END::unpause() {
   Var->ChangeScale(1);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
 }
 
-Mpause::~Mpause() {
+END::~END() {
   delete Image;
   delete main_menu;
   delete exit;

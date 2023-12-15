@@ -25,8 +25,11 @@ void menu::Init() {
   // bouton play
 
   this->play->setSurface(0, 0, 512, 256);
-
   this->play->gererPlay(&evenement, gRenderer, &var);
+
+  // TODO : Afficher meilleur score
+
+  // TODO : Musique
 
   // bouton exit
 
@@ -37,6 +40,8 @@ void menu::Init() {
 void menu::handleEvents(std::string* Gamemode) {
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
+    // TODO : Son boutons
+    // TODO : Bouton Mute
     exit->gererFin(&e, this->gRenderer, &quit);
 
     play->gererPlay(&e, this->gRenderer, &var);

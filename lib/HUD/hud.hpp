@@ -22,11 +22,10 @@ class HUD {
   donjon *Don;
   SDL_Rect *rect;
 
-  Variable *Var;
   SDL_Texture *TextureScore;
   SDL_Rect Score_rect;
 
-  TTF_Font* Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
+  TTF_Font *Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
   SDL_Color Blue = {0, 191, 255};
 
  public:
@@ -37,7 +36,7 @@ class HUD {
    * @param Joueur A pointer to the Player object.
    * @param Don A pointer to the donjon object.
    */
-  HUD(SDL_Renderer *renderer, Player *Joueur, donjon *Don);
+  HUD(SDL_Renderer *renderer, Player *Joueur, donjon *Don, Variable *Var);
 
   /**
    * @brief Destroys the HUD object and frees any allocated resources.
@@ -50,8 +49,7 @@ class HUD {
    * @param renderer The SDL renderer used for rendering the HUD.
    */
   void draw(SDL_Renderer *renderer);
-  void update(SDL_Renderer* renderer);
+  void update(SDL_Renderer *renderer);
   char scoreText[20];
-
 };
 #endif

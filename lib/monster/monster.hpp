@@ -48,6 +48,7 @@ class monster: public Entity {
   // Variables
   std::string aiDirrection;  ///< The direction of the monster's AI.
   std::string Nom;           ///< The name of the monster.
+  
 };
 
 #endif

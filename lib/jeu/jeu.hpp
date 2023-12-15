@@ -40,7 +40,11 @@ class Jeu: public Gamemode {
    */
   void Pause(std::string* Gamemode);
 
+  /**
+   * @brief Saves the score.
+   */
   void saveScore();
+
   world* Monde;  // A pointer to the world object
 
   /**

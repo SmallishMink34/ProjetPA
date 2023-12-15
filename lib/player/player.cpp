@@ -86,6 +86,7 @@ void Player::selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy) {
   }
 
   if(Keys[4]) {
+    // TODO : Son de tir
     Arme->tir(getCX(), getCY(), getCRX(), getCRY(), mouseX, mouseY);
   }
 

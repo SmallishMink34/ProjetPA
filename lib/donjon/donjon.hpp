@@ -301,6 +301,10 @@ class donjon {
    */
   void drawDungeon(Node* node);
 
+  int getNbMonsterAllMap(Node* inital);
+
+  bool allNodeVisited(Node* initial);
+
   /**
    * @brief Destroys the donjon object and frees any allocated memory.
    */

@@ -288,7 +288,7 @@ std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int 
     oldx = 0;
   }
   file.close();
-  std::cout << "Letter " << letter << " not found in map " << std::endl;
+  std::cerr << "Letter " << letter << " not found in map " << std::endl;
 
   return std::make_pair(NULL, NULL);
 }
@@ -471,6 +471,31 @@ Node *donjon::getActualRoomNode(Node *node) {
     }
   }
   return nullptr;
+}
+
+int donjon::getNbMonsterAllMap(Node *initial) {
+  int nbMonster = 0;
+  if(initial != nullptr) {
+    nbMonster += initial->getRoom()->getNbMonster();
+
+    for(std::pair<Node *, std::string> i : initial->getChildren()) {
+      nbMonster += getNbMonsterAllMap(i.first);
+    }
+  }
+  return nbMonster;
+}
+
+bool donjon::allNodeVisited(Node *initial) {
+  bool visited = true;
+  if(initial != nullptr) {
+    if(!initial->getRoom()->getVisited()) {
+      return false;
+    }
+    for(std::pair<Node *, std::string> i : initial->getChildren()) {
+      visited = visited && allNodeVisited(i.first);
+    }
+  }
+  return visited;
 }
 
 donjon::~donjon() {

@@ -1,5 +1,6 @@
 #include "jeu.hpp"
 
+#include <climits>
 #include <fstream>
 
 Jeu::Jeu(SDL_Window* window, SDL_Renderer* renderer, Variable* Var) {
@@ -20,6 +21,8 @@ void Jeu::Init() {
   Monde = new world(this->gRenderer, Var);
   Monde->InitMonde(this->gRenderer);
   this->Monde->previousTime = SDL_GetTicks();
+
+  // TODO : Musique jeu
 }
 
 void Jeu::Pause(std::string* Gamemode) {
@@ -34,7 +37,7 @@ void Jeu::saveScore() {
   fichierSortie.open(nomFichier, std::ios::app);
 
   if(fichierSortie.fail()) {
-    std::cout << "Erreur à l'ouverture" << std::endl;
+    std::cerr << "Erreur à l'ouverture" << std::endl;
   } else {
     fichierSortie << std::to_string(this->Monde->getScore()) << std::endl;
     fichierSortie.close();
@@ -42,18 +45,21 @@ void Jeu::saveScore() {
 }
 
 int Jeu::getBestScore() {
-  std::ifstream fichierEntree;
+  std::ifstream fichierEntree(nomFichier);
   std::string ligne;
-  int mini = 0;
-
-  fichierEntree.open(nomFichier);
+  int mini = INT_MAX;  // Initialize mini to the maximum possible integer
 
   if(fichierEntree.fail()) {
     std::cout << "Erreur à l'ouverture !" << std::endl;
+    return mini;  // Return the maximum possible integer in case of error
   } else {
+    if(getline(fichierEntree, ligne)) {
+      mini = std::stoi(ligne);  // Initialize mini to the first number in the file
+    }
     while(getline(fichierEntree, ligne)) {
-      if(mini >= std::stoi(ligne)) {
-        mini = std::stoi(ligne);
+      int number = std::stoi(ligne);
+      if(number < mini) {
+        mini = number;
       }
     }
     fichierEntree.close();
@@ -69,6 +75,13 @@ void Jeu::unpause() {
 }
 
 void Jeu::handleEvents(std::string* Gamemode) {
+  if(Monde->EndGame()) {
+    std::cout << "aaaaaaa" << Monde->getScore() << std::endl;
+    Var->setScore(Monde->getScore());
+    *Gamemode = "end";
+    std::cout << "ENDGAME" << std::endl;
+  }
+
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
     int mouseX, mouseY;
@@ -142,10 +155,7 @@ void Jeu::render() {
   SDL_RenderPresent(gRenderer);
 }
 
-void Jeu::update() {
-  // TODO : Gerer la fin du jeu
-  Monde->UpdateAll();
-}
+void Jeu::update() { Monde->UpdateAll(); }
 
 Jeu::~Jeu() {
   delete Monde;

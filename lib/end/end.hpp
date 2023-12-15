@@ -1,5 +1,5 @@
-#ifndef pause_HPP
-#define pause_HPP
+#ifndef END_HPP
+#define END_HPP
 #include <SDL2/SDL.h>
 
 #include "../button/button.hpp"
@@ -12,7 +12,7 @@
  *
  * This class inherits from the Gamemode class and provides functionality for the pause menu.
  */
-class Mpause: public Gamemode {
+class END: public Gamemode {
  public:
   /**
    * @brief Constructor for Mpause.
@@ -20,17 +20,18 @@ class Mpause: public Gamemode {
    * @param gRenderer The SDL renderer.
    * @param Var A pointer to the Variable object.
    */
-  Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
+  END(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var);
 
   /**
    * @brief Destructor for Mpause.
    */
-  ~Mpause();
+  ~END();
 
   Sprite* Image;       /**< The image sprite. */
   Bouton* main_menu;   /**< The play button. */
   Bouton* exit;        /**< The exit button. */
   SDL_Event evenement; /**< The SDL event. */
+  int score;
 
   /**
    * @brief Initializes the pause menu.

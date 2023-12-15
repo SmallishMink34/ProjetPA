@@ -178,6 +178,7 @@ void Entity::AllMove(int x1, int y1, bool Teleport) {
 
 void Entity::jump() {
   if(isOnGround()) {
+    // TODO : Son saut
     hasJump = true;
   }
 }
@@ -219,12 +220,12 @@ bool Entity::takeDamage(int damage) {
   // TODO : Add sound
   if(canTakeDamage) {
     IncrementVie(-damage);
-    std::cout << "Vie : " << vie << std::endl;
     canTakeDamage = false;
     istakeDamage = true;
   }
 
   if(vie <= 0) {
+    // TODO : Son mort Entité / Joueur
     return true;
   }
   return false;
@@ -237,7 +238,6 @@ void Entity::update(Uint32 currentTime) {
   }
 
   if(!canTakeDamage) {
-    std::cout << (currentTime - previousDamageTime) / 1000.0f << std::endl;
     if((currentTime - previousDamageTime) / 1000.0f > InvincibilityTime) {
       canTakeDamage = true;
       previousDamageTime = currentTime;

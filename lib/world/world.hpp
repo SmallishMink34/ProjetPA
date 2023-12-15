@@ -53,6 +53,7 @@ class world {
   Uint32 previousTime;                                      /**< The previous time. */
   Uint32 Animcpt;                                           /**< Animation counter. */
   Uint32 cptest;                                            /**< Test counter. */
+  bool genWorld;                                            /**< Flag indicating whether the world has been generated. */
 
   // Fonctions
   /**
@@ -92,7 +93,13 @@ class world {
    * @param Renderer The SDL renderer used for rendering.
    */
   void drawMap(SDL_Renderer* Renderer);
+
+  /**
+   * @brief get the score.
+   */
   int getScore();
+
+  bool EndGame();
 };
 
 #endif

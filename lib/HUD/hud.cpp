@@ -4,10 +4,9 @@
 
 #include "../Variables/variables.hpp"
 
-HUD::HUD(SDL_Renderer* renderer, Player* Joueur, donjon* Don) {
+HUD::HUD(SDL_Renderer* renderer, Player* Joueur, donjon* Don, Variable* Var) {
   this->Joueur = Joueur;
   this->Don = Don;
-  this->Var = new Variable();
   vieEntiere = new Sprite("src/Images/Player/coeur.png", 0, 0, 64, 64);
   vieEntiere->loadImage(renderer);
   vieDemi = new Sprite("src/Images/Player/coeur2.png", 0, 0, 64, 64);
@@ -29,6 +28,8 @@ HUD::HUD(SDL_Renderer* renderer, Player* Joueur, donjon* Don) {
   Score_rect.y = Var->Real_W / 5;
   Score_rect.w = 180;
   Score_rect.h = 120;
+
+  SDL_FreeSurface(SurfaceScore);
 }
 
 void HUD::draw(SDL_Renderer* renderer) {
@@ -74,4 +75,5 @@ HUD::~HUD() {
   delete vieDemi;
   delete MapFrame;
   delete rect;
+  TTF_CloseFont(Sans);
 }

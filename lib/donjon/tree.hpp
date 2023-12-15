@@ -21,6 +21,7 @@ class rooms {
   bool InRoom;
   std::string value;
   bool thereIsMonster;
+  int nbMonster;
   bool isVisited;
 
   Sprite *ImageNotIn;
@@ -40,8 +41,9 @@ class rooms {
   void setValue(char value);
   void SetInTheRoom(bool in);
   void setImages();
-  void setMonster(bool monster);
+  void setMonster(bool monster, int nbMonster);
   void setVisited(bool visited);
+  bool getVisited();
 
   // Getters :
   int getX();
@@ -49,6 +51,7 @@ class rooms {
   int getTall();
   int getType();
   bool getInRoom();
+  int getNbMonster();
 
   // Others :
   void drawRoom(SDL_Renderer *Renderer, int x, int y, SDL_Rect MapFrame);

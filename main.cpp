@@ -6,6 +6,7 @@
 
 #include "lib/Variables/variables.hpp"
 #include "lib/display/display.hpp"
+#include "lib/end/end.hpp"
 #include "lib/jeu/jeu.hpp"
 #include "lib/menu/menu.hpp"
 #include "lib/pause/pauses.hpp"
@@ -90,6 +91,7 @@ int main(int argc, char *args[]) {
   Gamemodes["jeu"] = new Jeu(gWindow, gRenderer, Var);
   Gamemodes["menu"] = new menu(gWindow, gRenderer, Var);
   Gamemodes["pause"] = new Mpause(gWindow, gRenderer, Var);
+  Gamemodes["end"] = new END(gWindow, gRenderer, Var);
 
   Gamemodes[currentGamemode]->Init();
 

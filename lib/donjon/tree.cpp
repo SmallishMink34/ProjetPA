@@ -17,6 +17,7 @@ rooms::rooms() {
   this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
   this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
   this->thereIsMonster = false;
+  this->nbMonster = 0;
   this->isVisited = false;
   setImages();
 }
@@ -34,6 +35,7 @@ rooms::rooms(int x, int y) {
   this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
   this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
   this->thereIsMonster = false;
+  this->nbMonster = 0;
   this->isVisited = false;
   setImages();
 }
@@ -52,6 +54,7 @@ rooms::rooms(int x, int y, int w, int h, int type, int tall) {
   this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
   this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
   this->thereIsMonster = false;
+  this->nbMonster = 0;
   this->isVisited = false;
   setImages();
 }
@@ -139,9 +142,16 @@ rooms::~rooms() {
   }
 }
 
-void rooms::setMonster(bool monster) { this->thereIsMonster = monster; }
+void rooms::setMonster(bool monster, int nbMonster) {
+  this->thereIsMonster = monster;
+  this->nbMonster = nbMonster;
+}
+
+int rooms::getNbMonster() { return this->nbMonster; }
 
 void rooms::setVisited(bool visited) { this->isVisited = visited; }
+
+bool rooms::getVisited() { return this->isVisited; }
 
 // |---------------------- NODE ----------------------|
 

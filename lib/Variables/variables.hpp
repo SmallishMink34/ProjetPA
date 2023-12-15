@@ -1,5 +1,7 @@
 #ifndef VARIABLES_HPP
 #define VARIABLES_HPP
+#include <SDL2/SDL.h>
+
 #include <iostream>
 
 const int Windows_W = 1280;
@@ -15,8 +17,11 @@ class Variable {
   float CameraSpeed = 0.1;
   const float DefaultCameraSpeed = 0.1;
   const int fps = 60;
+  int score = 0;
 
   void ChangeScale(float scale);
+  void setScore(int score);
+  int getScore();
 };
 
 const float Gravity = 0.40f;
@@ -33,5 +38,10 @@ const float RECUL = 15.0f;
 const int porteeArme = 50;
 const int cadenceArme = 6;
 const int degatsArme = 1;
+
+////////////////// Couleur
+const SDL_Color White = {255, 255, 255};
+
+////////////////// Affichage
 
 #endif
