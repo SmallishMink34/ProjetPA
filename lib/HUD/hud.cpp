@@ -23,7 +23,7 @@ HUD::HUD(SDL_Renderer* renderer, Player* Joueur, donjon* Don, Variable* Var) {
   sprintf(scoreText, "Score: %d", Joueur->getScore());
   SDL_Surface* SurfaceScore = TTF_RenderText_Solid(Sans, scoreText, Blue);
   TextureScore = SDL_CreateTextureFromSurface(renderer, SurfaceScore);
-  Score_rect.x = Var->Real_W - 210;
+  Score_rect.x = Var->Real_W - 180;
   Score_rect.y = Var->Real_W / 5;
   Score_rect.w = 180;
   Score_rect.h = 120;

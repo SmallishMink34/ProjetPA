@@ -1,6 +1,7 @@
 #ifndef MENU_HPP
 #define MENU_HPP
 
+#include <SDL2/SDL_mixer.h>
 #include "../Variables/variables.hpp"
 #include "../gamemode/gamemode.hpp"
 #include "../world/world.hpp"
@@ -68,6 +69,9 @@ class Jeu: public Gamemode {
    * @brief Unpauses the game mode.
    */
   void unpause();
+
+  private:
+  Mix_Music* gameMusic;  // The background music
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include <SDL2/SDL_mixer.h>
 #include "../Variables/variables.hpp"
 #include "../entity/entity.hpp"
 #include "../maps/maps.hpp"

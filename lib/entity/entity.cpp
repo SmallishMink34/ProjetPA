@@ -186,6 +186,7 @@ void Entity::jump() {
   if(isOnGround()) {
     // TODO : Son saut
     hasJump = true;
+
   }
 }
 

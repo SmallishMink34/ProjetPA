@@ -23,6 +23,9 @@ void Jeu::Init() {
   this->Monde->previousTime = SDL_GetTicks();
 
   // TODO : Musique jeu
+  Mix_HaltMusic();
+  this->gameMusic = Mix_LoadMUS("src/music/background/game.mp3");
+  Mix_PlayMusic(gameMusic, -1);
 }
 
 void Jeu::Pause(std::string* Gamemode) {
@@ -86,6 +89,9 @@ void Jeu::handleEvents(std::string* Gamemode) {
           break;
         case SDLK_z:
           Monde->KeyPressed[2] = true;
+          if(Monde->Joueur->OnGround){
+            Mix_PlayChannel(-1, Mix_LoadWAV("src/music/sounds/jump.MP3"), 0);
+          }
           break;
         case SDLK_d:
           Monde->KeyPressed[1] = true;

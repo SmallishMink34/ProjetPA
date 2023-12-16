@@ -12,8 +12,8 @@ menu::menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->play = new Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 4.6, Var->Real_H / 1.7, 256, 128);
   this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 1.66, Var->Real_H / 1.7, 256, 128);
 
-  this->scoredialg = new texte(gRenderer, "Meilleur score : ", {255, 255, 255}, {Var->Real_W / 2, 7 * Var->Real_H / 9, 25, 50}, true, true);
-  this->scoreText = new texte(gRenderer, std::to_string(getBestScore()), {255, 255, 255}, {Var->Real_W / 2, scoredialg->getY() + scoredialg->getH(), 25, 50}, true, true);
+  this->scoredialg = new texte(gRenderer, "Best Score : ", {0, 191, 255}, {Var->Real_W / 2, 7 * Var->Real_H / 9, 25, 50}, true, true);
+  this->scoreText = new texte(gRenderer, std::to_string(getBestScore()), {0, 191, 255}, {Var->Real_W / 2-12, scoredialg->getY() + scoredialg->getH(), 25, 50}, true, true);
 
   this->backgroundMusic = Mix_LoadMUS("src/music/background/menu.mp3");
   Mix_PlayMusic(backgroundMusic, -1);
@@ -53,6 +53,7 @@ void menu::handleEvents(std::string* Gamemode) {
     if(var) {
       *Gamemode = "jeu";
       var = false;
+      
     }
     if(e.type == SDL_QUIT) {
       quit = true;
