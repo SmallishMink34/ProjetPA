@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #include <iostream>
 #include <map>
@@ -47,6 +48,17 @@ bool initSDL() {
     return false;
   }
 
+  if(Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG) != (MIX_INIT_MP3 | MIX_INIT_OGG)) {
+    std::cerr << "SDL_mixer n'a pas pu être initialisé : " << Mix_GetError() << std::endl;
+    return false;
+  }
+
+  if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+    // Gestion de l'erreur lors de l'ouverture de l'audio
+    SDL_Quit();
+    return -1;
+  }
+
   return true;
 }
 
@@ -72,7 +84,8 @@ void FreeGamemodes(std::map<std::string, Gamemode *> *Gamemodes, Variable *Var) 
 void closeSDL() {
   if(gRenderer != nullptr) SDL_DestroyRenderer(gRenderer);
   if(gWindow != nullptr) SDL_DestroyWindow(gWindow);
-
+  Mix_CloseAudio();
+  Mix_Quit();
   IMG_Quit();
   TTF_Quit();
   SDL_Quit();

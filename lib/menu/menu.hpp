@@ -1,6 +1,7 @@
 #ifndef MENUE_HPP
 #define MENUE_HPP
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "../button/button.hpp"
 #include "../gamemode/gamemode.hpp"
@@ -36,6 +37,7 @@ class menu: public Gamemode {
   SDL_Event evenement; /**< The SDL event object. */
   texte* scoredialg;
   texte* scoreText;
+  Mix_Music* backgroundMusic; /**< The background music. */
 
   /**
    * @brief Initializes the menu.

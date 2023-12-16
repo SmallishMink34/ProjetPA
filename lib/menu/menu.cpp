@@ -14,6 +14,9 @@ menu::menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
 
   this->scoredialg = new texte(gRenderer, "Meilleur score : ", {255, 255, 255}, {Var->Real_W / 2, 7 * Var->Real_H / 9, 25, 50}, true, true);
   this->scoreText = new texte(gRenderer, std::to_string(getBestScore()), {255, 255, 255}, {Var->Real_W / 2, scoredialg->getY() + scoredialg->getH(), 25, 50}, true, true);
+
+  this->backgroundMusic = Mix_LoadMUS("src/music/background/menu.mp3");
+  Mix_PlayMusic(backgroundMusic, -1);
 }
 
 void menu::Init() {
@@ -93,5 +96,7 @@ menu::~menu() {
     delete exit;
     delete scoredialg;
     delete scoreText;
+
+    Mix_FreeMusic(backgroundMusic);
   }
 }
