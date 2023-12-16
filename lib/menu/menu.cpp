@@ -30,8 +30,6 @@ void menu::Init() {
   this->play->setSurface(0, 0, 512, 256);
   this->play->gererPlay(&evenement, gRenderer, &var);
 
-  // TODO : Afficher meilleur score
-
   // TODO : Musique
 
   // bouton exit
