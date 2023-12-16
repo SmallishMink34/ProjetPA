@@ -11,6 +11,9 @@ menu::menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->titre = new Sprite("src/Images/titre.png", (int)(Var->Real_W / 3), (int)(Var->Real_H / 10), (int)(Var->Real_W / 3), (int)(Var->Real_H / 3));
   this->play = new Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 4.6, Var->Real_H / 1.7, 256, 128);
   this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 1.66, Var->Real_H / 1.7, 256, 128);
+
+  this->scoredialg = new texte(gRenderer, "Meilleur score : ", {255, 255, 255}, {Var->Real_W / 2, 7 * Var->Real_H / 9, 25, 50}, true, true);
+  this->scoreText = new texte(gRenderer, std::to_string(getBestScore()), {255, 255, 255}, {Var->Real_W / 2, scoredialg->getY() + scoredialg->getH(), 25, 50}, true, true);
 }
 
 void menu::Init() {
@@ -72,6 +75,9 @@ void menu::render() {
 
   exit->selfDraw(gRenderer);
 
+  scoredialg->draw(gRenderer);
+  scoreText->draw(gRenderer);
+
   play->selfDraw(gRenderer);
   // Met à jour le renderer
   SDL_RenderPresent(gRenderer);
@@ -87,5 +93,7 @@ menu::~menu() {
     delete titre;
     delete play;
     delete exit;
+    delete scoredialg;
+    delete scoreText;
   }
 }

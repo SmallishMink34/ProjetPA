@@ -94,8 +94,6 @@ class Cartes {
    */
   std::vector<tmx::Object> getElementsToAdd();
 
-  std::vector<monster*> monsterList; /**< Vector of monster objects on the map */
-
   /**
    * @brief Check if the map has been loaded
    * @return True if the map has been loaded, false otherwise
@@ -139,6 +137,7 @@ class Cartes {
    * @return The change in y-coordinate
    */
   int getDy();
+  std::vector<monster*> monsterList; /**< Vector of monster objects on the map */
 };
 
 /**

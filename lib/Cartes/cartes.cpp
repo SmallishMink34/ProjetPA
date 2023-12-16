@@ -22,16 +22,23 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
   Spawn["DR"] = Map->getObjectByNameAndType("DR", "Spawn");
   player = nullptr;
   animeMCounter = 0;
+  dx = 0;
+  dy = 0;
 }
 
 Cartes::~Cartes() {
+  std::cout << "deleting " << file << std::endl;
+  for(Tile* tile : addTiles) {
+    delete tile;
+    std::cout << "deleting tile" << std::endl;
+  }
+  addTiles.clear();
+  for(monster* i : monsterList) {
+    delete i;
+  }
+  monsterList.clear();
+
   delete Map;
-  for(long unsigned int i = 0; i < addTiles.size(); i++) {
-    delete addTiles[i];
-  }
-  for(long unsigned int i = 0; i < monsterList.size(); i++) {
-    delete monsterList[i];
-  }
 }
 
 void Cartes::draw(SDL_Renderer* Renderer) {
@@ -72,17 +79,24 @@ int Cartes::getNbMonster() { return monsterList.size(); }
 void Cartes::update(Uint32 currentTime, int dx, int dy) {
   this->dx = dx;
   this->dy = dy;
-  animeMCounter++;
+
   for(long unsigned int i = 0; i < monsterList.size(); i++) {
     monsterList.at(i)->applyGravity();
     monsterList.at(i)->ai(dx, dy);
     monsterList.at(i)->update(currentTime);
     monsterList.at(i)->AnimEntity(animeMCounter);
+
     if(player->isCollidingEntity(monsterList.at(i))) {
       player->takeDamage(1);
       player->knockback(monsterList.at(i));
     }
+    if(monsterList.at(i)->getVie() <= 0) {
+      delete monsterList.at(i);
+      monsterList.erase(monsterList.begin() + i);
+      std::cout << "deleting monster" << std::endl;
+    }
   }
+  animeMCounter++;
 }
 
 ////////////////////////////////// allMaps //////////////////////////////////
@@ -121,7 +135,6 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
   tmx::Object object = cartesMap[this->currentMap->getValue()]->getSpawn(SpawnType);
 
   if(!cartesMap[this->currentMap->getValue()]->hasBeenLoaded()) {
-    this->currentMap->getRoom()->setVisited(true);
     cartesMap[this->currentMap->getValue()]->setLoad(true);
     for(tmx::Object c : cartesMap[this->currentMap->getValue()]->getElementsToAdd()) {
       if(c.getClass() == "blocks") {
@@ -155,16 +168,17 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
   this->cartesMap[this->currentMap->getValue()]->player = player;
   player->InitPlayer(getCollisions(), &cartesMap[this->currentMap->getValue()]->monsterList);
   player->AllMove(object.getPosition().x, object.getPosition().y, true);
+  this->currentMap->getRoom()->setVisited(true);
   Monde->FixCamera();
 }
 
 allMaps::~allMaps() {
+  currentMap = nullptr;
   for(auto map : cartesMap) {
     delete map.second;
   }
-  if(currentMap != nullptr) {
-    delete currentMap;
-  }
+
+  std::cout << "deleting allMaps" << std::endl;
 }
 
 void allMaps::drawMap(SDL_Renderer* Renderer) { this->cartesMap[this->currentMap->getValue()]->draw(Renderer); }
@@ -186,6 +200,7 @@ std::vector<tmx::Object> allMaps::getElements() { return cartesMap[this->current
 void allMaps::changeMap(std::string map, Player* player, world* Monde) {
   std::string SpawnType = "Spawn";
   if(map == "Spawn") {
+    delete this->currentMap;
     this->currentMap = this->Donjon->initial_Node;
     getCurrentMap()->getRoom()->SetInTheRoom(true);
   } else {

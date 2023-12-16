@@ -267,16 +267,16 @@ class Entity {
 
   Uint32 previousDamageTime;  // Time of the previous damage
 
-  bool OnGround;           // Flag indicating if the entity is on the ground
-  bool Jumping;            // Flag indicating if the entity is jumping
-  bool hasJump;            // Flag indicating if the entity has jumped
-  bool canTakeDamage;      // Flag indicating if the entity can take damage
-  bool istakeDamage;       // Flag indicating if the entity is taking damage
-  float verticalVelocity;  // Vertical velocity
-  float jumpStrength;      // Jump strength
-  float jumpTime;          // Jump time
-  float dy;                // Change in y-coordinate
-  int Animcpt;             // Animation Counter
+  bool OnGround;              // Flag indicating if the entity is on the ground
+  bool Jumping;               // Flag indicating if the entity is jumping
+  bool hasJump;               // Flag indicating if the entity has jumped
+  bool canTakeDamage;         // Flag indicating if the entity can take damage
+  bool istakeDamage;          // Flag indicating if the entity is taking damage
+  float verticalVelocity;     // Vertical velocity
+  float jumpStrength;         // Jump strength
+  float jumpTime;             // Jump time
+  float dy;                   // Change in y-coordinate
+  long unsigned int Animcpt;  // Animation Counter
 };
 
 #endif

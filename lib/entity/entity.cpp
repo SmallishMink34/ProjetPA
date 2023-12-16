@@ -24,8 +24,14 @@ Entity::Entity() {
   istakeDamage = false;
   previousDamageTime = 0;
   etat = "Right";
+  etats["Right"] = {{0, 0}};
+  etats["Left"] = {{0, 0}};
+  etats["Jump"] = {{0, 0}};
+  etats["Fall"] = {{0, 0}};
+  etats["Idle"] = {{0, 0}};
   Rwidth = 0;
   Rheight = 0;
+  Animcpt = 0;
 }
 
 Entity::~Entity() {}

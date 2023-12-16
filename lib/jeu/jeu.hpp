@@ -68,10 +68,6 @@ class Jeu: public Gamemode {
    * @brief Unpauses the game mode.
    */
   void unpause();
-  int getBestScore();
-
- private:
-  const char* nomFichier = "monFichier.txt";
 };
 
 #endif

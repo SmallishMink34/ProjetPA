@@ -37,7 +37,6 @@ class world {
 
   // Variables
   Player* Joueur;                                           /**< The player object. */
-  Texture AllElements;                                      /**< The texture for all elements in the world. */
   allMaps* Map;                                             /**< The map object. */
   HUD* hud;                                                 /**< The HUD object. */
   bool KeyPressed[5] = {false, false, false, false, false}; /**< An array representing the state of the keys (0 = left, 1 = right, 2 = up, 3 = down, 4 = click). */
@@ -99,6 +98,9 @@ class world {
    */
   int getScore();
 
+  /**
+   * @brief return if the game is ended
+   */
   bool EndGame();
 };
 

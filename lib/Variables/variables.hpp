@@ -37,7 +37,9 @@ const float RECUL = 15.0f;
 
 const int porteeArme = 50;
 const int cadenceArme = 6;
-const int degatsArme = 1;
+const int degatsArme = 10;
+
+const std::string nomFichier = "monFichier.txt";
 
 ////////////////// Couleur
 const SDL_Color White = {255, 255, 255};

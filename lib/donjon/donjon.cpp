@@ -48,15 +48,6 @@ Node *donjon::searchNode(int x, int y, Node *node) {
   return nullptr;
 }
 
-Node *donjon::create_tree() {
-  char root_value = addletter();
-  Node *root = new Node(new rooms(0, 0, tailleCase, tailleCase, 2, 2), root_value, "None");
-  root->setMap("1");
-  initial_Node = root;
-  add_children(root, true, true, 0);
-  return root;
-}
-
 bool donjon::addCoords(std::pair<int, int> coords) {
   if(std::find(CoordUse.begin(), CoordUse.end(), coords) == CoordUse.end()) {
     CoordUse.push_back(coords);
@@ -100,122 +91,6 @@ std::vector<std::pair<int, int>> donjon::checks_valids(rooms room) {
 
 bool donjon::checkTallRoom(int x, int y, std::string dirr) {
   return (std::find(CoordUse.begin(), CoordUse.end(), std::make_pair(x, y + (dirr == "bas" ? 1 : -1))) == CoordUse.end());
-}
-
-void donjon::add_children(Node *node, bool CanBeTall, bool Continuer, int depth) {
-  // Choix du nombre d'enfants
-  int num_children;
-
-  std::vector<bool> dirrectionUsed = {false, false};  // 0 = bas, 1 = haut
-
-  node->getRoom()->setTall(2);
-
-  // On regarde si la salle peut être placé en grande
-  if(checkTallRoom(node->getRoom()->getX(), node->getRoom()->getY(), "bas")) {
-    dirrectionUsed[0] = true;
-  } else if(checkTallRoom(node->getRoom()->getX(), node->getRoom()->getY(), "haut")) {
-    dirrectionUsed[1] = true;
-    // node->getRoom()->setY(node->getRoom()->getY() - 1);
-  } else {
-    node->getRoom()->setTall(1);
-  }
-
-  // On met la salle en grande par défaut
-  std::vector<std::pair<int, int>> valids = checks_valids(*node->getRoom());  // On regarde les salles autour de la salle actuelle
-  int nombreEnfantsPossible = (int)valids.size();                             // On regarde le nombre de place disponible autour de la salle
-  nombreEnfantsPossible = std::min(nombreEnfantsPossible, remaining_count);   // On prend le minimum entre le nombre de place disponible et le nombre de noeuds restant
-
-  if(nombreEnfantsPossible <= 1) {
-    CanBeTall = false;
-  }
-
-  if(!CanBeTall) {
-    node->getRoom()->setTall(1);
-    valids = checks_valids(*node->getRoom());
-    nombreEnfantsPossible = (int)valids.size();
-    nombreEnfantsPossible = std::min(nombreEnfantsPossible, remaining_count);
-  }
-
-  // Maintenant on choisis le nombre d'enfants en fonction du nombre de place disponible
-  if(remaining_count == max_noeuds) {                                     // la racine
-    num_children = std::min(nombreEnfantsPossible, std::rand() % 2 + 3);  // entre 3 et 4
-  } else if(CanBeTall && node->getRoom()->getTall() == 2) {
-    num_children = std::min(nombreEnfantsPossible, std::rand() % 3 + 1);  // entre 1 et 3
-  } else {
-    num_children = std::min(nombreEnfantsPossible, 1);
-  }
-
-  if(num_children == 1) {
-    node->getRoom()->setTall(1);
-  }
-
-  if(node->getRoom()->getTall() == 2) {
-    if(dirrectionUsed[1]) {
-      node->getRoom()->setY(node->getRoom()->getY() - 1);
-    }
-    addCoords(std::make_pair(node->getRoom()->getX(), node->getRoom()->getY()));
-    addCoords(std::make_pair(node->getRoom()->getX(), node->getRoom()->getY() + 1));
-  } else {
-    addCoords(std::make_pair(node->getRoom()->getX(), node->getRoom()->getY()));
-  }
-
-  if(depth >= max_depth) {
-    num_children = 0;
-  }
-
-  remaining_count -= num_children;
-
-  if(!Continuer) {
-    return;
-  }
-
-  if(remaining_count <= 0) {
-    Continuer = false;
-  }
-
-  for(int i = 0; i < num_children; i++) {
-    valids = checks_valids(*node->getRoom());
-
-    if(valids.empty()) {
-      break;
-    }
-    char child_value = addletter();
-    std::pair<int, int> coords = valids[std::rand() % valids.size()];
-    std::remove(valids.begin(), valids.end(), coords);
-    Node *child = new Node(new rooms(coords.first, coords.second), child_value, "None");
-    node->addChild(child, "None");
-
-    if(node->getRoom()->getTall() == 2) {
-      CanBeTall = false;
-    } else {
-      CanBeTall = true;
-    }
-    add_children(child, CanBeTall, Continuer, depth + 1);
-  }
-}
-
-void donjon::SearchCelibRooms(Node *node) {
-  if(node != nullptr) {
-    if(node->getChildren().empty() && node->getRoom()->getTall() == 1) {
-      celibNode.push_back(node);
-    } else {
-      for(std::pair<Node *, std::string> i : node->getChildren()) {
-        SearchCelibRooms(i.first);
-      }
-    }
-  }
-}
-
-void donjon::addSpecialRooms(Node *node) {
-  for(int i = 0; i < specialRooms; i++) {
-    if(!celibNode.empty()) {
-      node = celibNode[std::rand() % celibNode.size()];
-      node->getRoom()->setType(2);
-      celibNode.erase(std::remove(celibNode.begin(), celibNode.end(), node), celibNode.end());
-    } else {
-      break;
-    }
-  }
 }
 
 void donjon::save_rooms_to_file(Node *node) {
@@ -411,15 +286,6 @@ Node *donjon::getElementInChildFromPlacement(std::string placement, Node *node) 
   return nullptr;
 }
 
-void removeNode(Node *node) {
-  if(node != nullptr) {
-    for(std::pair<Node *, std::string> i : node->getChildren()) {
-      removeNode(i.first);
-    }
-    delete node;
-  }
-}
-
 Node *donjon::SearchNodeFromValue(char value, Node *node) {
   if(node->getValue() == value) {
     return node;
@@ -498,9 +364,13 @@ bool donjon::allNodeVisited(Node *initial) {
   return visited;
 }
 
-donjon::~donjon() {
-  removeNode(initial_Node);
-  for(Node *node : celibNode) {
+void donjon::removeNode(Node *node) {
+  if(node != nullptr) {
+    for(std::pair<Node *, std::string> i : node->getChildren()) {
+      std::cout << "Suppression de " << i.first->getValue() << std::endl;
+      removeNode(i.first);
+    }
     delete node;
   }
 }
+donjon::~donjon() { removeNode(initial_Node); }

@@ -36,6 +36,6 @@ SDL_Texture* assets::load_texture(const std::string& path, SDL_Renderer* ren) {
   }
 
   textures.insert(std::pair<std::string, SDL_Texture*>(path, tex));
-
+  SDL_FreeSurface(surf);
   return tex;
 }

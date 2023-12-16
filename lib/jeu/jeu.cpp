@@ -27,11 +27,10 @@ void Jeu::Init() {
 
 void Jeu::Pause(std::string* Gamemode) {
   *Gamemode = "pause";  // Quitte l'application si la touche Échap est enfoncée
-  saveScore();
-  getBestScore();
 }
 
 void Jeu::saveScore() {
+  std::cout << "save score : " << this->Monde->getScore() << std::endl;
   // rajouter 2 conditions : si on ne meurt pas, si tous les ennemis sont morts
   std::ofstream fichierSortie;
   fichierSortie.open(nomFichier, std::ios::app);
@@ -44,29 +43,6 @@ void Jeu::saveScore() {
   }
 }
 
-int Jeu::getBestScore() {
-  std::ifstream fichierEntree(nomFichier);
-  std::string ligne;
-  int mini = INT_MAX;  // Initialize mini to the maximum possible integer
-
-  if(fichierEntree.fail()) {
-    std::cout << "Erreur à l'ouverture !" << std::endl;
-    return mini;  // Return the maximum possible integer in case of error
-  } else {
-    if(getline(fichierEntree, ligne)) {
-      mini = std::stoi(ligne);  // Initialize mini to the first number in the file
-    }
-    while(getline(fichierEntree, ligne)) {
-      int number = std::stoi(ligne);
-      if(number < mini) {
-        mini = number;
-      }
-    }
-    fichierEntree.close();
-  }
-  return mini;
-}
-
 void Jeu::unpause() {
   this->Monde->previousTime = SDL_GetTicks();
   this->Var->ChangeScale(Windows_W / 1280.0);
@@ -76,10 +52,10 @@ void Jeu::unpause() {
 
 void Jeu::handleEvents(std::string* Gamemode) {
   if(Monde->EndGame()) {
-    std::cout << "aaaaaaa" << Monde->getScore() << std::endl;
+    if(Monde->Joueur->getVie() > 0) saveScore();
     Var->setScore(Monde->getScore());
+    isLoaded = false;
     *Gamemode = "end";
-    std::cout << "ENDGAME" << std::endl;
   }
 
   SDL_Event e;
@@ -158,6 +134,8 @@ void Jeu::render() {
 void Jeu::update() { Monde->UpdateAll(); }
 
 Jeu::~Jeu() {
-  delete Monde;
+  std::cout << "Destructeur Jeu" << std::endl;
+  if(Monde != nullptr) delete Monde;
+
   Monde = nullptr;
 }

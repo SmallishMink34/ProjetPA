@@ -6,10 +6,7 @@
 world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->Donjon = new donjon(30, 5);
   this->Map = new allMaps(Renderer, this->Donjon);
-
   this->Joueur = new Player(Renderer);
-
-  this->AllElements = Texture();
   this->hud = new HUD(Renderer, this->Joueur, this->Donjon, Var);
 
   this->currentTime = SDL_GetTicks();
@@ -25,10 +22,7 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->genWorld = false;
 }
 
-void world::InitMonde(SDL_Renderer* Renderer) {
-  this->AllElements.addElements(Renderer, Sprite("src/Images/image.jpg", 0, 420, 1280, 720));
-  Map->InitializeRoom(this->Joueur, this, "Spawn");
-}
+void world::InitMonde(SDL_Renderer* Renderer) { Map->InitializeRoom(this->Joueur, this, "Spawn"); }
 
 void world::UpdateAll() {
   this->currentTime = SDL_GetTicks();
@@ -45,7 +39,6 @@ void world::UpdateAll() {
   std::string collisionType = collision.getType();
   if(collisionType == "tp") {
     std::string whatDoor = collision.getName();
-
     if(whatDoor == "Spawn") {
       this->Map->InitializeLevel();
       this->seeMap = true;
@@ -127,14 +120,13 @@ int world::getScore() { return this->Joueur->getScore() / 120; }
 
 world::~world() {
   delete this->Joueur;
+  delete this->Donjon;
   delete this->Map;
   delete this->hud;
-  delete this->Donjon;
 }
 
 bool world::EndGame() {
-  std::cout << this->Joueur->getVie() << genWorld << std::endl;
-  if((this->Donjon->getNbMonsterAllMap(this->Donjon->initial_Node) == 0 && this->Donjon->allNodeVisited(this->Donjon->initial_Node) || this->Joueur->getVie() <= 0) && genWorld) {
+  if(((this->Donjon->getNbMonsterAllMap(this->Donjon->initial_Node) == 0 && this->Donjon->allNodeVisited(this->Donjon->initial_Node)) || this->Joueur->getVie() <= 0) && genWorld) {
     return true;
   } else {
     return false;

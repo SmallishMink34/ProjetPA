@@ -1,5 +1,10 @@
 #include "utility.hpp"
 
+#include <climits>
+#include <fstream>
+
+#include "../Variables/variables.hpp"
+
 int findInVector(std::vector<char> vec, char value) {
   for(long unsigned int i = 0; i < vec.size(); i++) {
     if(vec[i] == value) {
@@ -138,4 +143,27 @@ std::pair<tmx::Object, std::string> isInList(std::vector<std::pair<tmx::Object, 
     }
   }
   return std::make_pair(tmx::Object(), "");  // Return an empty pair
+}
+
+int getBestScore() {
+  std::ifstream fichierEntree(nomFichier);
+  std::string ligne;
+  int mini = INT_MAX;  // Initialize mini to the maximum possible integer
+
+  if(fichierEntree.fail()) {
+    std::cerr << "Erreur à l'ouverture !" << std::endl;
+    return mini;  // Return the maximum possible integer in case of error
+  } else {
+    if(getline(fichierEntree, ligne)) {
+      mini = std::stoi(ligne);  // Initialize mini to the first number in the file
+    }
+    while(getline(fichierEntree, ligne)) {
+      int number = std::stoi(ligne);
+      if(number < mini) {
+        mini = number;
+      }
+    }
+    fichierEntree.close();
+  }
+  return mini;
 }

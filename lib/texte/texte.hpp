@@ -15,12 +15,18 @@ class texte {
   SDL_Texture* texture;
   TTF_Font* font;
   SDL_Renderer* Renderer;
+  bool autoAdjust;
+  bool centered;
 
  public:
-  texte(SDL_Renderer* Renderer, std::string text, SDL_Color color, SDL_Rect rect);
+  texte(SDL_Renderer* Renderer, std::string text, SDL_Color color, SDL_Rect rect, bool autoAdjust, bool centered = false);
   ~texte();
   void setText(std::string text);
   void setColor(SDL_Color color);
+  int getX();
+  int getY();
+  int getW();
+  int getH();
 
   void draw(SDL_Renderer* Renderer);
 };

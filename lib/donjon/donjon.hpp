@@ -72,13 +72,6 @@ class donjon {
   Node* searchNode(int x, int y, Node* node);
 
   /**
-   * @brief Creates the tree structure of the donjon.
-   *
-   * @return The root node of the donjon tree.
-   */
-  Node* create_tree();
-
-  /**
    * @brief Adds coordinates to the CoordUse vector.
    *
    * @param coord The coordinates to add.
@@ -133,30 +126,6 @@ class donjon {
    * @return True if the room can be tall, false otherwise.
    */
   bool checkTallRoom(int x, int y, std::string dirr = "bas");
-
-  /**
-   * @brief Adds children to a node in the donjon tree.
-   *
-   * @param node The node to add children to.
-   * @param CanBeTall Whether the children can be tall rooms.
-   * @param Continuer Whether to continue adding children.
-   * @param depth The current depth of the donjon tree.
-   */
-  void add_children(Node* node, bool CanBeTall, bool Continuer, int depth);
-
-  /**
-   * @brief Searches for celibate rooms in the donjon tree.
-   *
-   * @param node The starting node for the search.
-   */
-  void SearchCelibRooms(Node* node);
-
-  /**
-   * @brief Adds special rooms to the donjon tree.
-   *
-   * @param node The starting node for adding special rooms.
-   */
-  void addSpecialRooms(Node* node);
 
   ////////////// Sauvegarde du donjon ///////////////////////
 
@@ -304,6 +273,8 @@ class donjon {
   int getNbMonsterAllMap(Node* inital);
 
   bool allNodeVisited(Node* initial);
+
+  void removeNode(Node* node);
 
   /**
    * @brief Destroys the donjon object and frees any allocated memory.

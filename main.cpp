@@ -60,9 +60,10 @@ bool init() {
 }
 
 void FreeGamemodes(std::map<std::string, Gamemode *> *Gamemodes, Variable *Var) {
-  for(auto &Gamemode : *Gamemodes) {
-    delete Gamemode.second;
-  }
+  delete(*Gamemodes)["jeu"];
+  delete(*Gamemodes)["menu"];
+  delete(*Gamemodes)["pause"];
+  delete(*Gamemodes)["end"];
 
   delete Var;
 }
@@ -105,6 +106,12 @@ int main(int argc, char *args[]) {
     oldGamemode = currentGamemode;
 
     Gamemodes[currentGamemode]->handleEvents(&currentGamemode);
+
+    if(currentGamemode != oldGamemode && Gamemodes[currentGamemode]->isLoaded && currentGamemode == "jeu" && oldGamemode == "menu") {
+      delete Gamemodes["jeu"];
+      Gamemodes["jeu"] = new Jeu(gWindow, gRenderer, Var);
+      Gamemodes["jeu"]->isLoaded = false;
+    }
 
     if(currentGamemode != oldGamemode && !Gamemodes[currentGamemode]->isLoaded) {
       Gamemodes[currentGamemode]->Init();

@@ -94,7 +94,7 @@ bool isInSecondVector(std::vector<std::pair<Node *, std::string>> vec, std::stri
 std::vector<tmx::Object> mergeVectors(std::vector<tmx::Object> vec1, std::vector<tmx::Object> vec2);
 int getSeedFromFile(std::string name);
 
-int compterLettres(const std::string& texte);
+int compterLettres(const std::string &texte);
 
 /**
  * @brief Checks if a point is inside a bounding box.
@@ -132,4 +132,5 @@ bool isEmpty(std::pair<tmx::Object, std::string> pair);
  */
 std::pair<tmx::Object, std::string> isInList(std::vector<std::pair<tmx::Object, std::string>> list, std::string value);
 
+int getBestScore();
 #endif

@@ -5,6 +5,7 @@
 #include "../button/button.hpp"
 #include "../gamemode/gamemode.hpp"
 #include "../sprites/sprite.hpp"
+#include "../texte/texte.hpp"
 
 /**
  * @class menu
@@ -33,6 +34,8 @@ class menu: public Gamemode {
   Bouton* play;        /**< The play button. */
   Bouton* exit;        /**< The exit button. */
   SDL_Event evenement; /**< The SDL event object. */
+  texte* scoredialg;
+  texte* scoreText;
 
   /**
    * @brief Initializes the menu.

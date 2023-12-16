@@ -10,6 +10,9 @@
 #include "tmxlite/ObjectGroup.hpp"
 #include "tmxlite/TileLayer.hpp"
 
+/* ! Ce fichier n'as pas été completement fait par nous, il est fournis pour la lecture des fichiers TMX du logiciel TILED
+Il a néanmoins été modifier afin d'être adapté a notre code*/
+
 tile::tile(SDL_Texture* tset, int x, int y, int tx, int ty, int w, int h) : sheet(tset), x(x), y(y), tx(tx), ty(ty), width(w), height(h) {}
 
 tmx::Object level::getObjectByName(const std::string& Name) {
@@ -108,7 +111,7 @@ void tile::draw(SDL_Renderer* ren, int dx, int dy) {
   SDL_RenderCopy(ren, sheet, &src, &dest);
 }
 
-level::level(const std::string& name) : name(name), rows(0), cols(0) {}
+level::level(const std::string& name) : name(name), rows(0), cols(0) { background = Sprite(); }
 
 void level::load(const std::string& path, SDL_Renderer* ren) {
   // Load and parse the Tiled map with tmxlite

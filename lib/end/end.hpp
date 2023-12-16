@@ -32,7 +32,9 @@ class END: public Gamemode {
   Bouton* main_menu;   /**< The play button. */
   Bouton* exit;        /**< The exit button. */
   SDL_Event evenement; /**< The SDL event. */
+  texte* scoredialg;
   texte* scoreText;
+  texte* info;
   int score;
 
   /**

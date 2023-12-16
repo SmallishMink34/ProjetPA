@@ -87,9 +87,7 @@ bool balles::update(std::vector<tmx::Object> collisions, std::vector<monster*>* 
   for(auto& monstre : *MonstreList) {
     if(isColliding(monstre)) {
       monstre->takeDamage(this->degats);
-      if(monstre->getVie() <= 0) {
-        MonstreList->erase(std::remove(MonstreList->begin(), MonstreList->end(), monstre), MonstreList->end());
-      }
+
       return true;
     }
   }
