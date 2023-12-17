@@ -182,7 +182,7 @@ std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int 
   std::string line;
 
   while(std::getline(file, line)) {
-    if(line.length() != 0 && line[0] != '#') {
+    if(line.length() != 0 && line[0] != '\r' && line[0] != '\n') {
       for(char c : line) {
         if(c == letter) {
           file.close();
