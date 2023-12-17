@@ -11,7 +11,7 @@ texte::texte(SDL_Renderer* Renderer, std::string text, SDL_Color color, SDL_Rect
   this->surface = nullptr;
   this->texture = nullptr;
   if(this->font == NULL) {
-    std::cout << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
+    std::cerr << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
   } else {
     setText(this->text, rect.x, rect.y, rect.w, rect.h);
   }
@@ -29,11 +29,11 @@ void texte::setText(std::string text, int x, int y, int w, int h) {
 
   this->surface = TTF_RenderText_Solid(this->font, this->text.c_str(), this->color);
   if(this->surface == NULL) {
-    std::cout << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
+    std::cerr << "Unable to render text surface! SDL_ttf Error: " << TTF_GetError() << std::endl;
   } else {
     this->texture = SDL_CreateTextureFromSurface(Renderer, this->surface);
     if(this->texture == NULL) {
-      std::cout << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
+      std::cerr << "Unable to create texture from rendered text! SDL Error: " << SDL_GetError() << std::endl;
     }
   }
   if(this->autoAdjust) {

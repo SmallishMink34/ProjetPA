@@ -259,7 +259,6 @@ std::vector<std::pair<char, std::string>> donjon::getAdjacentLetterFromMap(char 
 
   for(std::tuple<int, int, std::string> coord : coords) {
     char a = getCharAt(list, origin.first + std::get<0>(coord), origin.second + std::get<1>(coord));
-    std::cout << "char : " << a << std::endl;
     if(std::find(charMap.begin(), charMap.end(), a) != charMap.end()) adjacentLetter.push_back({a, std::get<2>(coord)});
   }
 
@@ -409,9 +408,8 @@ void donjon::removeNode(Node *node) {
     for(std::pair<Node *, std::string> i : node->getChildren()) {
       removeNode(i.first);
     }
-    std::cout << "Suppression de " << node->getValue() << std::endl;
+
     if(node != nullptr) delete node;
-    std::cout << "Suppression de terminé" << std::endl;
   }
 }
 donjon::~donjon() { removeNode(initial_Node); }

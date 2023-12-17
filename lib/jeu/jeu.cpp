@@ -43,7 +43,6 @@ void Jeu::Pause(std::string* Gamemode) {
 }
 
 void Jeu::saveScore() {
-  std::cout << "save score : " << this->Monde->getScore() << std::endl;
   std::ofstream fichierSortie;
   fichierSortie.open(nomFichier, std::ios::app);
 
@@ -150,7 +149,6 @@ void Jeu::render() {
 int Jeu::update() { return Monde->UpdateAll(); }
 
 Jeu::~Jeu() {
-  std::cout << "Destructeur Jeu" << std::endl;
   if(Monde != nullptr) delete Monde;
   if(gameMusic != nullptr) Mix_FreeMusic(gameMusic);
   if(menuSound != nullptr) Mix_FreeChunk(menuSound);

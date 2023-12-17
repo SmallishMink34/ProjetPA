@@ -138,13 +138,12 @@ int world::getScore() { return this->Joueur->getScore() / scoreDivider; }
 
 world::~world() {
   delete this->Joueur;
-  std::cout << "Player deleted" << std::endl;
+
   delete this->Map;
 
   delete this->hud;
-  std::cout << "HUD deleted" << std::endl;
+
   delete this->Donjon;
-  std::cout << "Map deleted" << std::endl;
 }
 
 bool world::OpenTheDoor() {

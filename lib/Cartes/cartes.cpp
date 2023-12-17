@@ -28,10 +28,8 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
 }
 
 Cartes::~Cartes() {
-  std::cout << "deleting " << file << std::endl;
   for(Tile* tile : addTiles) {
     delete tile;
-    std::cout << "deleting tile" << std::endl;
   }
   addTiles.clear();
   for(monster* i : monsterList) {
@@ -94,7 +92,6 @@ void Cartes::update(Uint32 currentTime, int dx, int dy) {
     if(monsterList.at(i)->getVie() <= 0) {
       delete monsterList.at(i);
       monsterList.erase(monsterList.begin() + i);
-      std::cout << "deleting monster" << std::endl;
     }
   }
   animeMCounter++;
@@ -138,8 +135,6 @@ allMaps::~allMaps() {
   for(auto map : cartesMap) {
     delete map.second;
   }
-
-  std::cout << "deleting allMaps" << std::endl;
 }
 
 void allMaps::InitializeAllMap(Node* node) {
@@ -160,7 +155,6 @@ void allMaps::InitializeAllMap(Node* node) {
 
 int allMaps::InitializeLevel() {
   if(this->Donjon->load_rooms_from_file() == -1) {
-    std::cout << "Error loading rooms from file" << std::endl;
     return -1;
   }
 

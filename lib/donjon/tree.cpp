@@ -131,11 +131,9 @@ void rooms::setValue(char value) { this->value = value; }
 bool rooms::getInRoom() { return this->InRoom; }
 
 rooms::~rooms() {
-  std::cout << "APAGNAN" << std::endl;
   if(ImageIn != nullptr) delete ImageIn;
   if(ImageIn != nullptr) delete ImageNotIn;
   if(ImageIn != nullptr) delete MonsterImage;
-  std::cout << "2222222" << std::endl;
 }
 
 void rooms::setMonster(bool monster, int nbMonster) {
@@ -203,8 +201,4 @@ void Node::setMap(std::string Map) { this->Map = Map; }
 
 std::string Node::getMap() { return this->Map; }
 
-Node::~Node() {
-  std::cout << "Node deleted : " << getValue() << std::endl;
-  delete room;
-  std::cout << "Room deleted" << std::endl;
-}
+Node::~Node() { delete room; }
