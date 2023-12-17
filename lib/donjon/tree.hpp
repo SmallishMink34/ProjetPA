@@ -23,15 +23,17 @@ class rooms {
   bool thereIsMonster;
   int nbMonster;
   bool isVisited;
+  bool isEnd;
 
   Sprite *ImageNotIn;
   Sprite *ImageIn;
   Sprite *MonsterImage;
+  SDL_Renderer *Renderer;
 
  public:
   rooms();
-  rooms(int x, int y);
-  rooms(int x, int y, int w, int h, int type, int tall);
+  rooms(SDL_Renderer *Renderer, int x, int y);
+  rooms(SDL_Renderer *Renderer, int x, int y, int w, int h, int type, int tall);
 
   // Setters :
   void setTall(int tall);
@@ -44,6 +46,7 @@ class rooms {
   void setMonster(bool monster, int nbMonster);
   void setVisited(bool visited);
   bool getVisited();
+  void setIsEnd(bool end);
 
   // Getters :
   int getX();
@@ -52,6 +55,7 @@ class rooms {
   int getType();
   bool getInRoom();
   int getNbMonster();
+  bool getIsEnd();
 
   // Others :
   void drawRoom(SDL_Renderer *Renderer, int x, int y, SDL_Rect MapFrame);

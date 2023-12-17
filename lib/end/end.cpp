@@ -15,18 +15,17 @@ END::END(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->Var = Var;
   menu = false;
   this->Image = new Sprite("src/Images/bg.jpg", 0, 0, Var->Real_W, Var->Real_H);
-  this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 1.66, Var->Real_H / 1.7, 192, 96);
-  this->main_menu = new Bouton(gRenderer, "src/Images/menu.png", Var->Real_W / 4.6, Var->Real_H / 1.7, 192, 96);
-  this->TextureMessage = nullptr;
-  this->TextureSeed = nullptr;
+  this->exit = new Bouton(gRenderer, "src/Images/exit.png", 3 * Var->Real_W / 8, 3 * Var->Real_H / 4, 192, 96, true);
+  this->main_menu = new Bouton(gRenderer, "src/Images/menu.png", 5 * Var->Real_W / 8, 3 * Var->Real_H / 4, 192, 96, true);
   this->Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
   this->score = Var->getScore();
-  this->scoredialg = new texte(gRenderer, "Score : ", {0, 191, 255}, {Var->Real_W / 2, Var->Real_H / 3, 50, 100}, true, true);
-  this->scoreText = new texte(gRenderer, std::to_string(score), {0, 191, 255}, {Var->Real_W / 2, Var->Real_H / 2 - 50, 100, 100}, true, true);
-  this->info = new texte(gRenderer, "Your score will be saved only if you win", {0, 191, 255}, {(Var->Real_W / 3), 9 * (Var->Real_H / 10), 18, 25}, true, false);
+  this->scoredialg = new texte(gRenderer, "Score : ", LightBlue, {Var->Real_W / 2, Var->Real_H / 3, 50, 100}, true, true);
+  this->scoreText = new texte(gRenderer, std::to_string(score), LightBlue, {Var->Real_W / 2, 5 * Var->Real_H / 11, 100, 100}, true, true);
+  this->info = new texte(gRenderer, "Your score will be saved only if you win", LightBlue, {Var->Real_W / 2, 9 * (Var->Real_H / 10), 18, 25}, true, true);
+  this->win = new texte(gRenderer, "WIN", LightBlue, {Var->Real_W / 2, Var->Real_H / 8, 100, 200}, true, true);
 }
 
-bool END::Init() {
+int END::Init() {
   this->score = Var->getScore();
   isLoaded = true;
   Var->ChangeScale(1);
@@ -41,22 +40,21 @@ bool END::Init() {
   this->exit->gererFin(&evenement, gRenderer, &quit);
 
   // bouton menu
-
   this->main_menu->setSurface(0, 0, 512, 256);
   this->main_menu->gererFin(&evenement, gRenderer, &quit);
 
   // TODO : Afficher meilleur score
+  if(!Var->win) {
+    this->win->setText("LOSE", Var->Real_W / 2, Var->Real_H / 8, 100, 200);
+    this->win->setColor(LightRed);
+  }
 
-  SDL_Color Blue = {0, 191, 255};
-
-  this->scoreText->setText(std::to_string(score));
+  this->scoreText->setText(std::to_string(score), Var->Real_W / 2, 5 * Var->Real_H / 11, 100, 100);
   return 0;
 }
 void END::handleEvents(std::string* Gamemode) {
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
-    // TODO : Son bouton
-    // TODO : Bouton Mute
     exit->gererFin(&e, this->gRenderer, &quit);
     main_menu->gererMenu(&e, this->gRenderer, &menu);
     if(menu) {
@@ -85,16 +83,15 @@ void END::render() {
   Image->selfDraw(gRenderer);
   exit->selfDraw(gRenderer);
   main_menu->selfDraw(gRenderer);
-  SDL_RenderCopy(gRenderer, TextureSeed, NULL, &Seed_rect);
-  SDL_RenderCopy(gRenderer, TextureMessage, NULL, &Message_rect);
   scoredialg->draw(gRenderer);
   scoreText->draw(gRenderer);
   info->draw(gRenderer);
+  win->draw(gRenderer);
 
   SDL_RenderPresent(gRenderer);
 }
 
-int END::update() {}
+int END::update() { return 0; }
 
 void END::unpause() {
   Var->ChangeScale(1);
@@ -109,12 +106,6 @@ END::~END() {
   delete scoredialg;
   delete scoreText;
   delete info;
-  if(TextureMessage != nullptr) {
-    SDL_DestroyTexture(TextureMessage);
-  }
-
-  if(TextureSeed != nullptr) {
-    SDL_DestroyTexture(TextureSeed);
-  }
+  delete win;
   TTF_CloseFont(Sans);
 }

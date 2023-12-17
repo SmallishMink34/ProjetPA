@@ -14,7 +14,7 @@ Jeu::Jeu(SDL_Window* window, SDL_Renderer* renderer, Variable* Var) {
   this->menuSound = nullptr;
 }
 
-bool Jeu::Init() {
+int Jeu::Init() {
   isLoaded = true;
 
   Var->ChangeScale(Windows_W / 1280.0);
@@ -32,7 +32,7 @@ bool Jeu::Init() {
   Mix_PlayMusic(gameMusic, -1);
 
   // baisse le son de la musique
-  Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+  Mix_VolumeMusic(10);
   return 0;
 }
 
@@ -65,9 +65,12 @@ void Jeu::unpause() {
 
 void Jeu::handleEvents(std::string* Gamemode) {
   if(Monde->EndGame()) {
-    if(Monde->Joueur->getVie() > 0) saveScore();
+    if(Monde->Joueur->getVie() > 0) {
+      saveScore();
+      Var->win = true;
+    }
+
     Var->setScore(Monde->getScore());
-    isLoaded = false;
     *Gamemode = "end";
   }
 

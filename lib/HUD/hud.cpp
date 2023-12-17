@@ -20,15 +20,9 @@ HUD::HUD(SDL_Renderer* renderer, Player* Joueur, donjon* Don, Variable* Var) {
   rect->w = MapFrame->getRect()->w - 20;
   rect->h = MapFrame->getRect()->h - 20;
 
-  sprintf(scoreText, "Score: %d", Joueur->getScore());
-  SDL_Surface* SurfaceScore = TTF_RenderText_Solid(Sans, scoreText, Blue);
-  TextureScore = SDL_CreateTextureFromSurface(renderer, SurfaceScore);
-  Score_rect.x = Var->Real_W - 180;
-  Score_rect.y = Var->Real_W / 5;
-  Score_rect.w = 180;
-  Score_rect.h = 120;
+  scoreText = "Score: " + std::to_string(Joueur->getScore());
 
-  SDL_FreeSurface(SurfaceScore);
+  score = new texte(renderer, scoreText, Blue, {MapFrame->getRect()->x + MapFrame->getRect()->w / 2, MapFrame->getRect()->y + MapFrame->getRect()->h + 10, 25, 50}, true, true);
 }
 
 void HUD::draw(SDL_Renderer* renderer) {
@@ -50,29 +44,18 @@ void HUD::draw(SDL_Renderer* renderer) {
       this->vieDemi->selfDraw(renderer, 10 + compteur * 45, 10);
     }
   }
-  SDL_RenderCopy(renderer, TextureScore, NULL, &Score_rect);
+  score->draw(renderer);
 }
 
 void HUD::update(SDL_Renderer* renderer) {
-  char scoreText[20];
-  sprintf(scoreText, "Score : %d", Joueur->getScore() / 120);
-
   Joueur->IncrementScore(1);
-
-  SDL_DestroyTexture(TextureScore);
-
-  SDL_Surface* SurfaceScore = TTF_RenderText_Solid(Sans, scoreText, Blue);
-  TextureScore = SDL_CreateTextureFromSurface(renderer, SurfaceScore);
-
-  Score_rect.w = SurfaceScore->w;
-  Score_rect.h = SurfaceScore->h;
-
-  SDL_FreeSurface(SurfaceScore);
+  scoreText = "Score: " + std::to_string(Joueur->getScore() / scoreDivider);
+  score->setText(scoreText, MapFrame->getRect()->x + MapFrame->getRect()->w / 2, MapFrame->getRect()->y + MapFrame->getRect()->h + 10, 25, 50);
 }
 HUD::~HUD() {
   delete vieEntiere;
   delete vieDemi;
   delete MapFrame;
   delete rect;
-  TTF_CloseFont(Sans);
+  delete score;
 }

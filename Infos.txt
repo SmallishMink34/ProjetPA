@@ -1,29 +1,18 @@
-http://turrier.fr/articles/ubuntu-sdl-c-gcc/programmer-en-c-avec-sdl2.php
-
-Conventions utilisés : 
-Type dans le nom ex : 
-    int i_indice
-    bool b_game
-
-Nom de Variabe dans les classes et strucs commence par m_
-    int m_vie;
-    bool m_isAlive
-
 library :
 SDL2
 SDL2_Image 
 tinyxml
+SDL2_Mixer
+SDL2_ttf
 
 Info spécifique:
-Commandes tinytmx 
-LD_LIBRARY_PATH=/home/matt/tmxlite/build/
-LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/my_library/
-export LD_LIBRARY_PATH=/home/matt/tmxlite/build/libtmxlite.so
+Utilisation d'une librairie trouvée sur github : tmxlite
+Fichier "Maps" et "assets" fournis par la librairie mais modifiés pour s'adapter à notre code.
 
-avec Cmake liens utiles :
-https://trenki2.github.io/blog/2017/07/04/using-sdl2-image-with-cmake/
+Règles :
+Le but du jeu est de parcourir les différentes salles (touches ZQSD) le plus rapidement possible (score en fonction du temps passé sur le jeu). Dans chaque salle se trouve un nombre aléatoire d'ennemis à éliminer en tirant dessus (clic gauche). Pour pouvoir gagner, il faut prendre la porte qui se trouve dans une seule salle déterminée au hasard une fois qu'il ne reste plus aucun ennemis sur le jeu. Votre score est sauvegardé seulement si vous gagnez (plus aucun ennemis et toutes les salles explorées, tout en restant en vie). Le but est d'améliorer son temps à chaque partie et donc de battre son propre record. La map est modifiable car générée grâce au fichier map.txt
 
-Commande a executer
+Commande à exécuter
 Dans le build/
 cmake ..
 make

@@ -12,14 +12,11 @@ menu::menu(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->play = new Bouton(gRenderer, "src/Images/play.png", Var->Real_W / 4.6, Var->Real_H / 1.7, 256, 128);
   this->exit = new Bouton(gRenderer, "src/Images/exit.png", Var->Real_W / 1.66, Var->Real_H / 1.7, 256, 128);
 
-  this->scoredialg = new texte(gRenderer, "Best Score : ", {0, 191, 255}, {Var->Real_W / 2, 7 * Var->Real_H / 9, 25, 50}, true, true);
-  this->scoreText = new texte(gRenderer, std::to_string(getBestScore()), {0, 191, 255}, {Var->Real_W / 2 - 12, scoredialg->getY() + scoredialg->getH(), 25, 50}, true, true);
-
-  this->backgroundMusic = Mix_LoadMUS("src/music/background/menu.mp3");
-  Mix_PlayMusic(backgroundMusic, -1);
+  this->scoredialg = new texte(gRenderer, "Best Score : ", LightBlue, {Var->Real_W / 2, 7 * Var->Real_H / 9, 25, 50}, true, true);
+  this->scoreText = new texte(gRenderer, std::to_string(getBestScore()), LightBlue, {Var->Real_W / 2 - 12, scoredialg->getY() + scoredialg->getH(), 25, 50}, true, true);
 }
 
-bool menu::Init() {
+int menu::Init() {
   isLoaded = true;
   Var->ChangeScale(1);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
@@ -37,6 +34,10 @@ bool menu::Init() {
 
   this->exit->setSurface(0, 256, 512, 256);
   this->exit->gererFin(&evenement, gRenderer, &quit);
+
+  Mix_HaltMusic();
+  this->backgroundMusic = Mix_LoadMUS("src/music/background/menu.mp3");
+  Mix_PlayMusic(backgroundMusic, -1);
 
   return 0;
 }
@@ -86,7 +87,7 @@ void menu::render() {
 
 int menu::update() { return 0; }
 
-void menu::unpause() {}
+void menu::unpause() { this->scoreText->setText(std::to_string(getBestScore()), Var->Real_W / 2 - 12, scoredialg->getY() + scoredialg->getH(), 25, 50); }
 
 menu::~menu() {
   if(isLoaded) {

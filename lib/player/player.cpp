@@ -158,6 +158,5 @@ void Player::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonné
     AllMove(Realx, Up.first.getPosition().y + Up.first.getAABB().height + 2, true);
     verticalVelocity = 0;
   }
-
   AllMove(x1, y1, false);
 }

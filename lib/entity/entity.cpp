@@ -32,9 +32,10 @@ Entity::Entity() {
   Rwidth = 0;
   Rheight = 0;
   Animcpt = 0;
+  damageSound = Mix_LoadWAV("src/music/sounds/damage.mp3");
 }
 
-Entity::~Entity() {}
+Entity::~Entity() { Mix_FreeChunk(damageSound); }
 
 // Getters
 int Entity::getVie() { return vie; }
@@ -224,6 +225,7 @@ void Entity::IncrementVie(int vie) { this->vie += vie; }
 bool Entity::takeDamage(int damage) {
   // TODO : Add sound
   if(canTakeDamage) {
+    Mix_PlayChannel(-1, damageSound, 0);
     IncrementVie(-damage);
     canTakeDamage = false;
     istakeDamage = true;

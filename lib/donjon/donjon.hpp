@@ -41,6 +41,7 @@ class donjon {
   std::vector<char> letterAlreadyUsed;
   std::vector<std::string> TwoTallMaps;
   std::vector<std::string> OneTallMaps;
+  SDL_Renderer* Renderer;
 
  public:
   /**
@@ -49,17 +50,22 @@ class donjon {
    * @param nbnoeuds The number of nodes in the donjon.
    * @param seed The seed for random number generation.
    */
-  donjon(int nbnoeuds, int seed);
+  donjon(int nbnoeuds, SDL_Renderer* Renderer);
 
   std::vector<std::pair<int, int>> CoordUse;
   Node* initial_Node;
 
   /**
-   * @brief Adds a letter to the donjon.
-   *
-   * @return The added letter.
+   * @brief get all the letters of the donjon
    */
-  char addletter();
+  std::vector<char> getAllLetters(Node* node);
+
+  /**
+   * @brief get Random Node from the donjon
+   * @param inital the initial node
+   * @return a random node
+   */
+  Node* getRandomNode(Node* inital);
 
   /**
    * @brief Searches for a node with the given coordinates.
@@ -70,6 +76,15 @@ class donjon {
    * @return The found node, or nullptr if not found.
    */
   Node* searchNode(int x, int y, Node* node);
+
+  /**
+   * @brief Searches for a node with the given letter.
+   *
+   * @param c The letter to search for.
+   * @param node The starting node for the search.
+   * @return The found node, or nullptr if not found.
+   */
+  Node* searchNode(char c, Node* node);
 
   /**
    * @brief Adds coordinates to the CoordUse vector.
@@ -116,16 +131,6 @@ class donjon {
    * @return A vector of valid adjacent coordinates.
    */
   std::vector<std::pair<int, int>> checks_valids(rooms room);
-
-  /**
-   * @brief Checks if a room can be tall at the given coordinates.
-   *
-   * @param x The x-coordinate.
-   * @param y The y-coordinate.
-   * @param dirr The direction of the room (default: "bas").
-   * @return True if the room can be tall, false otherwise.
-   */
-  bool checkTallRoom(int x, int y, std::string dirr = "bas");
 
   ////////////// Sauvegarde du donjon ///////////////////////
 

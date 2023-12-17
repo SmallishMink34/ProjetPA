@@ -1,9 +1,10 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+#include <SDL2/SDL_mixer.h>
+
 #include <vector>
 
-#include <SDL2/SDL_mixer.h>
 #include "../Variables/variables.hpp"
 #include "../entity/entity.hpp"
 #include "../maps/maps.hpp"
@@ -278,6 +279,7 @@ class Entity {
   float jumpTime;             // Jump time
   float dy;                   // Change in y-coordinate
   long unsigned int Animcpt;  // Animation Counter
+  Mix_Chunk* damageSound;     // Sound played when the entity takes damage
 };
 
 #endif

@@ -8,9 +8,10 @@
 #include "../utility/utility.hpp"
 #include "tree.hpp"
 
-donjon::donjon(int nbnoeuds, int seed = 1) : noeuds(nbnoeuds), max_noeuds(nbnoeuds), max_children(3), max_depth(10), seed(seed), specialRooms(3), remaining_count(nbnoeuds) {
+donjon::donjon(int nbnoeuds, SDL_Renderer *Renderer) : noeuds(nbnoeuds), max_noeuds(nbnoeuds), max_children(3), max_depth(10), specialRooms(3), remaining_count(nbnoeuds) {
+  this->seed = getSeedFromFile("map.txt");
   std::random_device rd;
-  std::mt19937 g(getSeedFromFile("map.txt"));
+  std::mt19937 g(this->seed);
 
   for(int i = 1; i <= nbTwoTallMaps; i++) {
     TwoTallMaps.push_back(std::to_string(i));
@@ -21,12 +22,47 @@ donjon::donjon(int nbnoeuds, int seed = 1) : noeuds(nbnoeuds), max_noeuds(nbnoeu
   }
 
   initial_Node = nullptr;
+  this->Renderer = Renderer;
 }
 
-char donjon::addletter() {
-  char a = letter[0];
-  letter.erase(letter.begin());
-  return a;
+std::vector<char> donjon::getAllLetters(Node *node) {
+  std::vector<char> letters;
+  if(node != nullptr) {
+    letters.push_back(node->getValue());
+    for(std::pair<Node *, std::string> i : node->getChildren()) {
+      std::vector<char> result = getAllLetters(i.first);
+      letters.insert(letters.end(), result.begin(), result.end());
+    }
+  }
+  return letters;
+}
+
+Node *donjon::searchNode(char c, Node *node) {
+  if(node->getValue() == c) {
+    return node;
+  }
+  for(std::pair<Node *, std::string> child : node->getChildren()) {
+    Node *result = searchNode(c, child.first);
+    if(result != nullptr) {
+      return result;
+    }
+  }
+
+  return nullptr;
+}
+
+Node *donjon::getRandomNode(Node *inital) {
+  if(inital != nullptr) {
+    std::vector<char> letters = getAllLetters(inital);
+    if(letters.size() > 0) {
+      std::random_device rd;
+      std::mt19937 g(seed);
+      std::shuffle(letters.begin(), letters.end(), g);
+      char c = letters[0];
+      return searchNode(c, inital);
+    }
+  }
+  return nullptr;
 }
 
 Node *donjon::searchNode(int x, int y, Node *node) {
@@ -42,6 +78,8 @@ Node *donjon::searchNode(int x, int y, Node *node) {
 
   return nullptr;
 }
+
+Node *getRandomRoom(Node *inital) { return nullptr; }
 
 bool donjon::addCoords(std::pair<int, int> coords) {
   if(std::find(CoordUse.begin(), CoordUse.end(), coords) == CoordUse.end()) {
@@ -82,10 +120,6 @@ std::vector<std::pair<int, int>> donjon::checks_valids(rooms room) {
     }
   }
   return valid;
-}
-
-bool donjon::checkTallRoom(int x, int y, std::string dirr) {
-  return (std::find(CoordUse.begin(), CoordUse.end(), std::make_pair(x, y + (dirr == "bas" ? 1 : -1))) == CoordUse.end());
 }
 
 void donjon::save_rooms_to_file(Node *node) {
@@ -172,10 +206,13 @@ int donjon::load_rooms_from_file() {
     return -1;
   }
 
-  initial_Node = new Node(new rooms(0, 0, tailleCase, tailleCase, 2, 2), 'A', "None");
+  initial_Node = new Node(new rooms(Renderer, 0, 0, tailleCase, tailleCase, 2, 2), 'A', "None");
   initial_Node->setMap("1");
 
   addChildFromFile(initial_Node, origin.first, origin.second, 'A');
+
+  getRandomNode(initial_Node)->getRoom()->setIsEnd(true);
+
   file.close();
   return 0;
 }
@@ -244,7 +281,7 @@ void donjon::addChildFromFile(Node *node, int originx, int originy, char letter)
     for(std::pair<char, std::string> c : letters) {
       if(findInVector(letterAlreadyUsed, c.first) == -1) {
         std::pair<int, int> NewNode = SearchLetterInMapFromOrigin(c.first, originx, originy);
-        Node *child = new Node(new rooms(NewNode.first, NewNode.second, tailleCase, tailleCase, 1, 1), c.first, c.second);
+        Node *child = new Node(new rooms(Renderer, NewNode.first, NewNode.second, tailleCase, tailleCase, 1, 1), c.first, c.second);
         node->addChild(child, c.second);
         addChildFromFile(child, originx, originy, node->getValue());
       } else if(c.first == letter) {
@@ -366,10 +403,11 @@ bool donjon::allNodeVisited(Node *initial) {
 void donjon::removeNode(Node *node) {
   if(node != nullptr) {
     for(std::pair<Node *, std::string> i : node->getChildren()) {
-      std::cout << "Suppression de " << i.first->getValue() << std::endl;
       removeNode(i.first);
     }
-    delete node;
+    std::cout << "Suppression de " << node->getValue() << std::endl;
+    if(node != nullptr) delete node;
+    std::cout << "Suppression de terminé" << std::endl;
   }
 }
 donjon::~donjon() { removeNode(initial_Node); }

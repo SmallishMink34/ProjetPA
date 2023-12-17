@@ -165,5 +165,9 @@ int getBestScore() {
     }
     fichierEntree.close();
   }
+  if(mini == INT_MAX) {
+    mini = -1;
+  }
+
   return mini;
 }

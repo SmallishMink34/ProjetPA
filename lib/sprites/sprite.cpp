@@ -57,8 +57,8 @@ Sprite::Sprite(int x, int y, int w, int h) {
 }
 
 void Sprite::DrawRepeat(SDL_Renderer* Renderer, int w, int h, int dx, int dy) {
-  // for(int i = 0; i < w; i++)
-  //   for(int j = 0; j < h; j++) this->selfDraw(Renderer, i * getWidth() - dx, j * getHeight() - dy);
+  for(int i = 0; i < w; i++)
+    for(int j = 0; j < h; j++) this->selfDraw(Renderer, i * getWidth() - dx, j * getHeight() - dy);
 }
 
 void Sprite::loadImage(SDL_Renderer* Renderer) {
@@ -158,8 +158,6 @@ void Sprite::selfDraw(SDL_Renderer* Renderer, int x, int y, SDL_Rect Frame) {
   SDL_Rect rect;
   rect.x = x;
   rect.y = y;
-  // rect.w = std::min(this->getWidth() - (Frame.x - x), this->getWidth());
-  // rect.h = std::min(this->getHeight() - (Frame.y - y), this->getHeight());
 
   rect.h = this->getHeight();
 

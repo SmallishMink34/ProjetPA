@@ -5,14 +5,20 @@
 
 Bouton::Bouton() {}
 
-Bouton::Bouton(SDL_Renderer* Renderer, const char* lien, int x, int y, int w, int h) {
+Bouton::Bouton(SDL_Renderer* Renderer, const char* lien, int x, int y, int w, int h, bool centered) {
   this->rect = SDL_Rect();
-  this->rect.x = x;
-  this->rect.y = y;
+
+  if(!centered) {
+    this->rect.x = x;
+    this->rect.y = y;
+  } else {
+    this->rect.x = x - (w / 2);
+    this->rect.y = y - (h / 2);
+  }
   this->rect.w = w;
   this->rect.h = h;
 
-  this->image = Sprite(lien, x, y, w, h);
+  this->image = Sprite(lien, rect.x, rect.y, rect.w, rect.h);
   this->image.loadImage(Renderer);
 }
 
@@ -46,7 +52,6 @@ void Bouton::gererFin(SDL_Event* evenement, SDL_Renderer* rendu, bool* quit) {
     if(evenement->type == SDL_MOUSEMOTION) {
       this->setSurface(0, 0, 512, 256);
     } else if(evenement->type == SDL_MOUSEBUTTONDOWN && evenement->button.button == SDL_BUTTON_LEFT) {
-      printf("fin\n");
       *quit = true;
     }
   } else {

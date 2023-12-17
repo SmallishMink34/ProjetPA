@@ -4,7 +4,7 @@
 #include "../donjon/tree.hpp"
 
 world::world(SDL_Renderer* Renderer, Variable* Var) {
-  this->Donjon = new donjon(30, 5);
+  this->Donjon = new donjon(30, Renderer);
   this->Map = new allMaps(Renderer, this->Donjon);
   this->Joueur = new Player(Renderer);
   this->hud = new HUD(Renderer, this->Joueur, this->Donjon, Var);
@@ -20,6 +20,8 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
   this->seeMap = false;
 
   this->genWorld = false;
+  this->canQuitWorld = false;
+  this->doorIsRemoved = false;
 }
 
 void world::InitMonde(SDL_Renderer* Renderer) { Map->InitializeRoom(this->Joueur, this, "Spawn"); }
@@ -37,6 +39,10 @@ int world::UpdateAll() {
 
   tmx::Object collision = this->Joueur->isColliding(this->Map->getElements());
   std::string collisionType = collision.getType();
+
+  tmx::Object Element = this->Joueur->isColliding(this->Map->getInteract());
+  std::string elementType = Element.getType();
+
   if(collisionType == "tp") {
     std::string whatDoor = collision.getName();
     if(whatDoor == "Spawn") {
@@ -50,6 +56,15 @@ int world::UpdateAll() {
     Var->CameraSpeed = 1;
     this->Joueur->setVerticalVelocity(0);
     this->Map->changeMap(whatDoor, this->Joueur, this);
+  } else if(elementType == "end") {
+    this->canQuitWorld = true;
+  } else {
+    this->canQuitWorld = false;
+  }
+
+  if(OpenTheDoor() && this->Map->getCurrentMap()->getRoom()->getIsEnd() && !doorIsRemoved) {  // Tenter d'enlever la porte qu'une seule fois
+    this->Map->removeTile("close");
+    doorIsRemoved = true;
   }
 
   this->moveCamera();
@@ -119,17 +134,25 @@ void world::FixCamera() {
   this->Joueur->Moveto();
 }
 
-int world::getScore() { return this->Joueur->getScore() / 120; }
+int world::getScore() { return this->Joueur->getScore() / scoreDivider; }
 
 world::~world() {
   delete this->Joueur;
-  delete this->Donjon;
+  std::cout << "Player deleted" << std::endl;
   delete this->Map;
+
   delete this->hud;
+  std::cout << "HUD deleted" << std::endl;
+  delete this->Donjon;
+  std::cout << "Map deleted" << std::endl;
+}
+
+bool world::OpenTheDoor() {
+  return (((this->Donjon->getNbMonsterAllMap(this->Donjon->initial_Node) == 0 && this->Donjon->allNodeVisited(this->Donjon->initial_Node))) && genWorld);
 }
 
 bool world::EndGame() {
-  if(((this->Donjon->getNbMonsterAllMap(this->Donjon->initial_Node) == 0 && this->Donjon->allNodeVisited(this->Donjon->initial_Node)) || this->Joueur->getVie() <= 0) && genWorld) {
+  if((canQuitWorld && OpenTheDoor()) || this->Joueur->getVie() <= 0) {
     return true;
   } else {
     return false;

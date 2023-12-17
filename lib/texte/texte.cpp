@@ -13,11 +13,11 @@ texte::texte(SDL_Renderer* Renderer, std::string text, SDL_Color color, SDL_Rect
   if(this->font == NULL) {
     std::cout << "Failed to load font! SDL_ttf Error: " << TTF_GetError() << std::endl;
   } else {
-    setText(this->text);
+    setText(this->text, rect.x, rect.y, rect.w, rect.h);
   }
 }
 
-void texte::setText(std::string text) {
+void texte::setText(std::string text, int x, int y, int w, int h) {
   this->text = text;
 
   if(this->texture != nullptr) {
@@ -37,10 +37,10 @@ void texte::setText(std::string text) {
     }
   }
   if(this->autoAdjust) {
-    this->rect.w = this->rect.w * this->text.length() / 2;
+    this->rect.w = w * this->text.length() / 2;
   }
   if(this->centered) {
-    this->rect.x = this->rect.x - this->rect.w / 2;
+    this->rect.x = x - (this->rect.w / 2);
   }
 }
 

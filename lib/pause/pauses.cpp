@@ -23,7 +23,7 @@ Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   Mix_HaltMusic();
 }
 
-bool Mpause::Init() {
+int Mpause::Init() {
   isLoaded = true;
   Var->ChangeScale(1);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
@@ -56,9 +56,7 @@ bool Mpause::Init() {
 
   std::string seed = std::to_string(getSeedFromFile("map.txt"));
   int taille = compterLettres(seed);
-  std::cout << taille << std::endl;
 
-  SDL_Color White = {255, 255, 255};
   SDL_Surface* surfaceSeed = TTF_RenderText_Solid(Sans, seed.c_str(), White);
   TextureSeed = SDL_CreateTextureFromSurface(gRenderer, surfaceSeed);
   Seed_rect.x = 80 - 80 / 2;

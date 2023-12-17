@@ -35,13 +35,14 @@ class END: public Gamemode {
   texte* scoredialg;
   texte* scoreText;
   texte* info;
+  texte* win;
   int score;
 
   /**
    * @brief Initializes the pause menu.
    * @return true if the pause menu was initialized successfully, false otherwise.
    */
-  bool Init();
+  int Init();
 
   /**
    * @brief Handles events for the pause menu.
@@ -67,15 +68,12 @@ class END: public Gamemode {
   /**
    * @brief save the score text in a file
    */
-  void saveScore();
   bool menu;
   int Real_W; /**< The real width. */
   int Real_H; /**< The real height. */
 
   TTF_Font* Sans;
-  SDL_Texture* TextureMessage;
   SDL_Rect Message_rect;
-  SDL_Texture* TextureSeed;
   SDL_Rect Seed_rect;
   bool var; /**< The variable. */
 };

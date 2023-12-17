@@ -23,7 +23,7 @@ class Bouton {
    * @param w
    * @param h
    */
-  Bouton(SDL_Renderer* Renderer, const char* lien, int x, int y, int w, int h);
+  Bouton(SDL_Renderer* Renderer, const char* lien, int x, int y, int w, int h, bool centered = false);
   /**
    * @brief Destroy the Bouton object
    *
@@ -100,6 +100,7 @@ class Bouton {
  private:
   Sprite image;
   SDL_Rect rect;
+  bool centered;
 };
 
 #endif  // BUTTON_HPP

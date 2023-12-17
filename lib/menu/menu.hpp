@@ -42,7 +42,7 @@ class menu: public Gamemode {
   /**
    * @brief Initializes the menu.
    */
-  bool Init();
+  int Init();
 
   /**
    * @brief Handles events for the menu.

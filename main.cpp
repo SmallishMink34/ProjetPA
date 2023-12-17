@@ -122,6 +122,7 @@ int main(int argc, char *args[]) {
 
     if(currentGamemode != oldGamemode && Gamemodes[currentGamemode]->isLoaded && currentGamemode == "jeu" && oldGamemode == "menu") {
       delete Gamemodes["jeu"];
+      std::cout << "delete jeu" << std::endl;
       Gamemodes["jeu"] = new Jeu(gWindow, gRenderer, Var);
       Gamemodes["jeu"]->isLoaded = false;
     }

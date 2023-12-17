@@ -14,6 +14,7 @@ Cartes::Cartes(SDL_Renderer* Renderer, std::string file) {
 
   ElementsToAdd = mergeVectors(Map->getObjectsByType("blocks"), Map->getObjectsByType("wall"));
   ElementsToAdd = mergeVectors(ElementsToAdd, Map->getObjectsByType("monster"));
+  ElementsToAdd = mergeVectors(ElementsToAdd, Map->getObjectsByType("end"));
 
   Spawn["Spawn"] = Map->getObjectByName("Spawn");
   Spawn["TL"] = Map->getObjectByNameAndType("TL", "Spawn");
@@ -99,6 +100,26 @@ void Cartes::update(Uint32 currentTime, int dx, int dy) {
   animeMCounter++;
 }
 
+std::vector<tmx::Object> Cartes::getInteract() { return Interact; }
+
+void Cartes::addInteract(tmx::Object object) { Interact.push_back(object); }
+
+int Cartes::SearchTilebyName(std::string name) {
+  for(long unsigned int i = 0; i < addTiles.size(); i++) {
+    if(addTiles[i]->getName() == name) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+void Cartes::removeTile(std::string name) {
+  int i = SearchTilebyName(name);
+  if(i != -1) {
+    delete addTiles[i];
+    addTiles.erase(addTiles.begin() + i);
+  }
+}
 ////////////////////////////////// allMaps //////////////////////////////////
 
 allMaps::allMaps(SDL_Renderer* Renderer, donjon* Don) {
@@ -107,6 +128,18 @@ allMaps::allMaps(SDL_Renderer* Renderer, donjon* Don) {
   this->Donjon = Don;
 
   this->cartesMap['0'] = new Cartes(Renderer, "Maps/tmx/Spawn.tmx");
+}
+
+allMaps::~allMaps() {
+  if(currentMap != nullptr && currentMap->getValue() == '0') {
+    delete currentMap;
+  }
+  currentMap = nullptr;
+  for(auto map : cartesMap) {
+    delete map.second;
+  }
+
+  std::cout << "deleting allMaps" << std::endl;
 }
 
 void allMaps::InitializeAllMap(Node* node) {
@@ -166,6 +199,18 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
         monstre->InitMonster(getCollisions());
         monstre->AllMove(c.getPosition().x, c.getPosition().y, true);
         cartesMap[this->currentMap->getValue()]->monsterList.push_back(monstre);
+      } else if(c.getClass() == "end") {
+        if(currentMap->getRoom()->getIsEnd() == true) {
+          Tile* tile2 = new Tile(Renderer, getPropertyFromName(c.getProperties(), "doorOpen").getFileValue().substr(9), c.getPosition().x, c.getPosition().y, c.getAABB().width,
+                                 c.getAABB().height, "open");
+          cartesMap[this->currentMap->getValue()]->addTile(tile2);
+
+          Tile* tile = new Tile(Renderer, getPropertyFromName(c.getProperties(), "file").getFileValue().substr(9), c.getPosition().x, c.getPosition().y, c.getAABB().width,
+                                c.getAABB().height, "close");
+          cartesMap[this->currentMap->getValue()]->addTile(tile);
+
+          cartesMap[this->currentMap->getValue()]->addInteract(c);
+        }
       }
     }
   }
@@ -174,15 +219,6 @@ void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType
   player->AllMove(object.getPosition().x, object.getPosition().y, true);
   this->currentMap->getRoom()->setVisited(true);
   Monde->FixCamera();
-}
-
-allMaps::~allMaps() {
-  currentMap = nullptr;
-  for(auto map : cartesMap) {
-    delete map.second;
-  }
-
-  std::cout << "deleting allMaps" << std::endl;
 }
 
 void allMaps::drawMap(SDL_Renderer* Renderer) { this->cartesMap[this->currentMap->getValue()]->draw(Renderer); }
@@ -205,6 +241,7 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
   std::string SpawnType = "Spawn";
   if(map == "Spawn") {
     delete this->currentMap;
+    this->currentMap = nullptr;
     this->currentMap = this->Donjon->initial_Node;
     getCurrentMap()->getRoom()->SetInTheRoom(true);
   } else {
@@ -214,7 +251,7 @@ void allMaps::changeMap(std::string map, Player* player, world* Monde) {
     this->currentMap = Donjon->getElementInChildFromPlacement(map, getCurrentMap());
 
     SpawnType = Donjon->getAdjacentTypeFromNode(getCurrentMap(), oldNode);
-
+    oldNode = nullptr;
     getCurrentMap()->getRoom()->SetInTheRoom(true);
   }
   InitializeRoom(player, Monde, SpawnType);
@@ -232,3 +269,7 @@ void allMaps::update(Uint32 currentTime, int dx, int dy) {
 int allMaps::getDx() { return cartesMap[this->currentMap->getValue()]->getDx(); }
 
 int allMaps::getDy() { return cartesMap[this->currentMap->getValue()]->getDy(); }
+
+std::vector<tmx::Object> allMaps::getInteract() { return cartesMap[this->currentMap->getValue()]->getInteract(); }
+
+void allMaps::removeTile(std::string name) { cartesMap[this->currentMap->getValue()]->removeTile(name); }

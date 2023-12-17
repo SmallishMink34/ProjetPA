@@ -53,7 +53,8 @@ class world {
   Uint32 Animcpt;                                           /**< Animation counter. */
   Uint32 cptest;                                            /**< Test counter. */
   bool genWorld;                                            /**< Flag indicating whether the world has been generated. */
-
+  bool canQuitWorld;                                        /**< Flag indicating whether the player can quit the world. */
+  bool doorIsRemoved;                                       /**< Flag indicating whether the door has been removed. */
   // Fonctions
   /**
    * @brief Initializes the game world.
@@ -98,6 +99,11 @@ class world {
    * @brief get the score.
    */
   int getScore();
+
+  /**
+   * @brief return if the door is open
+   */
+  bool OpenTheDoor();
 
   /**
    * @brief return if the game is ended

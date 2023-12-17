@@ -7,6 +7,7 @@
 #include "../donjon/donjon.hpp"
 #include "../player/player.hpp"
 #include "../sprites/sprite.hpp"
+#include "../texte/texte.hpp"
 /**
  * @class HUD
  * @brief Represents the Heads-Up Display (HUD) in the game.
@@ -21,11 +22,10 @@ class HUD {
   Sprite *MapFrame;
   donjon *Don;
   SDL_Rect *rect;
+  std::string scoreText;
 
-  SDL_Texture *TextureScore;
-  SDL_Rect Score_rect;
+  texte *score;
 
-  TTF_Font *Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
   SDL_Color Blue = {0, 191, 255};
 
  public:
@@ -50,6 +50,5 @@ class HUD {
    */
   void draw(SDL_Renderer *renderer);
   void update(SDL_Renderer *renderer);
-  char scoreText[20];
 };
 #endif

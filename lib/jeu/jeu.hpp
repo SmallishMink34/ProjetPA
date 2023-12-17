@@ -34,7 +34,7 @@ class Jeu: public Gamemode {
    * @brief Initializes the game mode.
    * @return true if the game mode was initialized successfully, false otherwise.
    */
-  bool Init();
+  int Init();
 
   /**
    * @brief Pauses the game mode.

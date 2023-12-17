@@ -26,6 +26,7 @@ class Cartes {
   std::string file;                         /**< The file path of the map */
   level* Map;                               /**< Pointer to the level object representing the map */
   std::vector<tmx::Object> Collisions;      /**< Vector of collision objects on the map */
+  std::vector<tmx::Object> Interact;        /**< Vector of interaction objects on the map */
   std::vector<tmx::Object> ElementsToAdd;   /**< Vector of additional elements to be added to the map */
   std::map<std::string, tmx::Object> Spawn; /**< Map of spawn points on the map */
   std::vector<tmx::Object> Elements;        /**< Vector of elements on the map */
@@ -137,7 +138,18 @@ class Cartes {
    * @return The change in y-coordinate
    */
   int getDy();
-  std::vector<monster*> monsterList; /**< Vector of monster objects on the map */
+
+  int SearchTilebyName(std::string name);
+
+  void removeTile(std::string name);
+
+  /**
+   * @brief add interaction on the map
+   */
+  void addInteract(tmx::Object object);
+
+  std::vector<tmx::Object> getInteract(); /**< Vector of interaction objects on the map */
+  std::vector<monster*> monsterList;      /**< Vector of monster objects on the map */
 };
 
 /**
@@ -259,6 +271,14 @@ class allMaps {
    * @param dy Y-coordinate offset.
    */
   void update(Uint32 currentTime, int dx, int dy);
+
+  /**
+   * @brief get Interact object
+   * @return Vector of tmx::Object representing the interactions.
+   */
+  std::vector<tmx::Object> getInteract();
+
+  void removeTile(std::string name);
 };
 
 #endif

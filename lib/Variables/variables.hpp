@@ -18,6 +18,7 @@ class Variable {
   const float DefaultCameraSpeed = 0.1;
   const int fps = 60;
   int score = 0;
+  bool win = false;
 
   void ChangeScale(float scale);
   void setScore(int score);
@@ -37,12 +38,17 @@ const float RECUL = 15.0f;
 
 const int porteeArme = 50;
 const int cadenceArme = 6;
-const int degatsArme = 10;
+const int degatsArme = 1;
 
 const std::string nomFichier = "monFichier.txt";
 
+const int scoreDivider = 120;
+
 ////////////////// Couleur
 const SDL_Color White = {255, 255, 255};
+const SDL_Color Black = {0, 0, 0};
+const SDL_Color LightBlue = {0, 191, 255};
+const SDL_Color LightRed = {255, 50, 0};
 
 ////////////////// Affichage
 

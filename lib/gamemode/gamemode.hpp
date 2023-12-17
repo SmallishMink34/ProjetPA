@@ -39,7 +39,7 @@ class Gamemode {
   /**
    * @brief Pure virtual function to initialize the game mode.
    */
-  virtual bool Init() = 0;
+  virtual int Init() = 0;
 
   /**
    * @brief Pure virtual function to render the game mode.

@@ -35,7 +35,7 @@ class Mpause: public Gamemode {
   /**
    * @brief Initializes the pause menu.
    */
-  bool Init();
+  int Init();
 
   /**
    * @brief Handles events for the pause menu.

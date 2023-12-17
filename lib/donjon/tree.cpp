@@ -12,17 +12,17 @@ rooms::rooms() {
   this->type = 0;
   this->tall = 1;
   this->value = '0';
-  this->loaded = false;
-  this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
-  this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
-  this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
+  this->ImageIn = nullptr;
+  this->ImageNotIn = nullptr;
+  this->MonsterImage = nullptr;
   this->thereIsMonster = false;
-  this->nbMonster = 0;
+  this->nbMonster = 1;
   this->isVisited = false;
-  setImages();
+  this->isEnd = false;
+  this->Renderer = Renderer;
 }
 
-rooms::rooms(int x, int y) {
+rooms::rooms(SDL_Renderer *Renderer, int x, int y) {
   this->x = x;
   this->y = y;
   this->w = 0;
@@ -30,17 +30,18 @@ rooms::rooms(int x, int y) {
   this->type = 0;
   this->tall = 1;
   this->value = '0';
-  this->loaded = false;
-  this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
-  this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
+  this->ImageIn = new Sprite();
+  this->ImageNotIn = new Sprite();
   this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
   this->thereIsMonster = false;
-  this->nbMonster = 0;
+  this->nbMonster = 1;
   this->isVisited = false;
+  this->isEnd = false;
+  this->Renderer = Renderer;
   setImages();
 }
 
-rooms::rooms(int x, int y, int w, int h, int type, int tall) {
+rooms::rooms(SDL_Renderer *Renderer, int x, int y, int w, int h, int type, int tall) {
   this->x = x;
   this->y = y;
   this->w = w;
@@ -48,14 +49,15 @@ rooms::rooms(int x, int y, int w, int h, int type, int tall) {
   this->type = type;
   this->tall = tall;
   this->value = '0';
-  this->loaded = false;
   this->InRoom = false;
-  this->ImageIn = new Sprite("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
-  this->ImageNotIn = new Sprite("src/Images/HUD/Case2.png", 0, 0, this->w, this->h);
+  this->ImageIn = new Sprite();
+  this->ImageNotIn = new Sprite();
   this->MonsterImage = new Sprite("src/Images/Monster/tete.png", 0, 0, this->w - 5, this->h - 10);
   this->thereIsMonster = false;
-  this->nbMonster = 0;
+  this->nbMonster = 1;
   this->isVisited = false;
+  this->isEnd = false;
+  this->Renderer = Renderer;
   setImages();
 }
 
@@ -76,6 +78,8 @@ void rooms::setX(int x) { this->x = x; }
 
 void rooms::setY(int y) { this->y = y; }
 
+void rooms::setIsEnd(bool isEnd) { this->isEnd = isEnd; }
+
 void rooms::setImages() {
   if(this->tall == 1) {
     this->ImageIn->SetImage("src/Images/HUD/Case1.png", 0, 0, this->w, this->h);
@@ -84,16 +88,13 @@ void rooms::setImages() {
     this->ImageIn->SetImage("src/Images/HUD/Case3.png", 0, 0, this->w, this->h * 2);
     this->ImageNotIn->SetImage("src/Images/HUD/Case4.png", 0, 0, this->w, this->h * 2);
   }
-  this->loaded = false;
+
+  this->ImageIn->loadImage(Renderer);
+  this->ImageNotIn->loadImage(Renderer);
+  this->MonsterImage->loadImage(Renderer);
 }
 
 void rooms::drawRoom(SDL_Renderer *Renderer, int x, int y, SDL_Rect MapFrame) {
-  if(!this->loaded) {
-    this->ImageIn->loadImage(Renderer);
-    this->ImageNotIn->loadImage(Renderer);
-    this->MonsterImage->loadImage(Renderer);
-    this->loaded = true;
-  }
   if(this->isVisited) {
     if(this->InRoom) {
       this->ImageIn->selfDraw(Renderer, x + (this->x) * (tailleCase + 2), y + this->y * (tailleCase + 2), MapFrame);
@@ -130,16 +131,11 @@ void rooms::setValue(char value) { this->value = value; }
 bool rooms::getInRoom() { return this->InRoom; }
 
 rooms::~rooms() {
-  if(this->ImageIn != nullptr) {
-    delete ImageIn;
-  }
-  if(this->ImageNotIn != nullptr) {
-    delete ImageNotIn;
-  }
-
-  if(this->MonsterImage != nullptr) {
-    delete MonsterImage;
-  }
+  std::cout << "APAGNAN" << std::endl;
+  if(ImageIn != nullptr) delete ImageIn;
+  if(ImageIn != nullptr) delete ImageNotIn;
+  if(ImageIn != nullptr) delete MonsterImage;
+  std::cout << "2222222" << std::endl;
 }
 
 void rooms::setMonster(bool monster, int nbMonster) {
@@ -152,6 +148,8 @@ int rooms::getNbMonster() { return this->nbMonster; }
 void rooms::setVisited(bool visited) { this->isVisited = visited; }
 
 bool rooms::getVisited() { return this->isVisited; }
+
+bool rooms::getIsEnd() { return this->isEnd; }
 
 // |---------------------- NODE ----------------------|
 
@@ -202,6 +200,11 @@ rooms *Node::getRoom() { return room; }
 char Node::getValue() { return value; }
 
 void Node::setMap(std::string Map) { this->Map = Map; }
+
 std::string Node::getMap() { return this->Map; }
 
-Node::~Node() { delete room; }
+Node::~Node() {
+  std::cout << "Node deleted : " << getValue() << std::endl;
+  delete room;
+  std::cout << "Room deleted" << std::endl;
+}
