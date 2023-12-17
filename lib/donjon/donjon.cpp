@@ -182,14 +182,17 @@ std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int 
   std::string line;
 
   while(std::getline(file, line)) {
-    for(char c : line) {
-      if(c == letter) {
-        return std::make_pair(oldx - x, oldy - y);
+    if(line.length() != 0 && line[0] != '#') {
+      for(char c : line) {
+        if(c == letter) {
+          file.close();
+          return std::make_pair(oldx - x, oldy - y);
+        }
+        oldx++;
       }
-      oldx++;
+      oldy++;
+      oldx = 0;
     }
-    oldy++;
-    oldx = 0;
   }
   file.close();
   std::cerr << "Letter " << letter << " not found in map " << std::endl;
@@ -256,7 +259,8 @@ std::vector<std::pair<char, std::string>> donjon::getAdjacentLetterFromMap(char 
 
   for(std::tuple<int, int, std::string> coord : coords) {
     char a = getCharAt(list, origin.first + std::get<0>(coord), origin.second + std::get<1>(coord));
-    if(a != '#') adjacentLetter.push_back({a, std::get<2>(coord)});
+    std::cout << "char : " << a << std::endl;
+    if(std::find(charMap.begin(), charMap.end(), a) != charMap.end()) adjacentLetter.push_back({a, std::get<2>(coord)});
   }
 
   file.close();

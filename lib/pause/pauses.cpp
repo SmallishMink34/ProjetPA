@@ -55,7 +55,6 @@ int Mpause::Init() {
   SDL_FreeSurface(surfaceMessage);
 
   std::string seed = std::to_string(getSeedFromFile("map.txt"));
-  int taille = compterLettres(seed);
 
   SDL_Surface* surfaceSeed = TTF_RenderText_Solid(Sans, seed.c_str(), White);
   TextureSeed = SDL_CreateTextureFromSurface(gRenderer, surfaceSeed);
