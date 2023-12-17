@@ -40,9 +40,15 @@ Player::Player(SDL_Renderer *Renderer) {
   Image.setSrcRect(0, 180, 64, 64);
   Image.loadImage(Renderer);
   this->Arme = std::unique_ptr<armes>(new armes(Renderer));
+
+  this->jumpSound = Mix_LoadWAV("src/music/sounds/jump.MP3");
+  this->boostJumpSound = Mix_LoadWAV("src/music/sounds/boost.MP3");
 }
 
-Player::~Player() {}
+Player::~Player() {
+  Mix_FreeChunk(jumpSound);
+  Mix_FreeChunk(boostJumpSound);
+}
 
 void Player::InitPlayer(std::vector<tmx::Object> Collisions, std::vector<monster *> *Monsters) {
   this->Collisions = Collisions;
@@ -68,6 +74,7 @@ void Player::selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy) {
   // Gérer les mouvements verticaux (haut / bas)
   if(Keys[2] && isOnGround()) {
     jump();
+    Mix_PlayChannel(-1, jumpSound, 0);
   }
 
   // Gérer les déplacements horizontaux
@@ -86,7 +93,6 @@ void Player::selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy) {
   }
 
   if(Keys[4]) {
-    // TODO : Son de tir
     Arme->tir(getCX(), getCY(), getCRX(), getCRY(), mouseX, mouseY);
   }
 
@@ -105,4 +111,53 @@ void Player::selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy) {
   } else if(verticalVelocity > 0) {
     etat = "Fall";
   }
+}
+
+void Player::Move(int x1, int y1, int dxMap, int dyMap) {  // Pas les coordonnées, seulement le vecteur de déplacements
+  std::vector<std::pair<tmx::Object, std::string>> result = isColliding(Realx, Realy);
+
+  mapDX = dxMap;
+  mapDY = dyMap;
+
+  std::pair<tmx::Object, std::string> Down = isInList(result, "Down");
+  std::pair<tmx::Object, std::string> Up = isInList(result, "Up");
+  std::pair<tmx::Object, std::string> Left = isInList(result, "Left");
+  std::pair<tmx::Object, std::string> Right = isInList(result, "Right");
+
+  if(dy <= 0) {
+    if(isEmpty(Down)) {
+      OnGround = false;
+      jumpStrength = JumpStrength;
+    }
+  }
+  if(!isEmpty(Left)) {
+    AllMove(Left.first.getPosition().x + Left.first.getAABB().width + 2, Realy, true);
+    if(x1 < 0) {
+      x1 = 0;
+    }
+  } else if(!isEmpty(Right)) {
+    AllMove(Right.first.getPosition().x - getWidth() - 2, Realy, true);
+    if(x1 > 0) {
+      x1 = 0;
+    }
+  }
+  if(!isEmpty(Down) && dy >= 0) {
+    AllMove(Realx, Down.first.getPosition().y - getHeight(), true);
+    if(Down.first.getName() == "Jump") {
+      jumpStrength = (float)Down.first.getProperties().front().getIntValue();
+      jump();
+      Mix_PlayChannel(-1, boostJumpSound, 0);
+    }
+
+    if(y1 > 0 && Down.first.getName() == "Platform") {
+      AllMove(Realx, Realy + Down.first.getAABB().height, true);
+    }
+
+    OnGround = true;
+  } else if(!isEmpty(Up)) {
+    AllMove(Realx, Up.first.getPosition().y + Up.first.getAABB().height + 2, true);
+    verticalVelocity = 0;
+  }
+
+  AllMove(x1, y1, false);
 }

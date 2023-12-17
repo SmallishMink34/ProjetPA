@@ -42,7 +42,7 @@ class menu: public Gamemode {
   /**
    * @brief Initializes the menu.
    */
-  void Init();
+  bool Init();
 
   /**
    * @brief Handles events for the menu.
@@ -57,9 +57,10 @@ class menu: public Gamemode {
   void render();
 
   /**
-   * @brief Updates the menu.
+   * @brief Updates the menu
+   * @return 0
    */
-  void update();
+  int update();
 
   /**
    * @brief Unpauses the menu.

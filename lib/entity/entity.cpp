@@ -184,9 +184,7 @@ void Entity::AllMove(int x1, int y1, bool Teleport) {
 
 void Entity::jump() {
   if(isOnGround()) {
-    // TODO : Son saut
     hasJump = true;
-
   }
 }
 

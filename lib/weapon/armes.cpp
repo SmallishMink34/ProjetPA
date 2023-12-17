@@ -7,6 +7,7 @@ armes::armes(SDL_Renderer* renderer) {
   this->renderer = renderer;
   this->bullet = std::vector<balles*>();
   this->counter = -1;
+  this->shootSound = Mix_LoadWAV("src/music/sounds/tir.wav");
 }
 
 void armes::setCollisions(std::vector<tmx::Object> collisions, std::vector<monster*>* MonstreList) {
@@ -30,6 +31,7 @@ void armes::tir(int PlayerX, int PlayerY, int PlayerRX, int PlayerRY, int mouseX
     balles* balle = new balles(renderer, PlayerRX, PlayerRY, dirrectionX, dirrectionY, this->degats, this->portee);
     bullet.push_back(balle);
     counter = 0;
+    Mix_PlayChannel(-1, shootSound, 0);
   }
 }
 
@@ -58,6 +60,7 @@ armes::~armes() {
   for(long unsigned int i = 0; i < bullet.size(); i++) {
     delete bullet.at(i);
   }
+  Mix_FreeChunk(shootSound);
 }
 
 balles::balles(SDL_Renderer* renderer, int x, int y, float dirrectionX, float dirrectionY, int degats, int portee) {

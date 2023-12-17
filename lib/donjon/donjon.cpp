@@ -9,11 +9,6 @@
 #include "tree.hpp"
 
 donjon::donjon(int nbnoeuds, int seed = 1) : noeuds(nbnoeuds), max_noeuds(nbnoeuds), max_children(3), max_depth(10), seed(seed), specialRooms(3), remaining_count(nbnoeuds) {
-  letter = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
-
-  dirrection = {"bas", "haut"};
-  dirrectionCopy = dirrection;
   std::random_device rd;
   std::mt19937 g(getSeedFromFile("map.txt"));
 
@@ -165,20 +160,24 @@ std::pair<int, int> donjon::SearchLetterInMapFromOrigin(char letter, int x, int 
   file.close();
   std::cerr << "Letter " << letter << " not found in map " << std::endl;
 
-  return std::make_pair(NULL, NULL);
+  return std::make_pair(-5000, -5000);
 }
 
-void donjon::load_rooms_from_file() {
+int donjon::load_rooms_from_file() {
   std::ifstream file(MAP);
   std::string line;
 
   std::pair<int, int> origin = SearchLetterInMapFromOrigin('A', 0, 0);
+  if(origin.first == -5000 || origin.second == -5000) {
+    return -1;
+  }
 
   initial_Node = new Node(new rooms(0, 0, tailleCase, tailleCase, 2, 2), 'A', "None");
   initial_Node->setMap("1");
 
   addChildFromFile(initial_Node, origin.first, origin.second, 'A');
   file.close();
+  return 0;
 }
 
 std::vector<char> donjon::getLetterAt(std::ifstream &file, int x, int y) {

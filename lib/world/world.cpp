@@ -24,7 +24,7 @@ world::world(SDL_Renderer* Renderer, Variable* Var) {
 
 void world::InitMonde(SDL_Renderer* Renderer) { Map->InitializeRoom(this->Joueur, this, "Spawn"); }
 
-void world::UpdateAll() {
+int world::UpdateAll() {
   this->currentTime = SDL_GetTicks();
   this->deltaTime = (this->currentTime - this->previousTime) / 10.0;
   this->previousTime = this->currentTime;
@@ -40,7 +40,9 @@ void world::UpdateAll() {
   if(collisionType == "tp") {
     std::string whatDoor = collision.getName();
     if(whatDoor == "Spawn") {
-      this->Map->InitializeLevel();
+      if(this->Map->InitializeLevel() == -1) {
+        return -1;
+      }
       this->seeMap = true;
     } else {
       genWorld = true;
@@ -55,6 +57,7 @@ void world::UpdateAll() {
   this->cptest++;
 
   this->Joueur->AnimEntity(cptest);
+  return 0;
 }
 
 void world::moveCamera() {

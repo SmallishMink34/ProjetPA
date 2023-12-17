@@ -143,6 +143,7 @@ class armes {
   std::vector<monster*>* MonstreList;  /**< A pointer to the monster list. */
   SDL_Renderer* renderer;              /**< The SDL renderer used for rendering. */
   std::vector<balles*> bullet;         /**< The bullets fired by the weapon. */
+  Mix_Chunk* shootSound;               /**< The sound played when the weapon is fired. */
 };
 
 #endif

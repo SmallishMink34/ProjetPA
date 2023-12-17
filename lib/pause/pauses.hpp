@@ -35,7 +35,7 @@ class Mpause: public Gamemode {
   /**
    * @brief Initializes the pause menu.
    */
-  void Init();
+  bool Init();
 
   /**
    * @brief Handles events for the pause menu.
@@ -50,8 +50,9 @@ class Mpause: public Gamemode {
 
   /**
    * @brief Updates the pause menu.
+   * @return 0
    */
-  void update();
+  int update();
 
   /**
    * @brief Unpauses the game.

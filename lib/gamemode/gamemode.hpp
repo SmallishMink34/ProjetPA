@@ -39,7 +39,7 @@ class Gamemode {
   /**
    * @brief Pure virtual function to initialize the game mode.
    */
-  virtual void Init() = 0;
+  virtual bool Init() = 0;
 
   /**
    * @brief Pure virtual function to render the game mode.
@@ -49,7 +49,7 @@ class Gamemode {
   /**
    * @brief Pure virtual function to update the game mode.
    */
-  virtual void update() = 0;
+  virtual int update() = 0;
 
   /**
    * @brief Pure virtual function to unpause the game mode.

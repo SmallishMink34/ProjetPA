@@ -9,9 +9,12 @@ Jeu::Jeu(SDL_Window* window, SDL_Renderer* renderer, Variable* Var) {
 
   isLoaded = false;
   this->Var = Var;
+  this->gameMusic = nullptr;
+  this->Monde = nullptr;
+  this->menuSound = nullptr;
 }
 
-void Jeu::Init() {
+bool Jeu::Init() {
   isLoaded = true;
 
   Var->ChangeScale(Windows_W / 1280.0);
@@ -20,21 +23,27 @@ void Jeu::Init() {
 
   Monde = new world(this->gRenderer, Var);
   Monde->InitMonde(this->gRenderer);
-  this->Monde->previousTime = SDL_GetTicks();
+  Monde->previousTime = SDL_GetTicks();
 
-  // TODO : Musique jeu
+  this->menuSound = Mix_LoadWAV("src/music/sounds/menuon.mp3");
+
   Mix_HaltMusic();
   this->gameMusic = Mix_LoadMUS("src/music/background/game.mp3");
   Mix_PlayMusic(gameMusic, -1);
+
+  // baisse le son de la musique
+  Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+  return 0;
 }
 
 void Jeu::Pause(std::string* Gamemode) {
-  *Gamemode = "pause";  // Quitte l'application si la touche Échap est enfoncée
+  *Gamemode = "pause";
+  Mix_PlayChannel(-1, menuSound, 0);
+  Mix_PauseMusic();
 }
 
 void Jeu::saveScore() {
   std::cout << "save score : " << this->Monde->getScore() << std::endl;
-  // rajouter 2 conditions : si on ne meurt pas, si tous les ennemis sont morts
   std::ofstream fichierSortie;
   fichierSortie.open(nomFichier, std::ios::app);
 
@@ -51,6 +60,7 @@ void Jeu::unpause() {
   this->Var->ChangeScale(Windows_W / 1280.0);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
   SDL_SetRenderDrawBlendMode(this->gRenderer, SDL_BLENDMODE_BLEND);
+  Mix_ResumeMusic();
 }
 
 void Jeu::handleEvents(std::string* Gamemode) {
@@ -89,9 +99,6 @@ void Jeu::handleEvents(std::string* Gamemode) {
           break;
         case SDLK_z:
           Monde->KeyPressed[2] = true;
-          if(Monde->Joueur->OnGround){
-            Mix_PlayChannel(-1, Mix_LoadWAV("src/music/sounds/jump.MP3"), 0);
-          }
           break;
         case SDLK_d:
           Monde->KeyPressed[1] = true;
@@ -137,11 +144,13 @@ void Jeu::render() {
   SDL_RenderPresent(gRenderer);
 }
 
-void Jeu::update() { Monde->UpdateAll(); }
+int Jeu::update() { return Monde->UpdateAll(); }
 
 Jeu::~Jeu() {
   std::cout << "Destructeur Jeu" << std::endl;
   if(Monde != nullptr) delete Monde;
+  if(gameMusic != nullptr) Mix_FreeMusic(gameMusic);
+  if(menuSound != nullptr) Mix_FreeChunk(menuSound);
 
   Monde = nullptr;
 }

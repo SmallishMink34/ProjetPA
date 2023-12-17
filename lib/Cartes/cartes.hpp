@@ -186,8 +186,9 @@ class allMaps {
 
   /**
    * @brief Initializes the level.
+   * @return 0 if the level was initialized successfully, 1 otherwise.
    */
-  void InitializeLevel();
+  int InitializeLevel();
 
   /**
    * @brief Draws the map using the given SDL_Renderer object.

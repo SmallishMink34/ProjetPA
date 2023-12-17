@@ -74,8 +74,9 @@ class world {
 
   /**
    * @brief Updates all elements in the game world.
+   * @return 0 if the game is not ended, -1 if the game is ended by an error.
    */
-  void UpdateAll();
+  int UpdateAll();
 
   /**
    * @brief Moves the camera.

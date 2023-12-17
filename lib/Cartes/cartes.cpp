@@ -125,10 +125,14 @@ void allMaps::InitializeAllMap(Node* node) {
   }
 }
 
-void allMaps::InitializeLevel() {
-  this->Donjon->load_rooms_from_file();
+int allMaps::InitializeLevel() {
+  if(this->Donjon->load_rooms_from_file() == -1) {
+    std::cout << "Error loading rooms from file" << std::endl;
+    return -1;
+  }
 
   InitializeAllMap(this->Donjon->initial_Node);
+  return 0;
 }
 
 void allMaps::InitializeRoom(Player* player, world* Monde, std::string SpawnType) {

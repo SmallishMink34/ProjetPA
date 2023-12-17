@@ -127,12 +127,18 @@ int main(int argc, char *args[]) {
     }
 
     if(currentGamemode != oldGamemode && !Gamemodes[currentGamemode]->isLoaded) {
-      Gamemodes[currentGamemode]->Init();
+      if(Gamemodes[currentGamemode]->Init() == -1) {
+        std::cerr << "Erreur lors de l'initialisation du mode de jeu " << currentGamemode << std::endl;
+        return -1;
+      }
     } else if(currentGamemode != oldGamemode && Gamemodes[currentGamemode]->isLoaded) {
       Gamemodes[currentGamemode]->unpause();
     }
 
-    Gamemodes[currentGamemode]->update();
+    if(Gamemodes[currentGamemode]->update() == -1) {
+      std::cerr << "Erreur lors de la mise à jour du mode de jeu " << currentGamemode << std::endl;
+      return -1;
+    }
 
     Gamemodes[currentGamemode]->render();
 

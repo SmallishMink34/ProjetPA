@@ -174,8 +174,9 @@ class donjon {
 
   /**
    * @brief Loads the rooms of the donjon from a file.
+   * @return 0 if the rooms were loaded successfully, -1 otherwise.
    */
-  void load_rooms_from_file();
+  int load_rooms_from_file();
 
   /**
    * @brief Gets the adjacent letters from the donjon map for a given letter.

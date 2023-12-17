@@ -39,8 +39,9 @@ class END: public Gamemode {
 
   /**
    * @brief Initializes the pause menu.
+   * @return true if the pause menu was initialized successfully, false otherwise.
    */
-  void Init();
+  bool Init();
 
   /**
    * @brief Handles events for the pause menu.
@@ -56,7 +57,7 @@ class END: public Gamemode {
   /**
    * @brief Updates the pause menu.
    */
-  void update();
+  int update();
 
   /**
    * @brief Unpauses the game.

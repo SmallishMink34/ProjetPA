@@ -2,6 +2,7 @@
 #define MENU_HPP
 
 #include <SDL2/SDL_mixer.h>
+
 #include "../Variables/variables.hpp"
 #include "../gamemode/gamemode.hpp"
 #include "../world/world.hpp"
@@ -31,8 +32,9 @@ class Jeu: public Gamemode {
 
   /**
    * @brief Initializes the game mode.
+   * @return true if the game mode was initialized successfully, false otherwise.
    */
-  void Init();
+  bool Init();
 
   /**
    * @brief Pauses the game mode.
@@ -62,16 +64,18 @@ class Jeu: public Gamemode {
 
   /**
    * @brief Updates the game mode.
+   * @return 0 if the game mode was updated successfully, -1 if there was an error.
    */
-  void update();
+  int update();
 
   /**
    * @brief Unpauses the game mode.
    */
   void unpause();
 
-  private:
+ private:
   Mix_Music* gameMusic;  // The background music
+  Mix_Chunk* menuSound;  // The sound played when the game is paused
 };
 
 #endif

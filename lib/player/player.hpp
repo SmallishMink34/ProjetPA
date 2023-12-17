@@ -1,5 +1,7 @@
 #ifndef DefPlayer
 #define DefPlayer
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <unistd.h>
 
 #include <iostream>
@@ -38,8 +40,12 @@ class Player: public Entity {
   void selfMove(bool Keys[4], int mouseX, int mouseY, int dx, int dy);
   std::string toString();
 
+  void Move(int moveX, int moveY, int dx, int dy) override;
+
  private:
   std::string Nom;
+  Mix_Chunk* jumpSound;
+  Mix_Chunk* boostJumpSound;
 
   int score;
   SDL_Renderer* Renderer;

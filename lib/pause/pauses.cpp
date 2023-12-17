@@ -20,9 +20,10 @@ Mpause::Mpause(SDL_Window* gWindow, SDL_Renderer* gRenderer, Variable* Var) {
   this->TextureMessage = nullptr;
   this->TextureSeed = nullptr;
   this->Sans = TTF_OpenFont("src/font/Misty Style.ttf", 24);
+  Mix_HaltMusic();
 }
 
-void Mpause::Init() {
+bool Mpause::Init() {
   isLoaded = true;
   Var->ChangeScale(1);
   SDL_RenderSetScale(this->gRenderer, Var->scale, Var->scale);  // Faire un zoom dans la fenetre
@@ -66,7 +67,9 @@ void Mpause::Init() {
   Seed_rect.h = 40;
 
   SDL_FreeSurface(surfaceSeed);
+  return 0;
 }
+
 void Mpause::handleEvents(std::string* Gamemode) {
   SDL_Event e;
   while(SDL_PollEvent(&e) != 0) {
@@ -105,7 +108,7 @@ void Mpause::render() {
   SDL_RenderPresent(gRenderer);
 }
 
-void Mpause::update() {}
+int Mpause::update() { return 0; }
 
 void Mpause::unpause() {
   Var->ChangeScale(1);
